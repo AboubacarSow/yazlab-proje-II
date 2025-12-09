@@ -1,0 +1,114 @@
+###########################################################
+# .NET Backend (Api + Application + Data) inside /backend
+###########################################################
+
+####################################
+# BACKEND (.NET) inside /backend
+#######################################
+
+# Build output
+/backend/**/bin/
+/backend/**/obj/
+/backend/**/out/
+/backend/**/log/
+/backend/**/logs/
+
+# VS folder
+/backend/.vs/
+
+# User-specific files
+/backend/**/*.rsuser
+/backend/**/*.suo
+/backend/**/*.user
+/backend/**/*.userosscache
+/backend/**/*.sln.docstates
+
+# NuGet
+/backend/**/*.nupkg
+/backend/**/[Pp]ackages/
+!/backend/**/[Pp]ackages/build/
+
+
+# Build Results of an ATL Project
+/backend/[Dd]ebugPS/
+/backend/[Rr]eleasePS/
+/backend/dlldata.c
+
+# Build results
+/backend/[Dd]ebug/
+/backend/[Dd]ebugPublic/
+/backend/[Rr]elease/
+/backend/[Rr]eleases/
+/backend/x64/
+/backend/x86/
+/backend/[Ww][Ii][Nn]32/
+/backend/[Aa][Rr][Mm]/
+/backend/[Aa][Rr][Mm]64/
+/backend/bld/
+/backend/[Bb]in/
+/backend/[Oo]bj/
+/backend/[Oo]ut/
+/backend/[Ll]og/
+/backend/[Ll]ogs/
+# Rider
+/backend/.idea/
+/backend/*.DotSettings.user
+
+# Test results
+/backend/**/TestResult*/
+/backend/**/TestResults/
+
+# Artifacts
+/backend/artifacts/
+
+# Azure publish files
+/backend/**/*.pubxml
+/backend/**/*.publishproj
+
+# EF temp
+/backend/**/Migrations/obj/
+
+# Log files
+/backend/**/*.log
+
+# temporary files
+/backend/**/TemporaryGeneratedFile_*/*.cs
+/backend/**/GeneratedInternalTypeHelper.g.cs
+/backend/**/ServiceReferences.ClientConfig
+
+## Files built by Visual Studio
+/backend/*_i.c
+/backend/*_p.c
+/backend/*_h.h
+/backend/*.ilk
+/backend/*.meta
+/backend/*.obj
+/backend/*.iobj
+/backend/*.pch
+/backend/*.pdb
+/backend/*.ipdb
+/backend/*.pgc
+/backend/*.pgd
+/backend/*.rsp
+/backend/*.sbr
+/backend/*.tlb
+/backend/*.tli
+/backend/*.tlh
+/backend/*.tmp
+/backend/*.tmp_proj
+/backend/*_wpftmp.csproj
+/backend/*.log
+/backend/*.vspscc
+/backend/*.vssscc
+/backend/.builds
+/backend/*.pidb
+/backend/*.svclog
+/backend/*.scc
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Nodejs modules
+/node_modules/
+##### End of File #####
