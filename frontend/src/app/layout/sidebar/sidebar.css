@@ -1,0 +1,9 @@
+/* Sidebar active link style */
+a.active {
+  background: #2c3e50 !important;
+  font-weight: 600;
+}
+
+a:hover {
+  background: #2c3e50;
+}
