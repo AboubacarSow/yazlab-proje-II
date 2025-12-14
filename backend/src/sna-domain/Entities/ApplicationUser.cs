@@ -1,3 +1,5 @@
+using sna_domain.ValueObjects;
+
 namespace sna_domain.Entities;
 
 public class ApplicationUser

@@ -1,4 +1,4 @@
-namespace sna_domain.Entities;
+namespace sna_domain.ValueObjects;
 
 public class Address
 {
