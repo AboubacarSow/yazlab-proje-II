@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36603.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sna-application", "sna-application\sna-application.csproj", "{A52298AF-B185-47A8-BC76-A199A58D4BD1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sna-application", "src\sna-application\sna-application.csproj", "{A52298AF-B185-47A8-BC76-A199A58D4BD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sna-bootstrapper-api", "sna-bootstrapper-api\sna-bootstrapper-api.csproj", "{E72ABA80-3EB8-42C1-8039-D20C0B1ADD45}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sna-bootstrapper-api", "src\sna-bootstrapper-api\sna-bootstrapper-api.csproj", "{E72ABA80-3EB8-42C1-8039-D20C0B1ADD45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sna-infrastructure", "sna-infrastructure\sna-infrastructure.csproj", "{DC5A452F-85CA-48D3-81C6-956C07FFED40}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sna-infrastructure", "src\sna-infrastructure\sna-infrastructure.csproj", "{DC5A452F-85CA-48D3-81C6-956C07FFED40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sna-domain", "sna-domain\sna-domain.csproj", "{611F594F-5201-4214-8383-3FD612A6F178}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sna-domain", "src\sna-domain\sna-domain.csproj", "{611F594F-5201-4214-8383-3FD612A6F178}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
