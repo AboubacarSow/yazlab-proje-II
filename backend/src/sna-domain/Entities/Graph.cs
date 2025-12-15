@@ -4,32 +4,32 @@ namespace sna_domain.Entities;
 
 public class Graph : BaseEntity
 {
-    public Guid OwnerId {get; private set;}
-    public ApplicationUser Owner {get; private set;}= default!;
-    private readonly List<Node> _vertices = [];
-    private readonly List<Edge> _edges = [];
+    //public Guid OwnerId {get; private set;}
+    //public ApplicationUser Owner {get; private set;}= default!;
+    private  List<Node> _vertices = [];
+    private  List<Edge> _edges = [];
     public DateTime CreatedOn { get; private set; } = DateTime.UtcNow;
     public DateTime LastUpdatedAt { get; private set; }
+    public string Name {get;set;} =default!;
     public IReadOnlyCollection<Node> Nodes => _vertices.AsReadOnly();
     public IReadOnlyCollection<Edge> Edges => _edges.AsReadOnly();
 
     public int Order => _vertices.Count;
     public int Size => _edges.Count;
-    public Graph(){}
+    /*
     public Graph(ApplicationUser user)
     {
         Owner = user ?? throw new ArgumentNullException(nameof(user));
         OwnerId = user.Id;
 
-    }
+    }*/
     public void Touch() => LastUpdatedAt = DateTime.UtcNow;
 
-    public Node AddNode(string name, string? description = null)
+    public Node AddNode(Node node)
     {
-        if (_vertices.Any(n => n.Name == name))
-            throw new DomainException($"Node '{name}' already exists.");
+        if (_vertices.Any(n => n.Equals(node) ))
+            throw new DomainException($"Node already exists in this graph.");
 
-        var node = new Node(name, description!);
         _vertices.Add(node);
 
         return node;
@@ -38,15 +38,15 @@ public class Graph : BaseEntity
     {
         if (!_vertices.Contains(a) || !_vertices.Contains(b))
             throw new DomainException("Both nodes must belong to the same graph.");
-
+        
         if (_edges.Any(e => e.Connects(a, b)))
             throw new DomainException("Edge already exists.");
 
-        var edge = Edge.Create(a, b);
+        var edge = Edge.Create(a, b, Id);
 
         _edges.Add(edge);
-        a.AddEdge(edge);
-        b.AddEdge(edge);
+        a.UpdateLinksCount();
+        b.UpdateLinksCount();
 
         Touch();
     }
@@ -57,7 +57,7 @@ public class Graph : BaseEntity
         if (Order < 2) return false;
         foreach (var node in _vertices)
         {
-            int degree = node.Links;
+            int degree = node.Connections;
             double normalized = Order > 1 ? (double)degree / (Order - 1) : 0;
 
             node.SetCentrality(degree, normalized);

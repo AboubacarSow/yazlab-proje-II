@@ -2,23 +2,36 @@ using sna_domain.Exceptions;
 
 namespace sna_domain.Entities;
 
-public class Node : BaseEntity
+public class Node : BaseEntity, IEquatable<Node>
 {
-    public string Name { get; set; } = default!;
+    public Guid GraphId {get;private set;}
+    public Graph Graph { get; private set; } = default!;
+    public string Tag { get; set; } = default!;
+
+    //Characteristic
     public double Activity { get; set; }
     public int Interaction { get; set; }
-    public string Description { get; set; } = default!;
     public double? NormalizedDegreeCentrality { get; private set; }
     public int DegreeCentrality { get; private set; }
-    private List<Edge> _edges = [];
-    public IReadOnlyCollection<Edge> Edges => _edges.AsReadOnly();
-    internal void AddEdge(Edge edge) => _edges.Add(edge);
-    public int Links => _edges.Count;
-    public Node() { }
-    public Node(string name, string description)
+    public int Connections { get; private set; }
+
+    public Node(Guid graphId) { GraphId = graphId; }
+
+    public Node(string tag, Guid graphId) 
     {
-        Name = name;
-        Description = description;
+        Tag = tag;
+        GraphId = graphId;
+    }
+
+    public void UpdateLinksCount()
+    {
+        Connections++;
+    }
+    public IEnumerable<Node> GetNeighbors(Graph graph)
+    {
+        return graph.Edges
+            .Where(e => e.NodeAId == Id || e.NodeBId == Id)
+            .Select(e => e.NodeAId == Id ? e.NodeB : e.NodeA);
     }
     internal void SetCentrality(int degree, double normalized)
     {
@@ -34,5 +47,21 @@ public class Node : BaseEntity
 
     }
 
+    public bool Equals(Node? other)
+    {
+        if(other is null) return false;
+        if(ReferenceEquals(this, other)) return true;
+        return Id==other.Id;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as Node);
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
 }
 
