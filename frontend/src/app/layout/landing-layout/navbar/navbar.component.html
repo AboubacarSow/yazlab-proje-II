@@ -1,0 +1,28 @@
+<nav class="navbar">
+  <div class="container">
+    <a routerLink="/" class="logo">
+      <span class="logo-icon">📊</span>
+      <span class="logo-text">SNA Platform</span>
+    </a>
+
+    <button class="menu-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <ul class="nav-links" [class.active]="isMenuOpen">
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Anasayfa</a></li>
+      <li><a routerLink="/features" routerLinkActive="active">Özellikler</a></li>
+      <li><a routerLink="/about" routerLinkActive="active">Hakkımızda</a></li>
+      <li><a routerLink="/contact" routerLinkActive="active">İletişim</a></li>
+      @if (isLoggedIn) {
+        <li><a routerLink="/workspace/dashboard" class="btn-workspace">🚀 Workspace</a></li>
+        <li><a (click)="logout()" class="btn-logout">🚪 Çıkış Yap</a></li>
+      } @else {
+        <li><a routerLink="/login" class="btn-login">Giriş Yap</a></li>
+        <li><a routerLink="/register" class="btn-register">Kayıt Ol</a></li>
+      }
+    </ul>
+  </div>
+</nav>

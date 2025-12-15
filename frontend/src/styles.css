@@ -1,1 +1,51 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Light Theme (Default) */
+:root {
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f8fb;
+  --border-color: #e8e9eb;
+  --bg-hover: #f5f7ff;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --text-primary: #e4e6eb;
+  --text-secondary: #b0b3b8;
+  --bg-primary: #242526;
+  --bg-secondary: #18191a;
+  --border-color: #3a3b3c;
+  --bg-hover: #3a3b3c;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+* {
+  color-scheme: light dark;
+}
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Dark theme için dropdown ve diğer öğelerin text renklerini düzelt */
+[data-theme="dark"] .dropdown-menu .dropdown-item {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .dropdown-menu .dropdown-item:hover {
+  background: var(--bg-hover);
+}
+
+/* Dark theme için shadow güncellemeleri */
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .recent-activity,
+[data-theme="dark"] .quick-actions,
+[data-theme="dark"] .settings-card {
+  box-shadow: var(--shadow);
+}
+

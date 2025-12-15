@@ -1,0 +1,35 @@
+<div class="about-page">
+  <section class="hero">
+    <div class="container">
+      <h1>Hakkımızda</h1>
+      <p>Sosyal ağ analizini herkes için kolaylaştırıyoruz</p>
+    </div>
+  </section>
+
+  <section class="story">
+    <div class="container">
+      <h2>Hikayemiz</h2>
+        <p>
+            SNA Platform, 2025-2026 Yazlab II dersi kapsamında Emre Yasin Yıldan ve Aboubacar Sow tarafından geliştirilmiştir. Proje, sosyal ağ analizi alanında yaşanan karmaşıklıkları ortadan kaldırarak, araştırmacılar, öğrenciler ve meraklı kullanıcıların sosyal ağların yapısını anlamasını sağlamayı hedefler.
+        </p>
+        <p>
+            İnsan ilişkilerinin dijital dünyada giderek önem kazandığı bu çağda, sosyal ağların dinamiklerini anlamak önemlidir. Biz, bu analizi erişilebilir, kullanıcı dostu ve görsel olarak anlaşılır kılmak için SNA Platform'u inşa ettik. Karmaşık veri setlerini interaktif grafiklere dönüştürerek, her kullanıcının sosyal ağlar hakkında derinden öğrenmesini mümkün kılıyoruz.
+        </p>
+        <p>
+            Vizyonumuz, sosyal ağ analizini demokratikleştirmek ve bu güçlü aracı herkesin eline ulaştırmaktır. Akademikten uygulamaya, eğitimden araştırmaya kadar geniş bir yelpazede hizmet sağlayan bir platform olmayı amaçlıyoruz.
+        </p>
+    </div>
+  </section>
+
+  <section class="values">
+    <div class="container">
+      <div class="values-grid">
+        <div class="value-card" *ngFor="let value of values">
+          <div class="icon">{{ value.icon }}</div>
+          <h3>{{ value.title }}</h3>
+          <p>{{ value.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
