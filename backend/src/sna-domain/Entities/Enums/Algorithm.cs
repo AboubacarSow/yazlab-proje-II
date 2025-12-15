@@ -1,4 +1,4 @@
-namespace sna_domain.Entities;
+namespace sna_domain.Entities.Enums;
 
 public enum Algorithm
 {

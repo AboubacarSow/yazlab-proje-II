@@ -2,10 +2,19 @@ namespace sna_domain.Exceptions;
 
 public class DomainException : Exception
 {
-    string _message;
-    public DomainException(){ _message = string.Empty;}
-    public DomainException(string errorMessage)
+    public DomainException(string message): base(message){}
+}
+
+public class NotFoundException : Exception
+{
+    public NotFoundException(string ressourceType, string ressourceIdentifier, string reference)
+    : base($"{ressourceType} with Id : {ressourceIdentifier} not found in reference :{reference}")
     {
-        _message = errorMessage;
+        
     }
+}
+
+public class EmptyGraphException : Exception
+{
+    public EmptyGraphException(string ressourceType): base($"Graph with Id: {ressourceType} is almost empty and contains less than two 2"){}
 }
