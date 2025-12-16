@@ -1,0 +1,73 @@
+<div class="settings-page">
+  <div class="container">
+    <div class="settings-header">
+      <h1>⚙️ Ayarlar</h1>
+      <p>Uygulamayı kişiselleştir</p>
+    </div>
+
+    <div class="settings-grid">
+      <div class="settings-card">
+        <div class="card-header">
+          <h2>🎨 Tema Seçimi</h2>
+          <p>Arayüz temasını seç</p>
+        </div>
+
+        <div class="theme-options">
+          <button
+            class="theme-button"
+            [class.active]="currentTheme === 'light'"
+            (click)="setTheme('light')"
+          >
+            <span class="icon">☀️</span>
+            <span class="label">Açık Tema</span>
+            <span class="description">Açık, temiz ve okunaklı</span>
+          </button>
+
+          <button
+            class="theme-button"
+            [class.active]="currentTheme === 'dark'"
+            (click)="setTheme('dark')"
+          >
+            <span class="icon">🌙</span>
+            <span class="label">Koyu Tema</span>
+            <span class="description">Gözleri koruyan, enerji tasarrufu</span>
+          </button>
+        </div>
+
+        <div class="current-theme">
+          <p>Aktif Tema: <strong>{{ currentTheme === 'light' ? 'Açık' : 'Koyu' }}</strong></p>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="card-header">
+          <h2>🔔 Bildirimler</h2>
+          <p>Bildirim tercihlerini yönet</p>
+        </div>
+        <div class="coming-soon">
+          <p>Yakında...</p>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="card-header">
+          <h2>👤 Profil</h2>
+          <p>Profil bilgilerini güncelle</p>
+        </div>
+        <div class="coming-soon">
+          <p>Yakında...</p>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="card-header">
+          <h2>🔐 Gizlilik & Güvenlik</h2>
+          <p>Hesap güvenliğini yönet</p>
+        </div>
+        <div class="coming-soon">
+          <p>Yakında...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

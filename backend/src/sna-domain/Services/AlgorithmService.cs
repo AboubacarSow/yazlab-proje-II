@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using sna_domain.Entities;
 using sna_domain.Exceptions;
 
@@ -82,5 +84,148 @@ public class GraphAlgorithmService
 
         return components;
     }
+
+    // Welsh-Powell graph coloring: assigns a color index to each node.
+    // Color indices are integers; UI tarafında gerçek renge palette ile dönüştürülebilir.
+    public IReadOnlyDictionary<Node, int> WelshPowell(Graph graph)
+    {
+        if (!graph.Nodes.Any())
+            return new Dictionary<Node, int>();
+
+        // Dereceye göre azalan, aynı derece için Id ile deterministik sıra.
+        var ordered = graph.Nodes
+            .OrderByDescending(n => n.Connections)
+            .ThenBy(n => n.Id)
+            .ToList();
+
+        var colorOf = new Dictionary<Node, int>();
+
+        foreach (var node in ordered)
+        {
+            var neighborColors = node.GetNeighbors(graph)
+                                      .Where(colorOf.ContainsKey)
+                                      .Select(n => colorOf[n])
+                                      .ToHashSet();
+
+          /* Graph Color service 27.satır */  var color = 0;
+            while (neighborColors.Contains(color))
+                color++;
+
+            colorOf[node] = color;
+        }
+
+        return colorOf;
+    }
+
+    public IReadOnlyList<Node> Dijkstra(Graph graph, Node start, Node target)
+    {
+        if (!graph.Nodes.Contains(start))
+            throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Name);
+        if (!graph.Nodes.Contains(target))
+            throw new NotFoundException(target.Tag, target.Id.ToString(), graph.Name);
+
+        var distances = graph.Nodes.ToDictionary(node => node, _ => double.PositiveInfinity);
+        var previous = new Dictionary<Node, Node>();
+        var queue = new PriorityQueue<Node, double>();
+
+        distances[start] = 0;
+        queue.Enqueue(start, 0);
+
+        while (queue.Count > 0)
+        {
+            var current = queue.Dequeue();
+            if (current.Equals(target))
+                return ReconstructPath(previous, target);
+
+            foreach (var neighbor in current.GetNeighbors(graph))
+            {
+                var weight = GetEdgeWeight(graph, current, neighbor);
+                var tentative = distances[current] + weight;
+
+                if (tentative < distances[neighbor])
+                {
+                    distances[neighbor] = tentative;
+                    previous[neighbor] = current;
+                    queue.Enqueue(neighbor, tentative);
+                }
+            }
+        }
+
+        throw new DomainException("No path found between the provided nodes.");
+    }
+
+    public IReadOnlyList<Node> AStar(Graph graph, Node start, Node target)
+    {
+        if (!graph.Nodes.Contains(start))
+            throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Name);
+        if (!graph.Nodes.Contains(target))
+            throw new NotFoundException(target.Tag, target.Id.ToString(), graph.Name);
+
+        var gScore = graph.Nodes.ToDictionary(node => node, _ => double.PositiveInfinity);
+        var fScore = graph.Nodes.ToDictionary(node => node, _ => double.PositiveInfinity);
+        var previous = new Dictionary<Node, Node>();
+        var openSet = new PriorityQueue<Node, double>();
+
+        gScore[start] = 0;
+        fScore[start] = Heuristic(start, target);
+        openSet.Enqueue(start, fScore[start]);
+
+        while (openSet.Count > 0)
+        {
+            var current = openSet.Dequeue();
+            if (current.Equals(target))
+                return ReconstructPath(previous, target);
+
+            foreach (var neighbor in current.GetNeighbors(graph))
+            {
+                var weight = GetEdgeWeight(graph, current, neighbor);
+                var tentativeG = gScore[current] + weight;
+
+                if (tentativeG < gScore[neighbor])
+                {
+                    previous[neighbor] = current;
+                    gScore[neighbor] = tentativeG;
+                    fScore[neighbor] = tentativeG + Heuristic(neighbor, target);
+                    openSet.Enqueue(neighbor, fScore[neighbor]);
+                }
+            }
+        }
+
+        throw new DomainException("No path found between the provided nodes.");
+    }
+
+    private static double GetEdgeWeight(Graph graph, Node from, Node to)
+    {
+        var edge = graph.Edges.FirstOrDefault(e => e.Connects(from, to));
+        if (edge is null)
+            throw new DomainException("Edge not found between the provided nodes.");
+
+        return edge.Weight;
+    }
+
+    private static IReadOnlyList<Node> ReconstructPath(Dictionary<Node, Node> previous, Node current)
+    {
+        var path = new List<Node>
+        {
+            current
+        };
+
+        while (previous.TryGetValue(current, out var prev))
+        {
+            current = prev;
+            path.Add(current);
+        }
+
+        path.Reverse();
+        return path;
+    }
+
+    private static double Heuristic(Node from, Node to)
+    {
+        // Admissible heuristic is zero; safe when no positional data exists.
+        return 0;
+    }
+
+    
 
 }

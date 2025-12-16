@@ -1,0 +1,54 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p>Sosyal Ağ Analizi - Genel Bakış</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card" *ngFor="let stat of stats" [style.border-left-color]="stat.color">
+      <div class="stat-icon">{{ stat.icon }}</div>
+      <div class="stat-content">
+        <h3>{{ stat.value }}</h3>
+        <p>{{ stat.title }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="recent-activity">
+      <h2>Son Aktiviteler</h2>
+      <div class="activity-list">
+        <div class="activity-item" *ngFor="let activity of recentActivities">
+          <div class="activity-dot"></div>
+          <div class="activity-content">
+            <p class="activity-action">{{ activity.action }}</p>
+            <p class="activity-node">{{ activity.node }}</p>
+          </div>
+          <span class="activity-time">{{ activity.time }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <h2>Hızlı Erişim</h2>
+      <div class="actions-list">
+        <button class="action-btn">
+          <span class="action-icon">➕</span>
+          <span>Yeni Düğüm Ekle</span>
+        </button>
+        <button class="action-btn">
+          <span class="action-icon">🔗</span>
+          <span>Kenar Oluştur</span>
+        </button>
+        <button class="action-btn">
+          <span class="action-icon">▶️</span>
+          <span>Algoritma Çalıştır</span>
+        </button>
+        <button class="action-btn">
+          <span class="action-icon">💾</span>
+          <span>Grafiği Kaydet</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
