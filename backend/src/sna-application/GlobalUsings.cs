@@ -1,0 +1,10 @@
+global using MediatR;
+global using FluentValidation;
+global using sna_application.Common;
+global using sna_application.Messages.Dtos;
+global using sna_domain.Repositories;
+global using Mapster;
+global using Carter;
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Routing;

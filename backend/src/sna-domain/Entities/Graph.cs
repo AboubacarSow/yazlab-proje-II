@@ -25,6 +25,8 @@ public class Graph : BaseEntity
     }*/
     public void Touch() => LastUpdatedAt = DateTime.UtcNow;
 
+    #region Nodes operations
+    // Add one or more than one node
     public Node AddNode(Node node)
     {
         if (_vertices.Any(n => n.Equals(node) ))
@@ -34,6 +36,34 @@ public class Graph : BaseEntity
 
         return node;
     }
+
+    public void AddNodes(IEnumerable<Node> nodes)
+    {
+        foreach(var node in nodes)
+        {
+            AddNode(node);
+        }
+    }
+
+    // Deleting a node 
+    public bool DeleteOneNode( Node node)
+    {
+        if (_vertices.Contains(node))
+        {
+            _vertices.Remove(node);
+            Edge edge = _edges.FirstOrDefault(e => e.NodeAId == node.Id ||  e.NodeBId == node.Id)!;
+           if(edge is not null){
+                _edges.Remove(edge);
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+
+
+    #endregion
     public void AddEdge(Node a, Node b)
     {
         if (!_vertices.Contains(a) || !_vertices.Contains(b))
@@ -50,6 +80,15 @@ public class Graph : BaseEntity
 
         Touch();
     }
+
+    public void AddEdges(IEnumerable<(Node a, Node b)> couples)
+    {
+        foreach(var (n1 , n2) in couples)
+        {
+            AddEdge(n1, n2);
+        }
+    }
+
 
 
     public bool ComputeDegreeCentrality()
