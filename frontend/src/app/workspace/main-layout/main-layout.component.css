@@ -1,0 +1,35 @@
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-secondary, #e6eaef);
+  padding-top: 60px; /* Offset for the fixed header */
+  transition: background-color 0.3s ease;
+}
+
+.content-row {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  padding: 16px;
+  gap: 16px;
+}
+
+.main-content {
+  flex: 1;
+  overflow: auto;
+  background: var(--bg-secondary, #ecf0f1);
+  border-radius: 18px;
+  box-shadow: var(--shadow, 0 4px 16px rgba(0, 0, 0, 0.06));
+  min-height: 0;
+  border: 1px solid var(--border-color, transparent);
+}
+
+@media (max-width: 768px) {
+  .content-row {
+    flex-direction: column;
+    padding: 12px;
+    gap: 12px;
+  }
+}
