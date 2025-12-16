@@ -1,3 +1,6 @@
+using Carter;
+using Scalar.AspNetCore;
+using sna_application.Extensions;
 using sna_infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 
 var app = builder.Build();
 
@@ -15,9 +19,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
+app.MapCarter();
 app.UseHttpsRedirection();
+
 
 app.UseAuthorization();
 

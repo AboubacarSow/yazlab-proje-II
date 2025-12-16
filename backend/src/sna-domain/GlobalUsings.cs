@@ -1,0 +1,1 @@
+global using sna_domain.Entities;
