@@ -5,14 +5,7 @@ public class DomainException : Exception
     public DomainException(string message): base(message){}
 }
 
-public class NotFoundException : Exception
-{
-    public NotFoundException(string ressourceType, string ressourceIdentifier, string reference)
-    : base($"{ressourceType} with Id : {ressourceIdentifier} not found in reference :{reference}")
-    {
-        
-    }
-}
+
 
 public class EmptyGraphException : Exception
 {

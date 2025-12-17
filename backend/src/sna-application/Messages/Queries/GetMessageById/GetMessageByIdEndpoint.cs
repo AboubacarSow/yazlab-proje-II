@@ -10,8 +10,7 @@ public class GetMessageByIdEndpoint : ICarterModule
         app.MapGet("api/messages/{id:guid}", async ( Guid id, ISender sender) =>
         {
             var result = await sender.Send(new GetMessageByIdQuery(id));
-            if (result.IsFailure) return Results.NotFound();
-            return Results.Ok(new GetMessageByIdResponse(result.Value));
+            return Results.Ok(new GetMessageByIdResponse(result));
         }).WithTags("Messages")
         .WithName("GetMessageById")
         .Produces<GetMessageByIdResponse>()
