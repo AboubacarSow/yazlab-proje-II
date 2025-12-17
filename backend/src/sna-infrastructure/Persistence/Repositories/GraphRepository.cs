@@ -13,5 +13,14 @@ internal class GraphRepository(GraphVDbContext context)
         => _context.Update(graph);
 
     public async Task<Graph?> GetOneGraphById(Guid graphId, bool trackChChanges)
-        => await GetOneByIdAsync(g=>g.Id == graphId,trackChChanges)!;
+    {
+        IQueryable<Graph> query = _context.Graphs;
+
+        if(!trackChChanges) query = query.AsNoTracking();
+        var graph = await query.Include(g=>g.Nodes)
+                    .Include(g=>g.Edges)
+                    .FirstOrDefaultAsync(g=>g.Id==graphId); 
+            
+        return graph;
+    }
 }

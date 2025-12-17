@@ -10,7 +10,7 @@ public class Graph : BaseEntity
     private  List<Edge> _edges = [];
     public DateTime CreatedOn { get; private set; } = DateTime.UtcNow;
     public DateTime LastUpdatedAt { get; private set; }
-    public string Name {get;set;} =default!;
+    public string Tag {get;set;} =default!;
     public IReadOnlyCollection<Node> Nodes => _vertices.AsReadOnly();
     public IReadOnlyCollection<Edge> Edges => _edges.AsReadOnly();
 
@@ -64,7 +64,7 @@ public class Graph : BaseEntity
 
 
     #endregion
-    public void AddEdge(Node a, Node b)
+    public void ConnectNodes(Node a, Node b)
     {
         if (!_vertices.Contains(a) || !_vertices.Contains(b))
             throw new DomainException("Both nodes must belong to the same graph.");
@@ -81,16 +81,19 @@ public class Graph : BaseEntity
         Touch();
     }
 
-    public void AddEdges(IEnumerable<(Node a, Node b)> couples)
+    public void DisConnectNodes(Node a , Node b)
     {
-        foreach(var (n1 , n2) in couples)
-        {
-            AddEdge(n1, n2);
-        }
+        var edge = _edges.FirstOrDefault(e=>
+        (e.NodeA.Equals(a) && e.NodeB.Equals(b))|| 
+        (e.NodeA.Equals(b) && e.NodeB.Equals(a))
+        ) ?? throw new NotFoundException($"Edge between {a.Tag} and {b.Tag}");
+
+        _edges.Remove(edge);
     }
-
-
-
+    public bool ContainsNode(Node node)
+    {
+        return _vertices.Contains(node);
+    }
     public bool ComputeDegreeCentrality()
     {
         if (Order < 2) return false;

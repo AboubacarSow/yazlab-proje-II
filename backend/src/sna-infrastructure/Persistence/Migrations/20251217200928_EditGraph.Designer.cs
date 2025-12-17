@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using sna_infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using sna_infrastructure.Persistence;
 namespace sna_infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(GraphVDbContext))]
-    partial class GraphVDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251217200928_EditGraph")]
+    partial class EditGraph
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,7 +160,7 @@ namespace sna_infrastructure.Persistence.Migrations
 
                     b.HasIndex("GraphId");
 
-                    b.ToTable("Node");
+                    b.ToTable("Vertices");
                 });
 
             modelBuilder.Entity("sna_domain.Entities.Edge", b =>
