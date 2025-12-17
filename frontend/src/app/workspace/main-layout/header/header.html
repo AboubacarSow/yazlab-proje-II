@@ -1,0 +1,33 @@
+<header class="header">
+  <div class="header-content">
+    <div class="logo-section">
+      <div class="logo">
+        <h2>📊 SNA Uygulaması</h2>
+      </div>
+    </div>
+    <div class="profile-section">
+      <div class="profile-dropdown" (click)="toggleDropdown()">
+        <span class="profile-icon">👤</span>
+        <span class="profile-name">{{ isLoggedIn && currentUser ? currentUser.name : 'Menü' }}</span>
+        <span class="dropdown-arrow">▼</span>
+      </div>
+      @if (isDropdownOpen) {
+        <div class="dropdown-menu">
+          @if (isLoggedIn && currentUser) {
+            <div class="dropdown-header">
+              <p class="user-name">{{ currentUser.name }}</p>
+              <p class="user-email">{{ currentUser.email }}</p>
+            </div>
+            <a routerLink="/" class="dropdown-item">🏠 Ana Sayfaya Dön</a>
+            <a routerLink="/workspace/settings" class="dropdown-item">⚙️ Ayarlar</a>
+            <div class="dropdown-divider"></div>
+            <a (click)="logout()" class="dropdown-item logout-item">🚪 Çıkış Yap</a>
+          } @else {
+            <a routerLink="/login" class="dropdown-item">🔑 Giriş Yap</a>
+            <a routerLink="/register" class="dropdown-item">📝 Kaydol</a>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</header>
