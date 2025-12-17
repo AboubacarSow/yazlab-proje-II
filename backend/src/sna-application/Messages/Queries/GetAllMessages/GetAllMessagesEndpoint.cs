@@ -8,8 +8,7 @@ public class GetAllMessagesEndpoint : ICarterModule
         app.MapGet("api/messages", async(ISender sender) =>
         {
             var result = await sender.Send(new GetMessagesQuery());
-            var response= new GetAllMessagesResponse(result.Value!);
-            return Results.Ok(response);
+            return Results.Ok(new GetAllMessagesResponse(result));
         }).WithName("GetMessages")
         .WithTags("Messages")
         .WithDescription("Retrieves all messages")
