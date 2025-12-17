@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using sna_domain.Entities;
 using sna_domain.Exceptions;
 
 namespace sna_domain.Services;
@@ -9,8 +6,8 @@ public class GraphAlgorithmService
 {
     public  IReadOnlyList<Node> BFS(Graph graph, Node start, HashSet<Node> visited)
     {
-        if (!graph.Nodes.Contains(start))
-            throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Name);
+        if (!graph.ContainsNode(start))
+            throw new NotFoundException($"Node {start.Tag}", start.Id.ToString(), graph.Tag);
 
         visited ??= [];
         var queue = new Queue<Node>();
@@ -38,8 +35,8 @@ public class GraphAlgorithmService
     //Making DFS symetric to BFS 
     public IReadOnlyList<Node> DFS(Graph graph, Node start,HashSet<Node> visited)
     {
-        if (!graph.Nodes.Contains(start))
-            throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Name);
+        if (!graph.ContainsNode(start))
+            throw new NotFoundException($"Node {start.Tag}", start.Id.ToString(), graph.Tag);
         visited ??= [];
         var result = new List<Node>();
         Visit(graph,start, visited, result);
