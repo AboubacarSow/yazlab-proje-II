@@ -1,0 +1,87 @@
+<div class="visualisation">
+  <div class="visualisation-header">
+    <h1>Graf Görselleştirme</h1>
+    <p>Grafınızı görselleştirin ve algoritmaları çalıştırın</p>
+  </div>
+
+  <div class="visualisation-layout">
+    <div class="control-panel">
+      <div class="panel-section">
+        <h3>Algoritma Seçimi</h3>
+        <select [(ngModel)]="selectedAlgorithm" class="algorithm-select">
+          <option *ngFor="let algo of algorithms" [value]="algo.value">
+            {{ algo.label }}
+          </option>
+        </select>
+        <button class="btn btn-primary" (click)="runAlgorithm()">
+          ▶️ Çalıştır
+        </button>
+      </div>
+
+      <div class="panel-section">
+        <h3>Araçlar</h3>
+        <div class="tools-grid">
+          <button class="tool-btn">
+            <span class="tool-icon">➕</span>
+            <span>Düğüm Ekle</span>
+          </button>
+          <button class="tool-btn">
+            <span class="tool-icon">🔗</span>
+            <span>Kenar Ekle</span>
+          </button>
+          <button class="tool-btn">
+            <span class="tool-icon">✏️</span>
+            <span>Düzenle</span>
+          </button>
+          <button class="tool-btn">
+            <span class="tool-icon">🗑️</span>
+            <span>Sil</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3>İşlemler</h3>
+        <button class="btn btn-secondary" (click)="clearGraph()">
+          🧹 Temizle
+        </button>
+        <button class="btn btn-secondary" (click)="exportGraph()">
+            <span class="text"><i class="fa-solid fa-file-export"></i></span>
+            Dışa Aktar
+        </button>
+        <button class="btn btn-secondary" (click)="importGraph()">
+          <span><i class="fa-solid fa-file-import"></i></span>İçe Aktar
+        </button>
+      </div>
+
+      <div class="panel-section">
+        <h3>Bilgiler</h3>
+        <div class="info-list">
+          <div class="info-item">
+            <span class="info-label">Düğüm Sayısı:</span>
+            <span class="info-value">0</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Kenar Sayısı:</span>
+            <span class="info-value">0</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Seçili:</span>
+            <span class="info-value">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="canvas-area">
+      <div class="canvas-placeholder">
+        <div class="placeholder-content">
+          <span class="placeholder-icon">🕸️</span>
+          <h3>Graf Canvas</h3>
+          <p>Grafınız burada görselleştirilecek</p>
+          <p class="placeholder-hint">Düğüm eklemek için sol paneli kullanın</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

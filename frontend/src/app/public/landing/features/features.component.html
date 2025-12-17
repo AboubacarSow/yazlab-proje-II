@@ -1,0 +1,23 @@
+<div class="features-page">
+  <section class="hero">
+    <div class="container">
+      <h1>Özellikler</h1>
+      <p>Güçlü araçlarla sosyal ağ analizini keşfedin</p>
+    </div>
+  </section>
+
+  <section class="features-content">
+    <div class="container">
+      <div class="features-grid">
+        <div class="feature-card" *ngFor="let feature of features">
+          <div class="icon">{{ feature.icon }}</div>
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.desc }}</p>
+          <ul>
+            <li *ngFor="let item of feature.items">✓ {{ item }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

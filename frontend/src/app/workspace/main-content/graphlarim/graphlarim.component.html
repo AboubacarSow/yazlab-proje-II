@@ -1,0 +1,63 @@
+<div class="graphlarim-page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Kayitli ve ice aktarılan graph koleksiyonu</p>
+      <h2>Graphlarim</h2>
+    </div>
+    <div class="header-actions">
+      <button class="btn ghost">Filtrele</button>
+      <button class="btn primary">Yeni graph yukle</button>
+    </div>
+  </div>
+
+  <div class="info-banner">
+    <div class="info-text">
+      <span class="dot created"></span>
+      <span>Olusturdugunuz graphlar</span>
+    </div>
+    <div class="info-text">
+      <span class="dot import"></span>
+      <span>Iceri aktardiginiz graphlar</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card" *ngFor="let graph of graphs">
+      <div class="card-header">
+        <div class="title-group">
+          <span class="pill" [class.created]="graph.source === 'created'" [class.import]="graph.source === 'import'">
+            {{ graph.source === 'created' ? 'Olusturuldu' : 'Iceri aktarıldı' }}
+          </span>
+          <h3>{{ graph.title }}</h3>
+          <p class="muted">{{ graph.description }}</p>
+        </div>
+        <div class="meta">{{ graph.updatedAt }}</div>
+      </div>
+
+      <div class="card-body">
+        <div class="stat">
+          <span class="label">Dugum</span>
+          <span class="value">{{ graph.nodes }}</span>
+        </div>
+        <div class="stat">
+          <span class="label">Kenar</span>
+          <span class="value">{{ graph.edges }}</span>
+        </div>
+        <div class="stat">
+          <span class="label">Sahip</span>
+          <span class="value">{{ graph.owner }}</span>
+        </div>
+      </div>
+
+      <div class="tags">
+        <span class="tag" *ngFor="let tag of graph.tags">{{ tag }}</span>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn ghost">Goruntule</button>
+        <button class="btn">Analize ac</button>
+        <button class="btn danger ghost">Sil</button>
+      </div>
+    </div>
+  </div>
+</div>
