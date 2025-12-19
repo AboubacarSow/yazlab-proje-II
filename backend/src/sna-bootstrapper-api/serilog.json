@@ -1,13 +1,12 @@
 {
     "Serilog": {
-    "Using": [
-      "Serilog.Sinks.ApplicationInsights"
-    ],
+    "Using": ["Serilog.Sinks.Console", "Serilog.Sinks.File","Serilog.Sinks.Seq"],
     "MinimumLevel": {
       "Default": "Information",
       "Override": {
         "Microsoft": "Warning",
-        "Microsoft.EntityFrameworCore": "Information"
+        "Microsoft.EntityFrameworCore": "Information",
+        "Microsoft.Hosting.Lifetime": "Information"
       }
     },
     "WriteTo": [
