@@ -5,7 +5,7 @@ public class DeleteMessageEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapDelete("api/messages/{id:guid}", async (Guid id, ISender send) =>
+        app.MapDelete("api/messages/{id:int}", async (int id, ISender send) =>
         {
             var result = await send.Send(new DeleteMessageCommand(id));
 

@@ -12,6 +12,6 @@ internal class ContactInfoRepository(GraphVDbContext context)
     public async Task<IEnumerable<ContactInfo>> GetAllContactInfosAsync(bool trackChChanges)
         => await GetAllAsync(trackChChanges);
 
-    public async Task<ContactInfo?> GetOneContactInfoAsync(Guid Id, bool trackChChanges)
+    public async Task<ContactInfo?> GetOneContactInfoAsync(int Id, bool trackChChanges)
         => await GetOneByIdAsync(c=>c.Id==Id,trackChChanges)!;
 }

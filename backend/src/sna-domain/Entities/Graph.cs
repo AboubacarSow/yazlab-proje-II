@@ -9,7 +9,7 @@ public class Graph : BaseEntity
     private  List<Node> _vertices = [];
     private  List<Edge> _edges = [];
     public DateTime CreatedOn { get; private set; } = DateTime.UtcNow;
-    public DateTime LastUpdatedAt { get; private set; }
+    public DateTime LastUpdatedAt { get; private set; }=default!;
     public string Tag {get;set;} =default!;
     public IReadOnlyCollection<Node> Nodes => _vertices.AsReadOnly();
     public IReadOnlyCollection<Edge> Edges => _edges.AsReadOnly();
@@ -23,9 +23,22 @@ public class Graph : BaseEntity
         OwnerId = user.Id;
 
     }*/
+    private Graph(){}
+    private Graph(string tag)
+    {
+        Tag= tag;
+    }
+    public static Graph Create(string tag)=> new(tag);
     public void Touch() => LastUpdatedAt = DateTime.UtcNow;
 
     #region Nodes operations
+    public static Node CreateNode(int graphId,string tag,double activity,int interaction)
+    {
+        return Node.Create(graphId,tag,activity,interaction);
+    }
+    public Node? GetNodeFromGraph(int nodeId) 
+            => _vertices.FirstOrDefault(n=>n.Id==nodeId);
+    
     // Add one or more than one node
     public Node AddNode(Node node)
     {
@@ -50,8 +63,9 @@ public class Graph : BaseEntity
     {
         if (_vertices.Contains(node))
         {
+            var nodeId= node.Id;
             _vertices.Remove(node);
-            Edge edge = _edges.FirstOrDefault(e => e.NodeAId == node.Id ||  e.NodeBId == node.Id)!;
+            Edge edge = _edges.FirstOrDefault(e => e.NodeAId == nodeId ||  e.NodeBId == nodeId)!;
            if(edge is not null){
                 _edges.Remove(edge);
             }
@@ -72,7 +86,7 @@ public class Graph : BaseEntity
         if (_edges.Any(e => e.Connects(a, b)))
             throw new DomainException("Edge already exists.");
 
-        var edge = Edge.Create(a, b, Id);
+        var edge = Edge.Create(Id,a, b);
 
         _edges.Add(edge);
         a.UpdateLinksCount();
@@ -81,15 +95,17 @@ public class Graph : BaseEntity
         Touch();
     }
 
-    public void DisConnectNodes(Node a , Node b)
+    public Edge GetEdgeFromGraph(int nodeAId, int nodeBId)
     {
-        var edge = _edges.FirstOrDefault(e=>
-        (e.NodeA.Equals(a) && e.NodeB.Equals(b))|| 
-        (e.NodeA.Equals(b) && e.NodeB.Equals(a))
-        ) ?? throw new NotFoundException($"Edge between {a.Tag} and {b.Tag}");
-
-        _edges.Remove(edge);
+        if (!_vertices.Any(n=>n.Id==nodeAId) || !_vertices.Any(n=>n.Id==nodeBId))
+            throw new DomainException("Both nodes must belong to the same graph.");
+        
+        return _edges.FirstOrDefault(e=>(e.NodeAId==nodeAId && e.NodeBId==nodeBId)
+        || (e.NodeAId==nodeBId && e.NodeBId==nodeAId))!;
     }
+
+    public void DisConnectNodes(Edge edge) => _edges.Remove(edge);
+   
     public bool ContainsNode(Node node)
     {
         return _vertices.Contains(node);
@@ -106,5 +122,7 @@ public class Graph : BaseEntity
         }
         return true;
     }
+
+   
 }
 

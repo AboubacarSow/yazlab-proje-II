@@ -8,6 +8,6 @@ internal class MessageRepository(GraphVDbContext context)
     public void DeleteMessage(Message message) => Delete(message);
     public async Task<IEnumerable<Message>> GetAllMessagesAsync(bool trackChChanges)
             => await GetAllAsync(trackChChanges);
-    public async Task<Message?> GetOneMessageAsync(Guid Id, bool trackChChanges)
+    public async Task<Message?> GetOneMessageAsync(int Id, bool trackChChanges)
         =>  await GetOneByIdAsync(m=>m.Id==Id,trackChChanges);
 }

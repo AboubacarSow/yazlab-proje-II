@@ -7,7 +7,7 @@ public class GetMessageByIdEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/messages/{id:guid}", async ( Guid id, ISender sender) =>
+        app.MapGet("api/messages/{id:int}", async ( int id, ISender sender) =>
         {
             var result = await sender.Send(new GetMessageByIdQuery(id));
             return Results.Ok(new GetMessageByIdResponse(result));

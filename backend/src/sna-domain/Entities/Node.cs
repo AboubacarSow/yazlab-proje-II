@@ -4,7 +4,8 @@ namespace sna_domain.Entities;
 
 public class Node : BaseEntity, IEquatable<Node>
 {
-    public Guid GraphId {get;private set;}
+    
+    public int GraphId {get;private set;}
     public Graph Graph { get; private set; } = default!;
     public string Tag { get; set; } = default!;
 
@@ -15,19 +16,32 @@ public class Node : BaseEntity, IEquatable<Node>
     public int DegreeCentrality { get; private set; }
     public int Connections { get; private set; }
 
-    public Node(Guid graphId) { GraphId = graphId; }
+    private Node(int graphId) { GraphId = graphId; }
 
-    public Node(string tag, Guid graphId) 
+    private Node(int graphId,string tag) 
     {
         Tag = tag;
         GraphId = graphId;
     }
+    private Node(int graphId,string tag, double activity, int interaction)
+    {
+        GraphId= graphId;
+        Tag= tag;
+        Activity = activity;
+        Interaction = interaction;
+    }
+    
+    internal static Node Create(int graphId,string tag,double activity,int interaction)
+    =>new(graphId,tag,activity,interaction);
+
+    internal static Node Create(int graphId) => new(graphId);
+    internal static Node Create(int graphId, string tag)=>new(graphId,tag);
 
     public void UpdateLinksCount()
     {
         Connections++;
     }
-    public IEnumerable<Node> GetNeighbors(Graph graph)
+    internal IEnumerable<Node> GetNeighbors(Graph graph)
     {
         return graph.Edges
             .Where(e => e.NodeAId == Id || e.NodeBId == Id)

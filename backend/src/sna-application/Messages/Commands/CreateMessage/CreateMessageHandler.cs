@@ -7,7 +7,7 @@ public record CreateMessageCommand(
     string Email,
     string Phone,
     string Content
-): IRequest<Guid>;
+): IRequest<int>;
 
 public class CreateMessageValidator : AbstractValidator<CreateMessageCommand>
 {
@@ -34,9 +34,9 @@ public class CreateMessageValidator : AbstractValidator<CreateMessageCommand>
 }
 
 public class CreateMessageHandler(IMessageRepository _repos, IUnitOfWork _unitOfWork)
-: IRequestHandler<CreateMessageCommand, Guid>
+: IRequestHandler<CreateMessageCommand, int>
 {
-    public async Task<Guid> Handle(CreateMessageCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateMessageCommand request, CancellationToken cancellationToken)
     {
         var message = new Message
         {
