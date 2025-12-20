@@ -12,7 +12,7 @@
   display: flex;
   flex: 1;
   min-height: 0;
-  padding: 16px;
+  padding: 0px;
   gap: 16px;
 }
 
@@ -23,7 +23,6 @@
   border-radius: 18px;
   box-shadow: var(--shadow, 0 4px 16px rgba(0, 0, 0, 0.06));
   min-height: 0;
-  border: 1px solid var(--border-color, transparent);
 }
 
 @media (max-width: 768px) {

@@ -2,13 +2,10 @@
   width: 250px;
   background: var(--bg-primary, #3d0b69);
   color: var(--text-primary, white);
-  border-radius: 12px;
-  position: sticky;
-  top: 16px;
   height: calc(100vh - 60px - 32px);
   overflow: auto;
   box-shadow: var(--shadow, 0 6px 18px rgba(0, 0, 0, 0.15));
-  border: 1px solid var(--border-color, transparent);
+  border-right:1px solid var(--border-color, transparent);
 }
 
 /* Light theme için mor renk */

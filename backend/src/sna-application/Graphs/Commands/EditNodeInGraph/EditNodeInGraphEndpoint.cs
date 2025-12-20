@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace sna_application.Graphs.Commands.EditNodeInGraph;
@@ -10,7 +11,7 @@ public class EditNodeInGraphEndpoint : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapPut("api/graphs/{graphId:int}/nodes/{id}", 
-        async(int graphId,int id, EditNodeInGraphRequest request, ISender sender) =>
+        async([FromRoute] int graphId,[FromRoute] int id, EditNodeInGraphRequest request, ISender sender) =>
         {
             if(graphId!= request.Vertex.GraphId) return Results.BadRequest("GraphIds mismatch");
             if(id!= request.Vertex.GraphId) return Results.BadRequest("NodeIds mismatch");

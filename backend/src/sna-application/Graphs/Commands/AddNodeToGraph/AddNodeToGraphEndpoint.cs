@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace sna_application.Graphs.Commands.AddNodeToGraph;
 
 
@@ -8,7 +10,7 @@ public class AddNodeToGraphEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/graphs/{id:int}/nodes", async (int id, AddNodeToGraphRequest request, ISender sender) =>
+        app.MapPost("api/graphs/{id:int}/nodes", async ([FromRoute]int id, [FromBody]AddNodeToGraphRequest request, ISender sender) =>
         {
             if(id!=request.Node.GraphId) return Results.BadRequest("Ids mismatch");
             var result = await sender.Send(request.Node);

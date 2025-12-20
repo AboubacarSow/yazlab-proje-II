@@ -3,13 +3,12 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  
+
 }
 
 .visualisation-header {
   margin-bottom: 20px;
-  border-radius: 12px;
-  margin: 16px;
+  margin: 0px;
 }
 
 .visualisation-header h1 {

@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace sna_application.Graphs.Commands.AddEdgeToGraph;
 
 public record AddEdgeToGraphRequest(AddEdgeToGraphCommand Edge);
@@ -6,7 +8,7 @@ public class AddEdgeToGraphEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/graphs/{id:int}/edges", async(int id,AddEdgeToGraphRequest request, ISender sender) =>
+        app.MapPost("api/graphs/{id:int}/edges", async([FromRoute]int id,[FromBody]AddEdgeToGraphRequest request, ISender sender) =>
         {
             if(id!= request.Edge.GraphId) return Results.BadRequest("Mismatch Ids");
             var result= await sender.Send(request.Edge);

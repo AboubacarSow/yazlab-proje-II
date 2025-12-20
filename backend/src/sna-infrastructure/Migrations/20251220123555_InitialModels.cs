@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace sna_infrastructure.Persistence.Migrations
+namespace sna_infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialEntity : Migration
+    public partial class InitialModels : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,8 @@ namespace sna_infrastructure.Persistence.Migrations
                 name: "ContactInfos",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FullAddress = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -29,10 +30,11 @@ namespace sna_infrastructure.Persistence.Migrations
                 name: "Graphs",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Tag = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -43,10 +45,12 @@ namespace sna_infrastructure.Persistence.Migrations
                 name: "Messages",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsRead = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -56,11 +60,12 @@ namespace sna_infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Vertices",
+                name: "Node",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    GraphId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GraphId = table.Column<int>(type: "int", nullable: false),
                     Tag = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Activity = table.Column<double>(type: "float", nullable: false),
                     Interaction = table.Column<int>(type: "int", nullable: false),
@@ -70,9 +75,9 @@ namespace sna_infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Vertices", x => x.Id);
+                    table.PrimaryKey("PK_Node", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Vertices_Graphs_GraphId",
+                        name: "FK_Node_Graphs_GraphId",
                         column: x => x.GraphId,
                         principalTable: "Graphs",
                         principalColumn: "Id",
@@ -83,9 +88,9 @@ namespace sna_infrastructure.Persistence.Migrations
                 name: "Edges",
                 columns: table => new
                 {
-                    GraphId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NodeAId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NodeBId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GraphId = table.Column<int>(type: "int", nullable: false),
+                    NodeAId = table.Column<int>(type: "int", nullable: false),
+                    NodeBId = table.Column<int>(type: "int", nullable: false),
                     Weight = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
@@ -99,18 +104,24 @@ namespace sna_infrastructure.Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Edges_Vertices_NodeAId",
+                        name: "FK_Edges_Node_NodeAId",
                         column: x => x.NodeAId,
-                        principalTable: "Vertices",
+                        principalTable: "Node",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Edges_Vertices_NodeBId",
+                        name: "FK_Edges_Node_NodeBId",
                         column: x => x.NodeBId,
-                        principalTable: "Vertices",
+                        principalTable: "Node",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Edges_GraphId_NodeAId_NodeBId",
+                table: "Edges",
+                columns: new[] { "GraphId", "NodeAId", "NodeBId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Edges_NodeAId",
@@ -123,8 +134,8 @@ namespace sna_infrastructure.Persistence.Migrations
                 column: "NodeBId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vertices_GraphId",
-                table: "Vertices",
+                name: "IX_Node_GraphId",
+                table: "Node",
                 column: "GraphId");
         }
 
@@ -141,7 +152,7 @@ namespace sna_infrastructure.Persistence.Migrations
                 name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "Vertices");
+                name: "Node");
 
             migrationBuilder.DropTable(
                 name: "Graphs");

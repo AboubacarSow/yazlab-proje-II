@@ -117,9 +117,9 @@ public class GraphAlgorithmService
     public IReadOnlyList<Node> Dijkstra(Graph graph, Node start, Node target)
     {
         if (!graph.Nodes.Contains(start))
-            throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Name);
+            throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Tag);
         if (!graph.Nodes.Contains(target))
-            throw new NotFoundException(target.Tag, target.Id.ToString(), graph.Name);
+            throw new NotFoundException(target.Tag, target.Id.ToString(), graph.Tag);
 
         var distances = graph.Nodes.ToDictionary(node => node, _ => double.PositiveInfinity);
         var previous = new Dictionary<Node, Node>();
@@ -154,9 +154,9 @@ public class GraphAlgorithmService
     public IReadOnlyList<Node> AStar(Graph graph, Node start, Node target)
     {
         if (!graph.Nodes.Contains(start))
-            throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Name);
+            throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Tag);
         if (!graph.Nodes.Contains(target))
-            throw new NotFoundException(target.Tag, target.Id.ToString(), graph.Name);
+            throw new NotFoundException(target.Tag, target.Id.ToString(), graph.Tag);
 
         var gScore = graph.Nodes.ToDictionary(node => node, _ => double.PositiveInfinity);
         var fScore = graph.Nodes.ToDictionary(node => node, _ => double.PositiveInfinity);

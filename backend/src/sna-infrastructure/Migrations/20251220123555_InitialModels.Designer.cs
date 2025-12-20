@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using sna_infrastructure.Persistence;
 
 #nullable disable
 
-namespace sna_infrastructure.Persistence.Migrations
+namespace sna_infrastructure.Migrations
 {
     [DbContext(typeof(GraphVDbContext))]
-    partial class GraphVDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251220123555_InitialModels")]
+    partial class InitialModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,9 +27,11 @@ namespace sna_infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("sna_domain.Entities.ContactInfo", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -47,14 +52,14 @@ namespace sna_infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("sna_domain.Entities.Edge", b =>
                 {
-                    b.Property<Guid>("GraphId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("GraphId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("NodeAId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("NodeAId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("NodeBId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("NodeBId")
+                        .HasColumnType("int");
 
                     b.Property<double>("Weight")
                         .HasColumnType("float");
@@ -76,9 +81,11 @@ namespace sna_infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("sna_domain.Entities.Graph", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -97,9 +104,11 @@ namespace sna_infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("sna_domain.Entities.Message", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -120,6 +129,10 @@ namespace sna_infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Messages");
@@ -127,9 +140,11 @@ namespace sna_infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("sna_domain.Entities.Node", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<double>("Activity")
                         .HasColumnType("float");
@@ -140,8 +155,8 @@ namespace sna_infrastructure.Persistence.Migrations
                     b.Property<int>("DegreeCentrality")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("GraphId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("GraphId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Interaction")
                         .HasColumnType("int");
