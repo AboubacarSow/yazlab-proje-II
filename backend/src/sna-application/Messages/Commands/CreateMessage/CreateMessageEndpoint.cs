@@ -4,7 +4,6 @@ namespace sna_application.Messages.Commands.CreateMessage;
 
 
 public record CreateMessageRequest(CreateMessageCommand Message);
-public record CreateMessageResponse(string? Guid, string Message);
 public class CreateMessageEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
@@ -14,7 +13,6 @@ public class CreateMessageEndpoint : ICarterModule
             var result = await sender.Send(request.Message);
             return Results.Created($"messages/{result}", request);
         }).WithTags("Messages")
-        .WithName("CreateMessage")
-        .Produces<CreateMessageResponse>();
+        .WithName("CreateMessage");
     }
 }

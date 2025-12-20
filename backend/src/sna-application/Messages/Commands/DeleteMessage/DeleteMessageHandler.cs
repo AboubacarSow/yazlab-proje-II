@@ -1,11 +1,9 @@
 
-using sna_domain.Exceptions;
-
 namespace sna_application.Messages.Commands.DeleteMessage;
 
 
 
-public record DeleteMessageCommand(Guid Id): IRequest<bool>;
+public record DeleteMessageCommand(int Id): IRequest<bool>;
 internal class DeleteMessageHandler(IMessageRepository _repository, IUnitOfWork _unitOfWork) : IRequestHandler<DeleteMessageCommand, bool>
 {
     public async Task<bool> Handle(DeleteMessageCommand request, CancellationToken cancellationToken)

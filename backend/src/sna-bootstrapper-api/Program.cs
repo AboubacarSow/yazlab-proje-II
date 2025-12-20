@@ -30,8 +30,10 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
 var app = builder.Build();
-
+//Logging configuration HTTP one
+app.UseSerilogRequestLogging();
 // Configure the HTTP request pipeline.
+app.UseHttpsRedirection();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -39,12 +41,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapCarter();
-app.UseHttpsRedirection();
 app.UseExceptionHandler();
 
+app.MapControllers();
 
 app.UseAuthorization();
-
-app.MapControllers();
 
 app.Run();
