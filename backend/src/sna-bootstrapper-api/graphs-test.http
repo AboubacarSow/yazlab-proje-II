@@ -1,0 +1,142 @@
+@baseUrl = https://localhost:7011/api
+@graphId = 1
+@nodeId = 1
+@nodeId2 = 2
+@edgeId = 1
+
+### ==========================================
+### GRAPHS API TESTS (Messages pattern benzeri)
+### ==========================================
+
+### 1. Get All Graphs (Messages'daki GET /messages gibi)
+GET {{baseUrl}}/graphs
+Accept: application/json
+
+### 2. Create Graph
+POST {{baseUrl}}/graphs/
+Content-Type: application/json
+
+{
+  "graph": {
+    "tag": "Sosyal Ağ Analizi"
+  }
+}
+
+### 3. Get Graph by ID
+GET {{baseUrl}}/graphs/{{graphId}}
+Accept: application/json
+
+### 4. Add First Node to Graph
+POST {{baseUrl}}/graphs/{{graphId}}/nodes
+Content-Type: application/json
+
+{
+  "node": {
+    "graphId": {{graphId}},
+    "tag": "Ahmet",
+    "activity": 0.8,
+    "interaction": 5
+  }
+}
+
+### 5. Add Second Node
+POST {{baseUrl}}/graphs/{{graphId}}/nodes
+Content-Type: application/json
+
+{
+  "node": {
+    "graphId": {{graphId}},
+    "tag": "Mehmet",
+    "activity": 0.6,
+    "interaction": 3
+  }
+}
+
+### 6. Add Third Node
+POST {{baseUrl}}/graphs/{{graphId}}/nodes
+Content-Type: application/json
+
+{
+  "node": {
+    "graphId": {{graphId}},
+    "tag": "Ayşe",
+    "activity": 0.9,
+    "interaction": 8
+  }
+}
+
+### 7. Edit Node
+PUT {{baseUrl}}/graphs/{{graphId}}/nodes/{{nodeId}}
+Content-Type: application/json
+
+{
+  "node": {
+    "nodeId": {{nodeId}},
+    "tag": "Ahmet Yılmaz",
+    "activity": 0.95,
+    "interaction": 10
+  }
+}
+
+### 8. Add Edge Between Nodes (weight YOK - backend hesaplıyor)
+POST {{baseUrl}}/graphs/{{graphId}}/edges
+Content-Type: application/json
+
+{
+  "edge": {
+    "graphId": {{graphId}},
+    "nodeAId": 1,
+    "nodeBId": 2
+  }
+}
+
+### 9. Add Another Edge
+POST {{baseUrl}}/graphs/{{graphId}}/edges
+Content-Type: application/json
+
+{
+  "edge": {
+    "graphId": {{graphId}},
+    "nodeAId": 2,
+    "nodeBId": 3
+  }
+}
+
+### 10. Delete Edge
+DELETE {{baseUrl}}/graphs/{{graphId}}/edges/{{edgeId}}
+
+### 11. Delete Node
+DELETE {{baseUrl}}/graphs/{{graphId}}/nodes/{{nodeId}}
+
+### 12. Delete Graph
+DELETE {{baseUrl}}/graphs/{{graphId}}
+
+###
+### ==========================================
+### MESSAGES API (Karşılaştırma için)
+### ==========================================
+
+### Get All Messages
+GET {{baseUrl}}/messages
+Accept: application/json
+
+### Create Message
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "message": {
+    "fullName": "Ahmet Yılmaz",
+    "email": "ahmet@example.com",
+    "phone": "5551234567",
+    "subject": "Test Konusu",
+    "content": "Test mesajı içeriği"
+  }
+}
+
+### Get Message by ID
+GET {{baseUrl}}/messages/1
+Accept: application/json
+
+### Delete Message
+DELETE {{baseUrl}}/messages/1
