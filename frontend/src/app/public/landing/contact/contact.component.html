@@ -12,7 +12,7 @@
         <div class="contact-info">
           <h2>Bizimle İletişime Geçin</h2>
           <p>Sorularınızı cevaplamaktan mutluluk duyarız.</p>
-          
+
           <div class="info-item">
             <div class="icon">📧</div>
             <div>
@@ -38,44 +38,7 @@
           </div>
         </div>
 
-        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
-          <div class="form-group">
-            <label>Ad Soyad</label>
-            <input type="text" formControlName="name" placeholder="Adınızı girin">
-            <span class="error" *ngIf="submitted && contactForm.get('name')?.errors?.['required']">
-              Ad soyad gerekli
-            </span>
-          </div>
-
-          <div class="form-group">
-            <label>E-posta</label>
-            <input type="email" formControlName="email" placeholder="E-posta adresiniz">
-            <span class="error" *ngIf="submitted && contactForm.get('email')?.errors?.['required']">
-              E-posta gerekli
-            </span>
-            <span class="error" *ngIf="submitted && contactForm.get('email')?.errors?.['email']">
-              Geçerli bir e-posta girin
-            </span>
-          </div>
-
-          <div class="form-group">
-            <label>Konu</label>
-            <input type="text" formControlName="subject" placeholder="Konu">
-            <span class="error" *ngIf="submitted && contactForm.get('subject')?.errors?.['required']">
-              Konu gerekli
-            </span>
-          </div>
-
-          <div class="form-group">
-            <label>Mesaj</label>
-            <textarea formControlName="message" rows="5" placeholder="Mesajınız"></textarea>
-            <span class="error" *ngIf="submitted && contactForm.get('message')?.errors?.['required']">
-              Mesaj gerekli
-            </span>
-          </div>
-
-          <button type="submit" class="btn-submit">Gönder</button>
-        </form>
+        <app-message-form></app-message-form>
       </div>
 
       <div class="map-section">

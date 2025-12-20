@@ -1,3 +1,4 @@
+
 using sna_domain.Entities;
 
 namespace sna_application.Messages.Commands.CreateMessage;
@@ -6,7 +7,8 @@ public record CreateMessageCommand(
     string FullName ,
     string Email,
     string Phone,
-    string Content
+    string Content,
+    string Subject
 ): IRequest<int>;
 
 public class CreateMessageValidator : AbstractValidator<CreateMessageCommand>
@@ -25,6 +27,10 @@ public class CreateMessageValidator : AbstractValidator<CreateMessageCommand>
         .NotEmpty()
         .WithMessage("Phone Number is required");
 
+        RuleFor(m=> m.Subject)
+        .NotEmpty()
+        .WithMessage("Subject is required");
+
         RuleFor(m=> m.Content)
         .MinimumLength(50)
         .MaximumLength(1000)
@@ -33,7 +39,7 @@ public class CreateMessageValidator : AbstractValidator<CreateMessageCommand>
     }
 }
 
-public class CreateMessageHandler(IMessageRepository _repos, IUnitOfWork _unitOfWork)
+internal class CreateMessageHandler(IMessageRepository _repos, IUnitOfWork _unitOfWork)
 : IRequestHandler<CreateMessageCommand, int>
 {
     public async Task<int> Handle(CreateMessageCommand request, CancellationToken cancellationToken)
