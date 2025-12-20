@@ -12,6 +12,9 @@ internal class GraphRepository(GraphVDbContext context)
     public void EditGraph(Graph graph)
         => _context.Update(graph);
 
+    public async Task<IEnumerable<Graph>> GetAllGraphsAsync(bool trackChChanges)
+        => await GetAllAsync(trackChChanges);
+
     public async Task<Graph?> GetGraphByIdAsync(int graphId, bool trackChChanges)
     {
         IQueryable<Graph> query = _context.Graphs;
