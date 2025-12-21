@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './public/authentication/login/login.component';
 import { RegisterComponent } from './public/authentication/register/register.component';
-import { MainLayoutComponent } from './workspace/main-layout/main-layout.component';
-import { MainContentComponent } from './workspace/main-content/main-content.component';
-import { DashboardComponent } from './workspace/main-content/dashboard/dashboard.component';
-import { VisualisationComponent } from './workspace/main-content/visualisation/visualisation.component';
-import { GraphlarimComponent } from './workspace/main-content/graphlarim/graphlarim.component';
-import { SettingsComponent } from './workspace/main-content/settings/settings.component';
+import { MainLayoutComponent } from './User-Interface/main-layout/main-layout.component';
+import { MainContentComponent } from './User-Interface/main-content/main-content.component';
+import { DashboardComponent } from './User-Interface/main-content/dashboard/dashboard.component';
+import { GraphlarimComponent } from './User-Interface/main-content/graphlarim/graphlarim.component';
+import { SettingsComponent } from './User-Interface/main-content/settings/settings.component';
+import { WorkspaceComponent } from './Workspace/workspace/workspace.component';
 import { LandingLayoutComponent } from './layout/landing-layout/landing-layout.component';
 import { HomeComponent } from './public/landing/home/home.component';
 import { AboutComponent } from './public/landing/about/about.component';
@@ -30,9 +30,9 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   
-  // Workspace (Authenticated area)
+  // User-Interface (Authenticated area)
   {
-    path: 'workspace',
+    path: 'User-Interface',
     component: MainLayoutComponent,
     children: [
       {
@@ -41,13 +41,15 @@ export const routes: Routes = [
         children: [
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
           { path: 'dashboard', component: DashboardComponent },
-          { path: 'graphlarim', component: GraphlarimComponent },
-          { path: 'visualization', component: VisualisationComponent },
+          { path: 'graphlarim', component: GraphlarimComponent },          
           { path: 'settings', component: SettingsComponent },
         ]
       }
     ]
   },
+  
+  // Workspace (Graf çalışma alanı)
+  { path: 'Workspace', component: WorkspaceComponent },
   
   // Fallback
   { path: '**', redirectTo: '' }

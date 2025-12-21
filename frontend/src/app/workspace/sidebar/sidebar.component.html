@@ -1,0 +1,134 @@
+<aside class="workspace-sidebar">
+  <!-- Graph Tag Section with Side Dropdown -->
+  <div class="sidebar-section">
+    <button 
+      class="section-header graph-tag-btn" 
+      (mouseenter)="showDropdown($event)"
+      (mouseleave)="hideDropdown()">
+      <span>Graph Tag</span>
+      <span class="arrow">▶</span>
+    </button>
+    
+    <!-- Side Dropdown Menu -->
+    <div 
+      class="graph-dropdown" 
+      *ngIf="showGraphDropdown"
+      [style.top]="dropdownPosition.top"
+      [style.left]="dropdownPosition.left"
+      (mouseenter)="keepDropdownOpen()"
+      (mouseleave)="hideDropdown()">           
+      <!-- Graf İşlemleri -->
+      <button class="dropdown-item" (click)="onAction('graph-edit')">
+        <span class="graph-icon">✏️</span>
+        <span>Edit</span>
+      </button>
+      <button class="dropdown-item" (click)="onAction('graph-import')">
+        <span class="graph-icon">📥</span>
+        <span>Import</span>
+      </button>
+      <button class="dropdown-item" (click)="onAction('graph-export')">
+        <span class="graph-icon">📤</span>
+        <span>Export</span>
+      </button>
+      <button class="dropdown-item" (click)="onAction('graph-info')">
+        <span class="graph-icon">ℹ️</span>
+        <span>Info</span>
+      </button>
+      <button class="dropdown-item" (click)="onAction('graph-clear')">
+        <span class="graph-icon">🗑️</span>
+        <span>Clear</span>
+      </button>
+      
+    </div>
+  </div>
+
+  <!-- Data Operation Section -->
+  <div class="sidebar-section">
+    <div class="section-title">Data Operation</div>
+    
+    <!-- Node -->
+    <button class="section-header sub-header" (click)="toggleSection('node')">
+      <span>Node</span>
+      <span class="arrow">{{ isNodeExpanded ? '▼' : '▶' }}</span>
+    </button>
+    <div class="section-content" *ngIf="isNodeExpanded">
+      <button class="action-btn" (click)="onAction('node-add')">Ekle</button>
+      <button class="action-btn" (click)="onAction('node-delete')">Sil</button>
+      <button class="action-btn" (click)="onAction('node-edit')">Düzenle</button>
+    </div>
+
+    <!-- Edge -->
+    <button class="section-header sub-header" (click)="toggleSection('edge')">
+      <span>Edge</span>
+      <span class="arrow">{{ isEdgeExpanded ? '▼' : '▶' }}</span>
+    </button>
+    <div class="section-content" *ngIf="isEdgeExpanded">
+      <button class="action-btn" (click)="onAction('edge-add')">Ekle</button>
+      <button class="action-btn" (click)="onAction('edge-delete')">Sil</button>      
+    </div>
+  </div>
+
+  <!-- Algorithms Section -->
+  <div class="sidebar-section">
+    <div class="section-title">Algorithms</div>
+    
+    <!-- Traversals -->
+    <div class="section-subtitle">Traversals</div>
+    <button 
+      class="section-header sub-header graph-tag-btn" 
+      (mouseenter)="showTraversalsDropdownMenu($event)"
+      (mouseleave)="hideTraversalsDropdown()">
+      <span>Algorithms</span>
+      <span class="arrow">▶</span>
+    </button>
+    
+    <!-- Traversals Side Dropdown Menu -->
+    <div 
+      class="graph-dropdown" 
+      *ngIf="showTraversalsDropdown"
+      [style.top]="traversalsDropdownPosition.top"
+      [style.left]="traversalsDropdownPosition.left"
+      (mouseenter)="keepTraversalsDropdownOpen()"
+      (mouseleave)="hideTraversalsDropdown()">
+      <div class="dropdown-header">Algoritma Seçiniz</div>
+      <button 
+        *ngFor="let algo of algorithms" 
+        class="dropdown-item"
+        (click)="selectAlgorithm(algo)">
+        <span class="graph-icon">{{ algo.icon }}</span>
+        <span>{{ algo.name }}</span>
+      </button>
+    </div>
+
+    <!-- Metrics -->
+    <div class="section-subtitle">Metrics</div>
+ 
+
+ 
+    <button 
+      class="section-header sub-header graph-tag-btn" 
+      (mouseenter)="showComponentsDropdownMenu($event)"
+      (mouseleave)="hideComponentsDropdown()">
+      <span>Components</span>
+      <span class="arrow">▶</span>
+    </button>
+    <!-- Components Side Dropdown Menu -->
+    <div 
+      class="graph-dropdown" 
+      *ngIf="showComponentsDropdown"
+      [style.top]="componentsDropdownPosition.top"
+      [style.left]="componentsDropdownPosition.left"
+      (mouseenter)="keepComponentsDropdownOpen()"
+      (mouseleave)="hideComponentsDropdown()">
+      <div class="dropdown-header">Components</div>      
+      <button class="dropdown-item" (click)="onAction('components-detection')">
+        <span class="graph-icon">🧩</span>
+        <span>Detection of Components</span>
+      </button>
+      <button class="dropdown-item" (click)="onAction('components-welsh-powell')">
+        <span class="graph-icon">🎨</span>
+        <span>Welsh Powell</span>
+      </button>
+    </div>
+  </div>
+</aside>

@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
   }
 
   get ctaLink(): string {
-    return this.isLoggedIn ? '/workspace/dashboard' : '/register';
+    return this.isLoggedIn ? '/User-Interface/dashboard' : '/register';
   }
 
   get ctaText(): string {

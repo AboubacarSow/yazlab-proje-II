@@ -1,0 +1,72 @@
+<div class="data-view">
+  <div class="data-controls">
+    <button 
+      [class.active]="dataFormat === 'json'" 
+      (click)="switchFormat('json')"
+      class="format-btn">
+      JSON
+    </button>
+    <button 
+      [class.active]="dataFormat === 'csv'" 
+      (click)="switchFormat('csv')"
+      class="format-btn">
+      CSV
+    </button>
+    <button 
+      [class.active]="dataFormat === 'table'" 
+      (click)="switchFormat('table')"
+      class="format-btn">
+      Table
+    </button>
+  </div>
+  
+  <div class="data-content">
+    <!-- JSON View -->
+    <div *ngIf="dataFormat === 'json'" class="json-view">
+      <pre>{{ sampleData | json }}</pre>
+    </div>
+    
+    <!-- CSV View -->
+    <div *ngIf="dataFormat === 'csv'" class="csv-view">
+      <textarea 
+        [(ngModel)]="csvData" 
+        class="csv-textarea" 
+        placeholder="CSV data here..."></textarea>
+    </div>
+    
+    <!-- Table View -->
+    <div *ngIf="dataFormat === 'table'" class="table-view">
+      <h3>Nodes</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Label</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let node of sampleData.nodes">
+            <td>{{ node.id }}</td>
+            <td>{{ node.label }}</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <h3>Edges</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Target</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let edge of sampleData.edges">
+            <td>{{ edge.source }}</td>
+            <td>{{ edge.target }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
