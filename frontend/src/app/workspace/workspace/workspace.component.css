@@ -1,0 +1,19 @@
+.workspace-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.workspace-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.workspace-main {
+  flex: 1;
+  position: relative;
+  background-color: #fafafa;
+  overflow: hidden;
+}

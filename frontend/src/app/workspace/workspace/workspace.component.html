@@ -1,0 +1,12 @@
+<div class="workspace-container">
+  <app-header [activeTab]="activeTab" (tabChange)="onTabChange($event)"></app-header>
+  
+  <div class="workspace-content">
+    <app-sidebar></app-sidebar>
+    
+    <main class="workspace-main">
+      <app-graph-view *ngIf="activeTab === 'graph'"></app-graph-view>
+      <app-data-view *ngIf="activeTab === 'data'"></app-data-view>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="workspace-header">
+  <h1>WORKSPACE</h1>
+  
+  <div class="tab-buttons">
+    <button 
+      [class.active]="activeTab === 'graph'" 
+      (click)="switchTab('graph')"
+      class="tab-btn">
+      <span class="icon">📊</span> Graph
+    </button>
+    <button 
+      [class.active]="activeTab === 'data'" 
+      (click)="switchTab('data')"
+      class="tab-btn">
+      <span class="icon">📋</span> Data
+    </button>
+  </div>
+  
+  <div class="user-profile">
+    <span class="profile-icon" (click)="toggleDropdown()">👤▼</span>
+    
+    <div class="dropdown-menu" *ngIf="isDropdownOpen">
+      <a routerLink="/" class="dropdown-item" (click)="closeDropdown()">
+        <span class="icon">🏠</span>
+        <span>Anasayfaya Dön</span>
+      </a>
+      <a routerLink="/User-Interface/dashboard" class="dropdown-item" (click)="closeDropdown()">
+        <span class="icon">📊</span>
+        <span>Kullanıcı Arayüzüne Dön</span>
+      </a>
+    </div>
+  </div>
+</div>
