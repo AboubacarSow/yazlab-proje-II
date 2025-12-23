@@ -1,6 +1,6 @@
 
 namespace sna_application.Graphs.Commands.DeleteNodeFromGraph;
-public record DeleteNodeFromGraphCommand(int GraphId, int NodeId):IRequest<bool>;
+public record DeleteNodeFromGraphCommand(Guid GraphId, int NodeId):IRequest<bool>;
 
 internal class DeleteNodeFromGraphHandler(IGraphRepository graphRepository, IUnitOfWork unitOfWork)
 : IRequestHandler<DeleteNodeFromGraphCommand, bool>
@@ -10,7 +10,7 @@ internal class DeleteNodeFromGraphHandler(IGraphRepository graphRepository, IUni
         //retreive graph;
         var graph = await graphRepository.GetGraphByIdAsync(request.GraphId,true)??
         throw new NotFoundException($"Graph with Id:{request.GraphId} not found");
-        var node = graph.GetNodeFromGraph(request.NodeId)??
+        var node = graph.GetNodeFromGraphById(request.NodeId)??
         throw new NotFoundException($"Node with Id:{request.NodeId} not found");
         var result= graph.DeleteOneNode(node);
         var efresult = await unitOfWork.SaveChangesAsync(cancellationToken);

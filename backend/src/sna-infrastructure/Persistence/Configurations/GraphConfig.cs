@@ -7,7 +7,7 @@ public class GraphConfiguration : IEntityTypeConfiguration<Graph>
     {
         builder.HasKey(g=>g.Id);
 
-        builder.Property(g=>g.Tag)
+        builder.Property(g=>g.Title)
                 .IsRequired(true);
         builder.Property(g => g.Description).IsRequired(false);
 

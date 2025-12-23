@@ -1,48 +1,55 @@
+import { Edge, EdgeImportDto } from "./edge.model";
+import { NodeImportDto } from "./node.model";
+
+
+export type Guid = string;
+
 export interface Graph {
-  id: number;
-  tag: string,
-  description: string | null,
+  id: Guid;
+  title: string,
+  description?: string | null,
   order: number | 0;
   size: number | 0;
-  nodes:[];
-  edges:[];
+  nodes:Node[];
+  edges:Edge[];
 }
+export interface ImportGraph {
+  title: string;
+  description?: string;
+  nodes: NodeImportDto[];
+  edges: EdgeImportDto[];
+};
 
-export interface Node {
-  id: number;
-  graphId: number;
-  tag: string;
-  activity: number;
-  interaction: number;
+export interface GraphDto {
+  id: Guid;
+  title: string;
+  description?: string;
+  order: number;
+  size: number;
+  nodes: NodeImportDto[];
+  edges: EdgeImportDto[];
 }
-
-export interface Edge {
-  id: number;
-  weight: number;
-  nodeAId: number;
-  nodeBId: number;
-}
-
 export interface CreateGraphDto {
-  tag: string;
+  title: string;
 }
 
-export interface AddNodeDto {
-  graphId: number;
-  tag: string;
-  activity: number;
-  interaction: number;
+export interface ImportGraphCommand {
+  title: string;
+  description?: string;
+  nodes: NodeImportDto[];
+  edges: EdgeImportDto[];
 }
 
-export interface AddEdgeDto {
-  graphId: number;
-  nodeAId: number;
-  nodeBId: number;
+export interface ImportGraphRequest {
+  importGraph: ImportGraphCommand;
 }
 
-export interface EditNodeDto {
-  nodeId: number;
-  tag: string;
-  activity: number;
-  interaction: number;
+export interface ImportGraphResponse {
+  graph: Graph;
 }
+
+
+
+
+
+

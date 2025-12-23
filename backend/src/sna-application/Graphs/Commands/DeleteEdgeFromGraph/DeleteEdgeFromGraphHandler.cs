@@ -2,7 +2,7 @@
 namespace sna_application.Graphs.Commands.DeleteEdgeFromGraph;
 
 
-public record DeleteEdgeFromGraphCommand(int GraphId, int NodeAId,int NodeBId):IRequest<bool>;
+public record DeleteEdgeFromGraphCommand(Guid GraphId, int NodeAId,int NodeBId):IRequest<bool>;
 
 internal class DeleteEdgeFromGraphValidator: AbstractValidator<DeleteEdgeFromGraphCommand>
 {

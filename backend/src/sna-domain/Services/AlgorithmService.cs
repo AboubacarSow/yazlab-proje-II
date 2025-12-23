@@ -7,7 +7,7 @@ public class GraphAlgorithmService
     public  IReadOnlyList<Node> BFS(Graph graph, Node start, HashSet<Node> visited)
     {
         if (!graph.ContainsNode(start))
-            throw new NotFoundException($"Node {start.Tag}", start.Id.ToString(), graph.Tag);
+            throw new NotFoundException($"Node {start.Tag}", start.Id.ToString(), graph.Title);
 
         visited ??= [];
         var queue = new Queue<Node>();
@@ -36,7 +36,7 @@ public class GraphAlgorithmService
     public IReadOnlyList<Node> DFS(Graph graph, Node start,HashSet<Node> visited)
     {
         if (!graph.ContainsNode(start))
-            throw new NotFoundException($"Node {start.Tag}", start.Id.ToString(), graph.Tag);
+            throw new NotFoundException($"Node {start.Tag}", start.Id.ToString(), graph.Title);
         visited ??= [];
         var result = new List<Node>();
         Visit(graph,start, visited, result);
@@ -117,9 +117,9 @@ public class GraphAlgorithmService
     public IReadOnlyList<Node> Dijkstra(Graph graph, Node start, Node target)
     {
         if (!graph.Nodes.Contains(start))
-            throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Tag);
+            throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Title);
         if (!graph.Nodes.Contains(target))
-            throw new NotFoundException(target.Tag, target.Id.ToString(), graph.Tag);
+            throw new NotFoundException(target.Tag, target.Id.ToString(), graph.Title);
 
         var distances = graph.Nodes.ToDictionary(node => node, _ => double.PositiveInfinity);
         var previous = new Dictionary<Node, Node>();
@@ -154,9 +154,9 @@ public class GraphAlgorithmService
     public IReadOnlyList<Node> AStar(Graph graph, Node start, Node target)
     {
         if (!graph.Nodes.Contains(start))
-            throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Tag);
+            throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Title);
         if (!graph.Nodes.Contains(target))
-            throw new NotFoundException(target.Tag, target.Id.ToString(), graph.Tag);
+            throw new NotFoundException(target.Tag, target.Id.ToString(), graph.Title);
 
         var gScore = graph.Nodes.ToDictionary(node => node, _ => double.PositiveInfinity);
         var fScore = graph.Nodes.ToDictionary(node => node, _ => double.PositiveInfinity);

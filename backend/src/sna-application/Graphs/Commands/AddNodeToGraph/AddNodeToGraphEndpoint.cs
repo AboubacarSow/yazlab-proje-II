@@ -10,7 +10,7 @@ public class AddNodeToGraphEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/graphs/{id:int}/nodes", async ([FromRoute]int id, [FromBody]AddNodeToGraphRequest request, ISender sender) =>
+        app.MapPost("api/graphs/{id:guid}/nodes", async ([FromRoute]Guid id, [FromBody]AddNodeToGraphRequest request, ISender sender) =>
         {
             if(id!=request.Node.GraphId) return Results.BadRequest("Ids mismatch");
             var result = await sender.Send(request.Node);

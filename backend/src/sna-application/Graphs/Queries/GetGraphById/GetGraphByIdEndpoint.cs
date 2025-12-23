@@ -7,7 +7,7 @@ public class GetGraphByIdEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/graphs/{id:int}", async (int Id, ISender sender) =>
+        app.MapGet("api/graphs/{id:guid}", async (Guid Id, ISender sender) =>
         {
             var result = await sender.Send(new GetGraphByIdQuery(Id));
             return Results.Ok(new GetGraphByIdResponse(result));

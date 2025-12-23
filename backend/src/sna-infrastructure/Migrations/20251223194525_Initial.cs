@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace sna_infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialModels : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,11 +30,11 @@ namespace sna_infrastructure.Migrations
                 name: "Graphs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Tag = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -65,7 +65,7 @@ namespace sna_infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GraphId = table.Column<int>(type: "int", nullable: false),
+                    GraphId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Tag = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Activity = table.Column<double>(type: "float", nullable: false),
                     Interaction = table.Column<int>(type: "int", nullable: false),
@@ -88,7 +88,7 @@ namespace sna_infrastructure.Migrations
                 name: "Edges",
                 columns: table => new
                 {
-                    GraphId = table.Column<int>(type: "int", nullable: false),
+                    GraphId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     NodeAId = table.Column<int>(type: "int", nullable: false),
                     NodeBId = table.Column<int>(type: "int", nullable: false),
                     Weight = table.Column<double>(type: "float", nullable: false)

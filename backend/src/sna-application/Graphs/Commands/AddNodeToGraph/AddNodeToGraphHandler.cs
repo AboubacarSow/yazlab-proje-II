@@ -2,7 +2,7 @@ using sna_domain.Entities;
 
 namespace sna_application.Graphs.Commands.AddNodeToGraph;
 
-public record AddNodeToGraphCommand(int GraphId,
+public record AddNodeToGraphCommand(Guid GraphId,
     string Tag,
     double Activity,
     int Interaction) : IRequest<NodeDto>;

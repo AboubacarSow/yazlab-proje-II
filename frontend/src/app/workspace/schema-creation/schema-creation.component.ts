@@ -1,8 +1,9 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { GraphCreationComponent } from './graph-creation/graph-creation.component';
-import { Dialog } from '@angular/cdk/dialog';
-import { Graph } from '../../models/graph.model';
-import { GraphService } from '../../core/services/graph.service';
+import { Graph, Guid } from '../../models/graph.model';
+import { GraphStateService } from '../../core/services/graph.service';
+import { ImportGraphComponent } from './import-graph/import-graph.component';
 
 
 @Component({
@@ -13,14 +14,14 @@ import { GraphService } from '../../core/services/graph.service';
 })
 export class SchemaCreationComponent {
   private dialog = inject(Dialog);
-  @Output() graphCreated = new EventEmitter<number>();
+  @Output() graphCreated = new EventEmitter<Guid>();
 
-  constructor( private graphService : GraphService) {}
+  constructor( private graphService : GraphStateService) {}
 
   openCreateModal() {
-    const dialogRef = this.dialog.open(GraphCreationComponent, {disableClose:true, 
+    const dialogRef = this.dialog.open(GraphCreationComponent, {disableClose:true,
     panelClass: 'graph-creation-panel'})
-    
+
     dialogRef.closed.subscribe(graph => {
       if (!graph || typeof graph !== 'object') return;
       this.graphService.setCurrentGraph((graph as Graph));
@@ -28,8 +29,15 @@ export class SchemaCreationComponent {
     });
   };
 
-  importGraph() {
-    // plus tard
+  openImportModal() {
+    const dialogRef = this.dialog.open(ImportGraphComponent, {
+      disableClose : true,
+      panelClass : 'graph-creation-panel'});
+    dialogRef.closed.subscribe(graph => {
+      if (!graph || typeof graph !== 'object') return;
+      this.graphService.setCurrentGraph((graph as Graph));
+      this.graphCreated.emit((graph as Graph).id);
+    });
   }
 }
 

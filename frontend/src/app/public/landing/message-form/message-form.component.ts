@@ -39,5 +39,6 @@ export class MessageFormComponent {
 
     this.messageForm.reset();
     this.submitted = false;
+    console.log("Message sent successfully")
   }
 }

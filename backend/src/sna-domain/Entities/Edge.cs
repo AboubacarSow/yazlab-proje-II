@@ -4,7 +4,7 @@ namespace sna_domain.Entities;
 
 public class Edge
 {
-    public int GraphId {get; private set;}
+    public Guid GraphId {get; private set;}
     public Graph Graph { get; private set; } = default!;
 
     private int _nodeAId;
@@ -31,7 +31,7 @@ public class Edge
         Weight = 1.0 / (1.0 + Math.Sqrt(sum_properties));
     }
     private Edge() { }
-    private Edge(int graphId,Node a, Node b)
+    private Edge(Guid graphId,Node a, Node b)
     {
         // deterministic ordering (important!)
         if (a.Id.CompareTo(b.Id) < 0)
@@ -51,7 +51,7 @@ public class Edge
 
         CalculateWeight();
     }
-    internal static Edge Create(int graphId,Node node_1, Node node_2)
+    internal static Edge Create(Guid graphId,Node node_1, Node node_2)
     {
         //Est ce a node can be connected to itself
         //Thing to verify later on

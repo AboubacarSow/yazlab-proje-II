@@ -2,7 +2,7 @@
 namespace sna_application.Graphs.Commands.EditNodeInGraph;
 
 public record EditNodeInGraphCommand(int Id, 
-        int GraphId,
+        Guid GraphId,
         string Tag,
         double Activity,
         int Interaction):IRequest<(NodeDto, bool)>;
@@ -16,7 +16,7 @@ IRequestHandler<EditNodeInGraphCommand, (NodeDto, bool)>
         
         var graph= await graphRepository.GetGraphByIdAsync(request.GraphId,true)
         ?? throw new NotFoundException($"Graph with Id:{request.GraphId} not found");
-        var node = graph.GetNodeFromGraph(request.Id)
+        var node = graph.GetNodeFromGraphById(request.Id)
         ?? throw new NotFoundException($"Node with Id:{request.Id} not found in graph with Id:{request.GraphId}");
         node.Tag = request.Tag;
         node.Activity = request.Activity;
