@@ -13,8 +13,8 @@ internal class GetGraphByIdHandler(IGraphRepository _graphRepo)
         throw new NotFoundException($"Graph with Id:{request.Id} not found");
         var graphDto = new GraphDto(entity.Id, entity.Title, entity.Description, entity.Order, entity.Size)
         {
-            Nodes = [.. entity.Nodes],
-            Edges = [.. entity.Edges]
+            Nodes= entity.Nodes.ToList().Adapt<List<NodeDto>>(),
+            Edges = entity.Edges.ToList().Adapt<List<EdgeDto>>()
         };
         return graphDto;
     }
