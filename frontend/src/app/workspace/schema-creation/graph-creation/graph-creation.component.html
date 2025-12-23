@@ -1,0 +1,16 @@
+<h2>Create Graph</h2>
+
+<form [formGroup]="graphCreationForm" (ngSubmit)="create()">
+  <label>Graph tag</label>
+  <input formControlName="tag" placeholder="Social Network" />
+   <span class="error" *ngIf="submitted && graphCreationForm.get('tag')?.hasError('required')">
+      Full name is required
+    </span>
+
+  <div class="actions">
+    <button type="button" class="cancel" (click)="cancel()">Cancel</button>
+    <button type="submit" class="primary"> <i class="fa-solid fa-plus"></i> Create</button>
+  </div>
+</form>
+
+

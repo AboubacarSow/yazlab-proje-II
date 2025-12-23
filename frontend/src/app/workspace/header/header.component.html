@@ -1,30 +1,30 @@
 <div class="workspace-header">
-  <h1>WORKSPACE</h1>
-  
-  <div class="tab-buttons">
-    <button 
-      [class.active]="activeTab === 'graph'" 
+  <h2 class="title">WORKSPACE</h2>
+
+  <div class="tab-buttons" *ngIf="isgraphCreated">
+    <button
+      [class.active]="activeTab === 'graph'"
       (click)="switchTab('graph')"
       class="tab-btn">
-      <span class="icon">📊</span> Graph
+      <i class="fa-solid fa-diagram-project me-2"></i>Graph
     </button>
-    <button 
-      [class.active]="activeTab === 'data'" 
+    <button
+      [class.active]="activeTab === 'data'"
       (click)="switchTab('data')"
       class="tab-btn">
-      <span class="icon">📋</span> Data
+      <i class="fa-solid fa-database me-2"></i> Data
     </button>
   </div>
-  
+
   <div class="user-profile">
-    <span class="profile-icon" (click)="toggleDropdown()">👤▼</span>
-    
+    <span class="profile-icon" (click)="toggleDropdown()"><i class="fa-solid fa-user"></i></span>
+
     <div class="dropdown-menu" *ngIf="isDropdownOpen">
       <a routerLink="/" class="dropdown-item" (click)="closeDropdown()">
         <span class="icon">🏠</span>
         <span>Anasayfaya Dön</span>
       </a>
-      <a routerLink="/User-Interface/dashboard" class="dropdown-item" (click)="closeDropdown()">
+      <a routerLink="/user/dashboard" class="dropdown-item" (click)="closeDropdown()">
         <span class="icon">📊</span>
         <span>Kullanıcı Arayüzüne Dön</span>
       </a>

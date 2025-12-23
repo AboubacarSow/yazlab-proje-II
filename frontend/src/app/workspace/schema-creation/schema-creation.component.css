@@ -1,0 +1,74 @@
+.schema-creation {
+  height:90vh ;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background: #eff6ff;
+}
+
+.schema-creation h2 {
+  margin-bottom: 32px;
+  font-size: 26px;
+  font-weight: 600;
+  color: #4a90e2; /* gris foncé */
+  text-align: center;
+}
+
+/* ACTIONS */
+.actions {
+  display: flex;
+  gap: 20px;
+}
+
+/* BASE BUTTON */
+.actions button {
+  min-width: 200px;
+  padding: 14px 22px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #4a90e2;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+/* PRIMARY */
+.actions .primary {
+  background-color: #4a90e2; /* blue-600 */
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+}
+
+.actions .primary:hover {
+  background-color: #2b89f6;
+  transform: translateY(-1px);
+}
+
+/* SECONDARY */
+.actions .secondary {
+  background-color: #ffffff;
+  color: #2563eb;
+  border: 1px solid #2563eb;
+}
+
+.actions .secondary:hover {
+  background-color: #eff6ff;
+  transform: translateY(-1px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+}
