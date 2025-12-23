@@ -49,7 +49,8 @@ internal class CreateMessageHandler(IMessageRepository _repos, IUnitOfWork _unit
             FullName = request.FullName,
             Email = request.Email,
             Phone = request.Phone,
-            Content = request.Content
+            Content = request.Content,
+            Subject = request.Subject
         };
         await _repos.AddMessageAsync(message);
        await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -18,9 +18,9 @@ public static class ServiceCollectionExtensions
         //Register MediatR
         services.AddMediatR(configuration: configuration =>
         {
-            configuration.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
             configuration.AddOpenBehavior(typeof(ValidationBehavior<,>));
             configuration.AddOpenBehavior(typeof(LoggingBehavior<,>));
+            configuration.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
         });
         return services;
     }

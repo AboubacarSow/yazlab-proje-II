@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 
 namespace sna_application.Messages.Commands.CreateMessage;
 

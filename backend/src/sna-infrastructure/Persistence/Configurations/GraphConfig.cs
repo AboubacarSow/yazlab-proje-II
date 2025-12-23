@@ -9,6 +9,7 @@ public class GraphConfiguration : IEntityTypeConfiguration<Graph>
 
         builder.Property(g=>g.Tag)
                 .IsRequired(true);
+        builder.Property(g => g.Description).IsRequired(false);
 
         builder.HasMany(g=>g.Nodes)
                 .WithOne(n=>n.Graph)
