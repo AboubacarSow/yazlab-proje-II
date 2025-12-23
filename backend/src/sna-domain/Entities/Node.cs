@@ -65,7 +65,7 @@ public class Node : BaseEntity, IEquatable<Node>
     {
         if(other is null) return false;
         if(ReferenceEquals(this, other)) return true;
-        return Tag==other.Tag;
+        return Tag==other.Tag && GraphId==other.GraphId;
     }
 
     public override bool Equals(object? obj)
@@ -75,7 +75,7 @@ public class Node : BaseEntity, IEquatable<Node>
 
     public override int GetHashCode()
     {
-        return Id.GetHashCode();
+        return HashCode.Combine(GraphId,Id);
     }
 }
 
