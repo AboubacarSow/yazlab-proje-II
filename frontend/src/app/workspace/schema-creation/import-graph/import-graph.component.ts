@@ -49,7 +49,7 @@ export class ImportGraphComponent {
         const parsed = JSON.parse(reader.result as string) as ImportGraph;
 
         if (!parsed.title) {
-          this.error = 'Graph tag is missing in JSON file';
+          this.error = 'Graph title is missing in JSON file';
           return;
         }
 

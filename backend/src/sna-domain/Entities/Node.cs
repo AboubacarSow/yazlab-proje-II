@@ -65,7 +65,7 @@ public class Node : BaseEntity, IEquatable<Node>
     {
         if(other is null) return false;
         if(ReferenceEquals(this, other)) return true;
-        return Id==other.Id;
+        return Tag==other.Tag;
     }
 
     public override bool Equals(object? obj)

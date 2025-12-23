@@ -11,7 +11,7 @@ public record EdgeImportDto(string NodeTagA, string NodeTagB);
 
 public class ImportGraphCommand: IRequest<GraphDto>
 {
-    public string Tag{get;set;}=null!;
+    public string Title{get;set;}=null!;
     public string? Description {get;set;}
     public List<NodeImportDto> Nodes{get;set;}=[];
     public List<EdgeImportDto> Edges {get;set;} =[];
@@ -22,7 +22,7 @@ public class GraphImportValidation : AbstractValidator<ImportGraphCommand>
     public GraphImportValidation()
     {
         // Graph
-        RuleFor(g => g.Tag)
+        RuleFor(g => g.Title)
             .NotEmpty()
             .WithMessage("Graph tag is required");
 
@@ -121,7 +121,7 @@ internal class ImportGraphHanlder(IGraphRepository graphRepository, IUnitOfWork 
 {
     public async Task<GraphDto> Handle(ImportGraphCommand request, CancellationToken cancellationToken)
     {
-        var graph = Graph.Create(request.Tag);
+        var graph = Graph.Create(request.Title);
         if(!string.IsNullOrEmpty(request.Description)) 
             graph.Description = request.Description;
         var nodes = new List<Node>();
@@ -131,6 +131,8 @@ internal class ImportGraphHanlder(IGraphRepository graphRepository, IUnitOfWork 
             nodes.Add(node);
         }
         graph.AddNodes(nodes);
+        await graphRepository.AddGraphAsync(graph);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         //Performance issue
         /*
         foreach(var edge in request.Edges)
@@ -151,14 +153,13 @@ internal class ImportGraphHanlder(IGraphRepository graphRepository, IUnitOfWork 
 
             graph.ConnectNodes(nodeA, nodeB);
         }
-        await graphRepository.AddGraphAsync(graph);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         var entity= await graphRepository.GetGraphByIdAsync(graph.Id,false)?? 
         throw new NotFoundException("Graph",graph.Id);
         var graphDto = new GraphDto(entity.Id, entity.Title, entity.Description, entity.Order, entity.Size)
         {
-            Nodes = [.. entity.Nodes],
-            Edges = [.. entity.Edges]
+            Nodes= entity.Nodes.ToList().Adapt<List<NodeDto>>(),
+            Edges = entity.Edges.ToList().Adapt<List<EdgeDto>>()
         };
         return graphDto;
     }
