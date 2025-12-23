@@ -1,8 +1,11 @@
 export interface Graph {
   id: number;
-  tag: string;
-  order: number;
-  size: number;
+  tag: string,
+  description: string | null,
+  order: number | 0;
+  size: number | 0;
+  nodes:[];
+  edges:[];
 }
 
 export interface Node {

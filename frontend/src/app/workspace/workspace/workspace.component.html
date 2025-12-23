@@ -1,9 +1,14 @@
 <div class="workspace-container">
-  <app-header [activeTab]="activeTab" (tabChange)="onTabChange($event)"></app-header>
-  
-  <div class="workspace-content">
+  <app-header [activeTab]="activeTab" (tabChange)="onTabChange($event)" [isgraphCreated]="graphCreated"></app-header>
+
+  <app-schema-creation
+    *ngIf="!graphCreated"
+    (graphCreated)="onGraphCreated($event)">
+  </app-schema-creation>
+
+  <div class="workspace-content" *ngIf="graphCreated">
     <app-sidebar></app-sidebar>
-    
+
     <main class="workspace-main">
       <app-graph-view *ngIf="activeTab === 'graph'"></app-graph-view>
       <app-data-view *ngIf="activeTab === 'data'"></app-data-view>

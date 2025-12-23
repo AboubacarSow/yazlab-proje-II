@@ -1,26 +1,27 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup,FormsModule,ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageDto } from '../../../models/message.model';
 import { MessageService } from '../../../services/message.service';
-import { ActivatedRoute } from '@angular/router';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-message-form',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './message-form.component.html',
   styleUrl: './message-form.component.css'
 })
 export class MessageFormComponent {
-messageForm!: FormGroup;
+
+  messageForm: FormGroup;
   submitted = false;
 
-  constructor(private fb: FormBuilder,
-    private messageService : MessageService,
-    private activiteRoute : ActivatedRoute
+  constructor(
+    private formbuilder: FormBuilder,
+    private messageService: MessageService
   ) {
-    this.messageForm = this.fb.group({
-      fullname: ['', Validators.required],
+    this.messageForm = this.formbuilder.group({
+      fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
       subject: ['', Validators.required],
@@ -31,20 +32,12 @@ messageForm!: FormGroup;
   onSubmit(): void {
     this.submitted = true;
 
-    if (this.messageForm.invalid) {
-      return;
-    }
+    if (this.messageForm.invalid) return;
 
     const dto: MessageDto = this.messageForm.value;
-
-    // Send MessageDto to backend API
     this.messageService.sendMessage(dto);
-
-    console.log('MessageDto:', dto);
 
     this.messageForm.reset();
     this.submitted = false;
   }
 }
-
-

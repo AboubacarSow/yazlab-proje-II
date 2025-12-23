@@ -11,17 +11,18 @@ import { RouterLink } from '@angular/router';
 export class HeaderComponent {
   @Input() activeTab: 'graph' | 'data' = 'graph';
   @Output() tabChange = new EventEmitter<'graph' | 'data'>();
-  
+
+  @Input() isgraphCreated= false;
   isDropdownOpen = false;
 
   switchTab(tab: 'graph' | 'data') {
     this.tabChange.emit(tab);
   }
-  
+
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
-  
+
   closeDropdown() {
     this.isDropdownOpen = false;
   }

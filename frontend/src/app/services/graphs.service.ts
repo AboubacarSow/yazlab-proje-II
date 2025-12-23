@@ -40,8 +40,8 @@ export class GraphsService {
     return this.http.get<{ graphs: Graph[] }>(this.GET_ALL_GRAPHS);
   }
 
-  createGraph(graphDto: CreateGraphDto): Observable<any> {
-    return this.http.post<any>(this.POST_GRAPH, { graph: graphDto });
+  createGraph(graphDto: CreateGraphDto): Observable<{ id: number; tag: string }> {
+    return this.http.post<{ id: number; tag: string }>(this.POST_GRAPH, { graph: graphDto });
   }
 
   getGraph(graphId: number): Observable<{ graph: Graph }> {

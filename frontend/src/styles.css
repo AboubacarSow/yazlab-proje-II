@@ -49,3 +49,22 @@ body {
   box-shadow: var(--shadow);
 }
 
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+@import '@angular/cdk/overlay-prebuilt.css';
+
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.graph-creation-panel {
+  width: 420px;
+  max-width: 90vw;
+}
+
+.graph-creation-panel .cdk-dialog-container {
+  padding: 0;
+  border-radius: 14px;
+  background: transparent;
+}
+
+
