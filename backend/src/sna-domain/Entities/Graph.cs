@@ -11,6 +11,7 @@ public class Graph : BaseEntity
     public DateTime CreatedOn { get; private set; } = DateTime.UtcNow;
     public DateTime LastUpdatedAt { get; private set; }=default!;
     public string Tag {get;set;} =default!;
+    public string Description { get; set;} =default!;
     public IReadOnlyCollection<Node> Nodes => _vertices.AsReadOnly();
     public IReadOnlyCollection<Edge> Edges => _edges.AsReadOnly();
 
