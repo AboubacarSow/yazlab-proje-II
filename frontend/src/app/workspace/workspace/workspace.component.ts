@@ -5,12 +5,13 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { GraphViewComponent } from '../graph-view/graph-view.component';
 import { DataViewComponent } from '../data-view/data-view.component';
 import { SchemaCreationComponent } from '../schema-creation/schema-creation.component';
-import { GraphService } from '../../core/services/graph.service';
+import { GraphStateService } from '../../core/services/graph.service';
+import { Guid } from '../../models/graph.model';
 
 @Component({
   selector: 'app-workspace',
-  imports: [CommonModule,HeaderComponent,SidebarComponent,GraphViewComponent,SchemaCreationComponent,
-      DataViewComponent],
+  imports: [CommonModule, HeaderComponent, SidebarComponent, GraphViewComponent, SchemaCreationComponent,
+    DataViewComponent],
   templateUrl: './workspace.component.html',
   styleUrl: './workspace.component.css'
 })
@@ -18,8 +19,8 @@ export class WorkspaceComponent implements OnInit  {
   activeTab: 'graph' | 'data' = 'graph';
 
   graphCreated = false;
-  currentGraphId?: number;
-  constructor(private graphService: GraphService){
+  currentGraphId?: Guid;
+  constructor(private graphService: GraphStateService){
     console.log(`Workspace initiated. GraphCreate value: ${this.graphCreated}`);
   }
   ngOnInit(): void {
@@ -31,7 +32,7 @@ export class WorkspaceComponent implements OnInit  {
       this.currentGraphId = graph.id;
     }
   }
-  onGraphCreated(graphId: number) {
+  onGraphCreated(graphId: Guid) {
     this.graphCreated = true;
     this.currentGraphId = graphId;
   }

@@ -15,7 +15,7 @@ internal class GraphRepository(GraphVDbContext context)
     public async Task<IEnumerable<Graph>> GetAllGraphsAsync(bool trackChChanges)
         => await GetAllAsync(trackChChanges);
 
-    public async Task<Graph?> GetGraphByIdAsync(int graphId, bool trackChChanges)
+    public async Task<Graph?> GetGraphByIdAsync(Guid graphId, bool trackChChanges)
     {
         IQueryable<Graph> query = _context.Graphs;
 

@@ -1,6 +1,17 @@
+using sna_domain.Entities;
+
 namespace sna_application.Graphs.Dtos;
-public record GraphDto(int Id, string Tag,int Order, int Size);
-public record NodeDto(int Id, int GraphId,
+public record GraphDto(Guid Id, 
+                    string Title,
+                    string Description,
+                    int Order,
+                    int Size
+                    )
+{
+    public List<Node> Nodes{get;set;}=[];
+    public List<Edge> Edges{get;set;} = [];
+}
+public record NodeDto(int Id, Guid GraphId,
     string Tag,
     double Activity,
     int Interaction);

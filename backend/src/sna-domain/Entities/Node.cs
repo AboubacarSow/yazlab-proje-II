@@ -5,7 +5,7 @@ namespace sna_domain.Entities;
 public class Node : BaseEntity, IEquatable<Node>
 {
     
-    public int GraphId {get;private set;}
+    public Guid GraphId {get;private set;}
     public Graph Graph { get; private set; } = default!;
     public string Tag { get; set; } = default!;
 
@@ -16,14 +16,14 @@ public class Node : BaseEntity, IEquatable<Node>
     public int DegreeCentrality { get; private set; }
     public int Connections { get; private set; }
 
-    private Node(int graphId) { GraphId = graphId; }
+    private Node(Guid graphId) { GraphId = graphId; }
 
-    private Node(int graphId,string tag) 
+    private Node(Guid graphId,string tag) 
     {
         Tag = tag;
         GraphId = graphId;
     }
-    private Node(int graphId,string tag, double activity, int interaction)
+    private Node(Guid graphId,string tag, double activity, int interaction)
     {
         GraphId= graphId;
         Tag= tag;
@@ -31,11 +31,11 @@ public class Node : BaseEntity, IEquatable<Node>
         Interaction = interaction;
     }
     
-    internal static Node Create(int graphId,string tag,double activity,int interaction)
+    internal static Node Create(Guid graphId,string tag,double activity,int interaction)
     =>new(graphId,tag,activity,interaction);
 
-    internal static Node Create(int graphId) => new(graphId);
-    internal static Node Create(int graphId, string tag)=>new(graphId,tag);
+    internal static Node Create(Guid graphId) => new(graphId);
+    internal static Node Create(Guid graphId, string tag)=>new(graphId,tag);
 
     public void UpdateLinksCount()
     {

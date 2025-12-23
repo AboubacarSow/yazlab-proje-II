@@ -1,9 +1,9 @@
 <h2>Create Graph</h2>
 
 <form [formGroup]="graphCreationForm" (ngSubmit)="create()">
-  <label>Graph tag</label>
+  <label>Graph Title</label>
   <input formControlName="tag" placeholder="Social Network" />
-   <span class="error" *ngIf="submitted && graphCreationForm.get('tag')?.hasError('required')">
+   <span class="error" *ngIf="submitted && graphCreationForm.get('title')?.hasError('required')">
       Full name is required
     </span>
 

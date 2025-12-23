@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { Graph } from '../../models/graph.model';
+import { BehaviorSubject, tap } from 'rxjs';
+import { Graph, Guid, ImportGraphCommand } from '../../models/graph.model';
 import { GraphsService } from '../../services/graphs.service';
 
 @Injectable({ providedIn: 'root' })
 
-export class GraphService {
+export class GraphStateService {
 
   private currentGraphSubject = new BehaviorSubject<Graph | null>(null);
   currentGraph$ = this.currentGraphSubject.asObservable();
@@ -13,15 +13,21 @@ export class GraphService {
   constructor(private graphsApi: GraphsService) {}
 
   /** CREATE GRAPH */
-  createGraph(tag: string) {
-    return this.graphsApi.createGraph({ tag });
+  createGraph(title: string) {
+    return this.graphsApi.createGraph({ title: title });
   }
-
+  importGraph(command: ImportGraphCommand) {
+  return this.graphsApi.importGraph(command).pipe(
+    tap((graph: Graph) => {
+        this.setCurrentGraph(graph);
+      })
+    );
+  }
   /** SET CURRENT GRAPH */
   setCurrentGraph(graph: Graph) {
     this.currentGraphSubject.next(graph);
     localStorage.setItem('currentGraph', JSON.stringify(graph));
-    
+
   }
    loadCurrentGraphFromStorage() {
     const raw = localStorage.getItem('currentGraph');
@@ -30,7 +36,7 @@ export class GraphService {
     }
   }
   /** LOAD GRAPH */
-  loadGraph(graphId: number) {
+  loadGraph(graphId: Guid) {
     return this.graphsApi.getGraph(graphId);
   }
 

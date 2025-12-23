@@ -10,7 +10,7 @@ public class EditGraphEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPut("api/graphs/{id:int}", async ([FromRoute] int id, [FromBody] EditGraphRequest request, ISender sender) =>
+        app.MapPut("api/graphs/{id:guid}", async ([FromRoute] Guid id, [FromBody] EditGraphRequest request, ISender sender) =>
         {
             if (id != request.Graph.Id) return Results.BadRequest("Ids mismatch");
             var result = await sender.Send(request.Graph);

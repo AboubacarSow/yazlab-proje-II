@@ -2,15 +2,16 @@ using sna_domain.Exceptions;
 
 namespace sna_domain.Entities;
 
-public class Graph : BaseEntity
+public class Graph 
 {
     //public Guid OwnerId {get; private set;}
     //public ApplicationUser Owner {get; private set;}= default!;
+    public Guid Id {get;set;}
     private  List<Node> _vertices = [];
     private  List<Edge> _edges = [];
     public DateTime CreatedOn { get; private set; } = DateTime.UtcNow;
     public DateTime LastUpdatedAt { get; private set; }=default!;
-    public string Tag {get;set;} =default!;
+    public string Title {get;set;} =default!;
     public string Description { get; set;} =default!;
     public IReadOnlyCollection<Node> Nodes => _vertices.AsReadOnly();
     public IReadOnlyCollection<Edge> Edges => _edges.AsReadOnly();
@@ -24,22 +25,29 @@ public class Graph : BaseEntity
         OwnerId = user.Id;
 
     }*/
-    private Graph(){}
-    private Graph(string tag)
+    private Graph()
     {
-        Tag= tag;
+        Id= Guid.NewGuid();
     }
-    public static Graph Create(string tag)=> new(tag);
+    private Graph(string title) 
+    {
+        Id=Guid.NewGuid();
+        Title= title;
+    }
+    public static Graph Create(string title)=> new(title);
     public void Touch() => LastUpdatedAt = DateTime.UtcNow;
 
     #region Nodes operations
-    public static Node CreateNode(int graphId,string tag,double activity,int interaction)
+
+    
+    public static Node CreateNode(Guid graphId,string tag,double activity,int interaction)
     {
         return Node.Create(graphId,tag,activity,interaction);
     }
-    public Node? GetNodeFromGraph(int nodeId) 
+    public Node? GetNodeFromGraphById(int nodeId) 
             => _vertices.FirstOrDefault(n=>n.Id==nodeId);
-    
+    public Node? GetNodeFromGraphByTag(string tag)
+            => _vertices.FirstOrDefault(n=>n.Tag==tag);
     // Add one or more than one node
     public Node AddNode(Node node)
     {

@@ -54,10 +54,10 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-// 2. Logging des requêtes (pour voir les logs incluant l'erreur gérée)
+// 2. Logging des requï¿½tes (pour voir les logs incluant l'erreur gï¿½rï¿½e)
 app.UseSerilogRequestLogging();
 
-// 3. Sécurité et CORS
+// 3. Sï¿½curitï¿½ et CORS
 app.UseCors("AllowFrontend");
 app.UseAuthorization();
 

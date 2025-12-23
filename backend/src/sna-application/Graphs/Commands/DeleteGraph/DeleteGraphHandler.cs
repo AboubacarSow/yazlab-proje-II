@@ -2,7 +2,7 @@
 namespace sna_application.Graphs.Commands.DeleteGraph;
 
 
-public record DeleteGraphCommand(int GraphId): IRequest<bool>;
+public record DeleteGraphCommand(Guid GraphId): IRequest<bool>;
 internal class DeleteGraphHandler(IGraphRepository _graphRepo, IUnitOfWork _unitOfWork)
  : IRequestHandler<DeleteGraphCommand, bool>
 {

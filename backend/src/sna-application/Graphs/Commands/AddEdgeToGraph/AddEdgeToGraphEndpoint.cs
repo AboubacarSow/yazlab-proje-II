@@ -8,7 +8,7 @@ public class AddEdgeToGraphEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/graphs/{id:int}/edges", async([FromRoute]int id,[FromBody]AddEdgeToGraphRequest request, ISender sender) =>
+        app.MapPost("api/graphs/{id:guid}/edges", async([FromRoute]Guid id,[FromBody]AddEdgeToGraphRequest request, ISender sender) =>
         {
             if(id!= request.Edge.GraphId) return Results.BadRequest("Mismatch Ids");
             var result= await sender.Send(request.Edge);

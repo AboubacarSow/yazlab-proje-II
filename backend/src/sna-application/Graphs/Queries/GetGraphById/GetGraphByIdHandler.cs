@@ -1,8 +1,9 @@
 using sna_application.Graphs.Dtos;
+using sna_domain.Entities;
 
 namespace sna_application.Graphs.Queries.GetGraphById;
 
-public record GetGraphByIdQuery(int Id): IRequest<GraphDto>;
+public record GetGraphByIdQuery(Guid Id): IRequest<GraphDto>;
 internal class GetGraphByIdHandler(IGraphRepository _graphRepo) 
 : IRequestHandler<GetGraphByIdQuery, GraphDto>
 {
@@ -10,7 +11,11 @@ internal class GetGraphByIdHandler(IGraphRepository _graphRepo)
     {
        var entity = await _graphRepo.GetGraphByIdAsync(request.Id,false) ??
         throw new NotFoundException($"Graph with Id:{request.Id} not found");
-       var graphDto= entity.Adapt<GraphDto>();
+        var graphDto = new GraphDto(entity.Id, entity.Title, entity.Description, entity.Order, entity.Size)
+        {
+            Nodes = [.. entity.Nodes],
+            Edges = [.. entity.Edges]
+        };
         return graphDto;
     }
 }

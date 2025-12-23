@@ -49,8 +49,8 @@ namespace sna_infrastructure.Migrations
 
             modelBuilder.Entity("sna_domain.Entities.Edge", b =>
                 {
-                    b.Property<int>("GraphId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("GraphId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("NodeAId")
                         .HasColumnType("int");
@@ -78,11 +78,9 @@ namespace sna_infrastructure.Migrations
 
             modelBuilder.Entity("sna_domain.Entities.Graph", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -93,7 +91,7 @@ namespace sna_infrastructure.Migrations
                     b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Tag")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -155,8 +153,8 @@ namespace sna_infrastructure.Migrations
                     b.Property<int>("DegreeCentrality")
                         .HasColumnType("int");
 
-                    b.Property<int>("GraphId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("GraphId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Interaction")
                         .HasColumnType("int");

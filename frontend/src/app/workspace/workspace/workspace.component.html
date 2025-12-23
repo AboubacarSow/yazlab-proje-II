@@ -5,7 +5,6 @@
     *ngIf="!graphCreated"
     (graphCreated)="onGraphCreated($event)">
   </app-schema-creation>
-
   <div class="workspace-content" *ngIf="graphCreated">
     <app-sidebar></app-sidebar>
 
