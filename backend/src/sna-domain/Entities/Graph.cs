@@ -12,7 +12,7 @@ public class Graph
     public DateTime CreatedOn { get; private set; } = DateTime.UtcNow;
     public DateTime LastUpdatedAt { get; private set; }=default!;
     public string Title {get;set;} =default!;
-    public string Description { get; set;} =default!;
+    public string? Description { get; set;} =default!;
     public IReadOnlyCollection<Node> Nodes => _vertices.AsReadOnly();
     public IReadOnlyCollection<Edge> Edges => _edges.AsReadOnly();
 
@@ -34,7 +34,14 @@ public class Graph
         Id=Guid.NewGuid();
         Title= title;
     }
+    private Graph(string title, string description)
+    {
+        Id=Guid.NewGuid();
+        Title= title;
+        Description = description;
+    }
     public static Graph Create(string title)=> new(title);
+    public static Graph Create(string title, string description)=>new(title,description);
     public void Touch() => LastUpdatedAt = DateTime.UtcNow;
 
     #region Nodes operations
@@ -119,6 +126,8 @@ public class Graph
     {
         return _vertices.Contains(node);
     }
+
+    //Computation
     public bool ComputeDegreeCentrality()
     {
         if (Order < 2) return false;
@@ -130,6 +139,42 @@ public class Graph
             node.SetCentrality(degree, normalized);
         }
         return true;
+    }
+    public bool IsConnected()
+    {
+        if (Order <= 1)
+            return true;
+
+        var visited = new HashSet<int>();
+        var stack = new Stack<Node>();
+
+        var startNode = _vertices.First();
+        stack.Push(startNode);
+        visited.Add(startNode.Id);
+
+        while (stack.Count > 0)
+        {
+            var current = stack.Pop();
+
+            var neighbors = _edges
+                .Where(e => e.NodeAId == current.Id || e.NodeBId == current.Id)
+                .Select(e =>
+                    e.NodeAId == current.Id
+                        ? _vertices.First(n => n.Id == e.NodeBId)
+                        : _vertices.First(n => n.Id == e.NodeAId)
+                );
+
+            foreach (var neighbor in neighbors)
+            {
+                if (!visited.Contains(neighbor.Id))
+                {
+                    visited.Add(neighbor.Id);
+                    stack.Push(neighbor);
+                }
+            }
+        }
+
+        return visited.Count == Order;
     }
 
    

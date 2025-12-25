@@ -11,7 +11,7 @@ internal class GetGraphByIdHandler(IGraphRepository _graphRepo)
     {
        var entity = await _graphRepo.GetGraphByIdAsync(request.Id,false) ??
         throw new NotFoundException($"Graph with Id:{request.Id} not found");
-        var graphDto = new GraphDto(entity.Id, entity.Title, entity.Description, entity.Order, entity.Size)
+        var graphDto = new GraphDto(entity.Id, entity.Title, entity.Description!, entity.Order, entity.Size)
         {
             Nodes= entity.Nodes.ToList().Adapt<List<NodeDto>>(),
             Edges = entity.Edges.ToList().Adapt<List<EdgeDto>>()

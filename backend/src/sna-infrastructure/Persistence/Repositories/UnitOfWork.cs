@@ -4,5 +4,9 @@ namespace sna_infrastructure.Persistence.Repositories;
 internal class UnitOfWork(GraphVDbContext _context) : IUnitOfWork
 {
     public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default)
-        => await _context.SaveChangesAsync(cancellationToken) > 0;
+    {
+        
+        var ligne =await _context.SaveChangesAsync(cancellationToken);
+        return ligne > 0;
+    }
 }
