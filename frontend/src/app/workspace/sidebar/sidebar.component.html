@@ -5,7 +5,7 @@
       class="section-header graph-tag-btn"
       (mouseenter)="showDropdown($event)"
       (mouseleave)="hideDropdown()">
-      <span>Graph Tag</span>
+      <span>{{ graphTitle$ | async }}</span>
       <span class="arrow"> <i class="fa-solid fa-chevron-right"></i></span>
     </button>
 
@@ -18,19 +18,15 @@
       (mouseenter)="keepDropdownOpen()"
       (mouseleave)="hideDropdown()">
       <!-- Graf İşlemleri -->
-      <button class="dropdown-item" (click)="onAction('graph-edit')">
+      <button class="dropdown-item" (click)="openEditGraph()">
         <span class="graph-icon">✏️</span>
         <span>Edit</span>
       </button>
-      <button class="dropdown-item" (click)="onAction('graph-import')">
-        <span class="graph-icon">📥</span>
-        <span>Import</span>
-      </button>
-      <button class="dropdown-item" (click)="onAction('graph-export')">
+      <button class="dropdown-item" (click)="export()">
         <span class="graph-icon">📤</span>
         <span>Export</span>
       </button>
-      <button class="dropdown-item" (click)="onAction('graph-info')">
+      <button class="dropdown-item" (click)="openSummary()">
         <span class="graph-icon">ℹ️</span>
         <span>Summary </span>
       </button>

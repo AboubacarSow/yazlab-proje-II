@@ -50,11 +50,7 @@ export const routes: Routes = [
   },
 
   // Workspace (Graf çalışma alanı)
-  { path: 'workspace', component: WorkspaceComponent,
-    children : [
-      { path: '#schema-creation', component:SchemaCreationComponent}
-    ]
-   },
+  { path: 'workspace', component: WorkspaceComponent},
 
   // Fallback
   { path: '**', redirectTo: '' }

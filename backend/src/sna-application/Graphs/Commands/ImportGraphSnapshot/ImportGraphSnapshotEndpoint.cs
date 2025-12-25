@@ -6,8 +6,8 @@ public class ImportGraphSnapshotEndpoint : ICarterModule
     {
         app.MapPost("api/graphs/import-snapshot",async (ImportGraphSnapshotCommand command,ISender sender) =>
         {
-            var graphId = await sender.Send(command);
-            return Results.Created($"/api/graphs/{graphId}", graphId);
+            var graph = await sender.Send(command);
+            return Results.Ok(graph);
         }).WithTags("Graphs")
         .WithName("ImportGraphSnapshot");
     }

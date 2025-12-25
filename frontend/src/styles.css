@@ -67,4 +67,48 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background: transparent;
 }
 
+.graph-summary-panel .cdk-dialog-container{
+  max-width: 90vw;
+  background: #ffffff;
+  color: #040404;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  animation: fadeInScale 150ms ease-out;
+}
+
+.dialog-sm { width: 360px; }
+.dialog-md { width: 420px; }
+.dialog-lg { width: 680px; }
+
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+
+.toast.toast-success {
+  background: #16a34a !important;
+  color: white;
+  font-weight: 500;
+}
+
+.toast.toast-error {
+  background: #dc2626 !important;
+  color: white;
+  font-weight: 500;
+}
+
+.toast.toast-info {
+  background: #2563eb !important;
+  color: white;
+}
+
 

@@ -10,6 +10,11 @@ internal class DeleteGraphHandler(IGraphRepository _graphRepo, IUnitOfWork _unit
     {
         var graph= await _graphRepo.GetGraphByIdAsync(request.GraphId,true)
         ?? throw new NotFoundException($"Graph with Id:{request.GraphId} not found");
+        var nodes = graph.Nodes.ToList() ;
+         foreach(var node in nodes)
+        {
+            graph.Nodes.Remove(node);
+        }
          _graphRepo.DeleteGraph(graph);
          return await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

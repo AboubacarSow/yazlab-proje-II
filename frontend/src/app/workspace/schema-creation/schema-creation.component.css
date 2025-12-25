@@ -61,6 +61,18 @@
   transform: translateY(-1px);
 }
 
+/* TERTIARY */
+.actions .tertiary {
+  background-color: #f8fafc;
+  color: #0f172a;
+  border: 1px dashed #94a3b8;
+}
+
+.actions .tertiary:hover {
+  background-color: #e2e8f0;
+  transform: translateY(-1px);
+}
+
 /* RESPONSIVE */
 @media (max-width: 480px) {
   .actions {

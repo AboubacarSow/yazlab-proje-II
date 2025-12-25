@@ -60,7 +60,7 @@ namespace sna_infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Node",
+                name: "Nodes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -75,13 +75,13 @@ namespace sna_infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Node", x => x.Id);
+                    table.PrimaryKey("PK_Nodes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Node_Graphs_GraphId",
+                        name: "FK_Nodes_Graphs_GraphId",
                         column: x => x.GraphId,
                         principalTable: "Graphs",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -101,18 +101,17 @@ namespace sna_infrastructure.Migrations
                         name: "FK_Edges_Graphs_GraphId",
                         column: x => x.GraphId,
                         principalTable: "Graphs",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Edges_Nodes_NodeAId",
+                        column: x => x.NodeAId,
+                        principalTable: "Nodes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Edges_Node_NodeAId",
-                        column: x => x.NodeAId,
-                        principalTable: "Node",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Edges_Node_NodeBId",
+                        name: "FK_Edges_Nodes_NodeBId",
                         column: x => x.NodeBId,
-                        principalTable: "Node",
+                        principalTable: "Nodes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -134,8 +133,8 @@ namespace sna_infrastructure.Migrations
                 column: "NodeBId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Node_GraphId",
-                table: "Node",
+                name: "IX_Nodes_GraphId",
+                table: "Nodes",
                 column: "GraphId");
         }
 
@@ -152,7 +151,7 @@ namespace sna_infrastructure.Migrations
                 name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "Node");
+                name: "Nodes");
 
             migrationBuilder.DropTable(
                 name: "Graphs");

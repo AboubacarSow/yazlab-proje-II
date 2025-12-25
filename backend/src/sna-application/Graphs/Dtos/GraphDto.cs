@@ -47,14 +47,14 @@ public record EdgeDto(
             int NodeBId);      
 
 public record NodeSnapshotDto(
-    int TempId,        // id du snapshot (frontend)
+    int Id,        // id du snapshot (frontend)
     string Tag,
-    int Activity,
+    double Activity,
     int Interaction
 );
 
 public record EdgeSnapshotDto(
-    int NodeA,         // TempId
-    int NodeB,         // TempId
+    int NodeAId,         // TempId
+    int NodeBId,         // TempId
     double? Weight
 );

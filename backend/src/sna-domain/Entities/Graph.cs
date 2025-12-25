@@ -7,16 +7,16 @@ public class Graph
     //public Guid OwnerId {get; private set;}
     //public ApplicationUser Owner {get; private set;}= default!;
     public Guid Id {get;set;}
-    private  List<Node> _vertices = [];
+    private  List<Node> _nodes = [];
     private  List<Edge> _edges = [];
     public DateTime CreatedOn { get; private set; } = DateTime.UtcNow;
     public DateTime LastUpdatedAt { get; private set; }=default!;
     public string Title {get;set;} =default!;
     public string? Description { get; set;} =default!;
-    public IReadOnlyCollection<Node> Nodes => _vertices.AsReadOnly();
-    public IReadOnlyCollection<Edge> Edges => _edges.AsReadOnly();
+    public ICollection<Node> Nodes => _nodes;
+    public ICollection<Edge> Edges => _edges;
 
-    public int Order => _vertices.Count;
+    public int Order => _nodes.Count;
     public int Size => _edges.Count;
     /*
     public Graph(ApplicationUser user)
@@ -34,14 +34,14 @@ public class Graph
         Id=Guid.NewGuid();
         Title= title;
     }
-    private Graph(string title, string description)
+    private Graph(string title, string? description)
     {
         Id=Guid.NewGuid();
         Title= title;
         Description = description;
     }
     public static Graph Create(string title)=> new(title);
-    public static Graph Create(string title, string description)=>new(title,description);
+    public static Graph Create(string title, string? description)=>new(title,description);
     public void Touch() => LastUpdatedAt = DateTime.UtcNow;
 
     #region Nodes operations
@@ -52,16 +52,16 @@ public class Graph
         return Node.Create(graphId,tag,activity,interaction);
     }
     public Node? GetNodeFromGraphById(int nodeId) 
-            => _vertices.FirstOrDefault(n=>n.Id==nodeId);
+            => _nodes.FirstOrDefault(n=>n.Id==nodeId);
     public Node? GetNodeFromGraphByTag(string tag)
-            => _vertices.FirstOrDefault(n=>n.Tag==tag);
+            => _nodes.FirstOrDefault(n=>n.Tag==tag);
     // Add one or more than one node
     public Node AddNode(Node node)
     {
-        if (_vertices.Any(n => n.Equals(node) ))
+        if (_nodes.Any(n => n.Equals(node) ))
             throw new DomainException($"Node already exists in this graph.");
 
-        _vertices.Add(node);
+        _nodes.Add(node);
 
         return node;
     }
@@ -77,10 +77,10 @@ public class Graph
     // Deleting a node 
     public bool DeleteOneNode( Node node)
     {
-        if (_vertices.Contains(node))
+        if (_nodes.Contains(node))
         {
             var nodeId= node.Id;
-            _vertices.Remove(node);
+            _nodes.Remove(node);
             Edge edge = _edges.FirstOrDefault(e => e.NodeAId == nodeId ||  e.NodeBId == nodeId)!;
            if(edge is not null){
                 _edges.Remove(edge);
@@ -96,7 +96,7 @@ public class Graph
     #endregion
     public void ConnectNodes(Node a, Node b)
     {
-        if (!_vertices.Contains(a) || !_vertices.Contains(b))
+        if (!_nodes.Contains(a) || !_nodes.Contains(b))
             throw new DomainException("Both nodes must belong to the same graph.");
         
         if (_edges.Any(e => e.Connects(a, b)))
@@ -113,7 +113,7 @@ public class Graph
 
     public Edge GetEdgeFromGraph(int nodeAId, int nodeBId)
     {
-        if (!_vertices.Any(n=>n.Id==nodeAId) || !_vertices.Any(n=>n.Id==nodeBId))
+        if (!_nodes.Any(n=>n.Id==nodeAId) || !_nodes.Any(n=>n.Id==nodeBId))
             throw new DomainException("Both nodes must belong to the same graph.");
         
         return _edges.FirstOrDefault(e=>(e.NodeAId==nodeAId && e.NodeBId==nodeBId)
@@ -124,14 +124,14 @@ public class Graph
    
     public bool ContainsNode(Node node)
     {
-        return _vertices.Contains(node);
+        return _nodes.Contains(node);
     }
 
     //Computation
     public bool ComputeDegreeCentrality()
     {
         if (Order < 2) return false;
-        foreach (var node in _vertices)
+        foreach (var node in _nodes)
         {
             int degree = node.Connections;
             double normalized = Order > 1 ? (double)degree / (Order - 1) : 0;
@@ -148,7 +148,7 @@ public class Graph
         var visited = new HashSet<int>();
         var stack = new Stack<Node>();
 
-        var startNode = _vertices.First();
+        var startNode = _nodes.First();
         stack.Push(startNode);
         visited.Add(startNode.Id);
 
@@ -160,8 +160,8 @@ public class Graph
                 .Where(e => e.NodeAId == current.Id || e.NodeBId == current.Id)
                 .Select(e =>
                     e.NodeAId == current.Id
-                        ? _vertices.First(n => n.Id == e.NodeBId)
-                        : _vertices.First(n => n.Id == e.NodeAId)
+                        ? _nodes.First(n => n.Id == e.NodeBId)
+                        : _nodes.First(n => n.Id == e.NodeAId)
                 );
 
             foreach (var neighbor in neighbors)

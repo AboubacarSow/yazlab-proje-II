@@ -1,4 +1,4 @@
-import { ImportGraph } from "../../models/graph.model";
+import { GraphSnapshot, ImportGraph } from "../../models/graph.model";
 
 export function validateImportGraph(graph: ImportGraph): string[] {
   const errors: string[] = [];
@@ -34,3 +34,27 @@ export function validateImportGraph(graph: ImportGraph): string[] {
 
   return errors;
 }
+
+export function validateSnapshot(snapshot: GraphSnapshot): boolean {
+
+  if (!snapshot.title || !snapshot.nodes?.length){
+    console.error('snapshot missing title and or nodes are empty')
+    return false;
+  }
+
+  const tempIds = snapshot.nodes.map(n => n.id);
+  if (new Set(tempIds).size !== tempIds.length){
+    console.error('invalid tempId')
+    return false;
+  }
+
+  for (const edge of snapshot.edges) {
+    if (!tempIds.includes(edge.nodeAId) || !tempIds.includes(edge.nodeBId)){
+      console.error('edges do not includes nodeIds');
+      return false;
+    }
+  }
+
+  return true;
+}
+
