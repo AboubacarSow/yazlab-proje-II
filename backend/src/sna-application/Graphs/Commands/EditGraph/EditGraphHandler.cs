@@ -15,6 +15,8 @@ internal class EditGraphHanlder(IGraphRepository graphRepository, IUnitOfWork un
 
         if(!string.IsNullOrEmpty(request.Title)) graph.Title = request.Title;
         if(!string.IsNullOrEmpty(request.Description)) graph.Description = request.Description;  
-        return await unitOfWork.SaveChangesAsync(cancellationToken);
+        graph.Touch();
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        return true;
     }
 }
