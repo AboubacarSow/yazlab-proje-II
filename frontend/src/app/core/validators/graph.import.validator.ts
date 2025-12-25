@@ -1,4 +1,4 @@
-import { ImportGraph } from "../../models/graph.model";
+import { GraphSnapshot, ImportGraph } from "../../models/graph.model";
 
 export function validateImportGraph(graph: ImportGraph): string[] {
   const errors: string[] = [];
@@ -34,3 +34,25 @@ export function validateImportGraph(graph: ImportGraph): string[] {
 
   return errors;
 }
+
+export function validateSnapshot(snapshot: GraphSnapshot): boolean {
+
+  if (!snapshot.title || !snapshot.nodes?.length){
+    console.error('ujfv')
+    return false;
+  }
+
+  const tempIds = snapshot.nodes.map(n => n.tempId);
+  if (new Set(tempIds).size !== tempIds.length){
+    console.error('invalid tempId')
+    return false;
+  }
+
+  for (const edge of snapshot.edges) {
+    if (!tempIds.includes(edge.nodeA) || !tempIds.includes(edge.nodeB))
+      return false;
+  }
+
+  return true;
+}
+

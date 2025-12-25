@@ -20,17 +20,22 @@ export class WorkspaceComponent implements OnInit  {
 
   graphCreated = false;
   currentGraphId?: Guid;
-  constructor(private graphService: GraphStateService){
+  constructor(private graphStateService: GraphStateService){
     console.log(`Workspace initiated. GraphCreate value: ${this.graphCreated}`);
   }
   ngOnInit(): void {
-    this.graphService.loadCurrentGraphFromStorage();
+    this.graphStateService.loadCurrentGraphFromStorage();
 
-    const graph = this.graphService.getCurrentGraph();
-    if (graph) {
-      this.graphCreated = true;
-      this.currentGraphId = graph.id;
-    }
+    this.graphStateService.currentGraph$.subscribe(graph=>{
+      if(!graph){
+        this.graphCreated=false;
+        this.currentGraphId=undefined
+        return;
+      }
+      this.graphCreated=true;
+      this.currentGraphId=graph.id;
+    })
+
   }
   onGraphCreated(graphId: Guid) {
     this.graphCreated = true;

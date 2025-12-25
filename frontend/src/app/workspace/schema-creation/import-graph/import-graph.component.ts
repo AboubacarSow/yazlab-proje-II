@@ -73,7 +73,6 @@ export class ImportGraphComponent {
     if (!this.fileContent) return;
 
     this.loading = true;
-
     this.graphState.importGraph(this.fileContent).subscribe({
       next: graph => {
         this.graphState.setCurrentGraph(graph);

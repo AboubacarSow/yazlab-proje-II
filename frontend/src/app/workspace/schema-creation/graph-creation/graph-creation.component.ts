@@ -17,6 +17,7 @@ import { GraphStateService } from '../../../core/services/graph.service';
 export class GraphCreationComponent {
 
   graphCreationForm : FormGroup;
+  serverError: string | null = null;
   submitted = false;
   loading = false;
   constructor(private formBuilder: FormBuilder,
@@ -29,11 +30,12 @@ export class GraphCreationComponent {
   }
   create() {
     this.submitted= true;
+     this.serverError = null;
     if (this.graphCreationForm.invalid) return;
 
     this.loading = true;
     const title = this.graphCreationForm.value.title;
-    this.graphCreationForm.reset();
+
     this.submitted=false;
     this.graphService.createGraph(title).subscribe({
       next: (res) => {
@@ -46,10 +48,18 @@ export class GraphCreationComponent {
           nodes:[],
           edges:[]
         };
+        this.graphCreationForm.reset();
         this.dialogRef.close(graph);
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
+        if (err.status === 500) {
+          this.serverError = 'An internal server error occurred. Please try again.';
+        } else if (err.error?.message) {
+          this.serverError = err.error.message;
+        } else {
+          this.serverError = 'Unexpected error occurred.';
+        }
       }
     });
   }

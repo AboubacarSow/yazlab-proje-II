@@ -21,7 +21,7 @@ h2 {
 }
 .title{
   text-align: center;
-  
+
 }
 label {
   font-size: 14px;
@@ -56,8 +56,20 @@ button {
   cursor: pointer;
 }
 
-.error{
-  color: brown;
+.error {
+  color: #dc2626;
+  font-size: 13px;
+  margin-top: 4px;
+  display: block;
+}
+
+.server-error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
 button.primary {

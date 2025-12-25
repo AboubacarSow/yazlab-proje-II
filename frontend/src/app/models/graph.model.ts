@@ -1,5 +1,5 @@
-import { Edge, EdgeImportDto } from "./edge.model";
-import { NodeImportDto } from "./node.model";
+import { Edge, EdgeImportDto,EdgeSnapshot,ExportEdgeDto } from "./edge.model";
+import { ExportNodeDto, NodeImportDto, NodeSnapshot } from "./node.model";
 
 
 export type Guid = string;
@@ -46,6 +46,56 @@ export interface ImportGraphRequest {
 
 export interface ImportGraphResponse {
   graph: Graph;
+}
+export interface GraphSummary {
+  id: Guid;
+  nodeCount: number;
+  edgeCount: number;
+  title: string;
+  description: string;
+  isConnected: boolean;
+  isWeighted: boolean;
+  isDirected: boolean;
+  density: number;
+  averageDegree: number;
+}
+
+export interface GetGraphSummaryResponse {
+  graphSummary: GraphSummary;
+}
+export interface EditGraphResponse{
+  title: string;
+  description: string
+}
+export interface EditGraphCommand{
+  id : Guid;
+  title:string;
+  description: string
+}
+export interface EditGraphRequest{
+  graph : EditGraphCommand
+}
+
+export interface ExportGraphDto{
+  id: Guid,
+  title:string,
+  description: string,
+  isConnected:boolean,
+  isWeighted:boolean,
+  order:number,
+  size: number,
+  nodes:ExportNodeDto[],
+  edges:ExportEdgeDto[]
+}
+export interface ExportGraphResponse{
+  graph: ExportGraphDto
+}
+
+export interface GraphSnapshot {
+  title: string;
+  description?: string;
+  nodes: NodeSnapshot[];
+  edges: EdgeSnapshot[];
 }
 
 

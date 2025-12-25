@@ -3,10 +3,12 @@
 <form [formGroup]="graphCreationForm" (ngSubmit)="create()">
   <label>Graph Title</label>
   <input formControlName="title" placeholder="Social Network" />
-   <span class="error" *ngIf="submitted && graphCreationForm.get('title')?.hasError('required')">
+    <span class="error" *ngIf="submitted && graphCreationForm.get('title')?.hasError('required')">
       Graph title is required!
     </span>
-
+    <div class="server-error" *ngIf="serverError">
+    {{ serverError }}
+    </div>
   <div class="actions">
     <button type="button" class="cancel" (click)="cancel()">Cancel</button>
     <button type="submit" [disabled]="loading" class="primary"> <i class="fa-solid fa-plus"></i> Create</button>

@@ -1,0 +1,26 @@
+<form (ngSubmit)="importSnapshot()" class="import-snapshot-form">
+
+  <h2 class="form-title">Import Graph Snapshot</h2>
+
+  <label class="form-label">Select JSON file</label>
+  <input
+    type="file"
+    accept=".json,application/json"
+    (change)="onFileSelected($event)"
+  />
+
+  <div *ngIf="fileName" class="file-name">
+    Selected file: {{ fileName }}
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div class="actions">
+    <button type="button" class="cancel" (click)="cancel()">Cancel</button>
+    <button type="submit" class="primary" [disabled]="loading || !snapShot">
+      <i class="fa-solid fa-upload me-2"></i> Import
+    </button>
+  </div>
+</form>
