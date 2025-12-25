@@ -38,19 +38,21 @@ export function validateImportGraph(graph: ImportGraph): string[] {
 export function validateSnapshot(snapshot: GraphSnapshot): boolean {
 
   if (!snapshot.title || !snapshot.nodes?.length){
-    console.error('ujfv')
+    console.error('snapshot missing title and or nodes are empty')
     return false;
   }
 
-  const tempIds = snapshot.nodes.map(n => n.tempId);
+  const tempIds = snapshot.nodes.map(n => n.id);
   if (new Set(tempIds).size !== tempIds.length){
     console.error('invalid tempId')
     return false;
   }
 
   for (const edge of snapshot.edges) {
-    if (!tempIds.includes(edge.nodeA) || !tempIds.includes(edge.nodeB))
+    if (!tempIds.includes(edge.nodeAId) || !tempIds.includes(edge.nodeBId)){
+      console.error('edges do not includes nodeIds');
       return false;
+    }
   }
 
   return true;

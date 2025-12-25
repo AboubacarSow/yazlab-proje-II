@@ -1,4 +1,4 @@
-import {EditGraphCommand, EditGraphRequest, EditGraphResponse, ExportGraphResponse, GetGraphSummaryResponse, GraphSnapshot, Guid, ImportGraphCommand, ImportGraphRequest } from './../models/graph.model';
+import {EditGraphCommand, EditGraphRequest, EditGraphResponse, ExportGraphResponse, GetGraphSummaryResponse, GraphSnapshot, Guid, ImportGraphCommand, ImportGraphRequest, ImportGraphResponse } from './../models/graph.model';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -47,17 +47,17 @@ export class GraphsService {
     return this.http.delete<void>(this.DEL_GRAPH(graphId));
   }
 
-  importGraph(command : ImportGraphCommand) : Observable<Graph>{
+  importGraph(command : ImportGraphCommand) : Observable<ImportGraphResponse>{
     const payload: ImportGraphRequest = {
       importGraph: command
     };
-    return this.http.post<Graph>(this.IMPORT_GRAPH, payload)
+    return this.http.post<ImportGraphResponse>(this.IMPORT_GRAPH, payload)
   }
 
   importSnapshot(snapshot: GraphSnapshot) : Observable<Graph>{
     return this.http.post<Graph>(this.IMPORT_SNAPSHOT,snapshot);
   }
-  
+
   exportGraph(graphId: Guid) : Observable<ExportGraphResponse>{
     return this.http.get<ExportGraphResponse>(this.EXPORT_GRAPH(graphId))
   }

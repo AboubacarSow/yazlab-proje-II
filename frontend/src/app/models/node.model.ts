@@ -37,7 +37,7 @@ export interface ExportEdge{
 
 
 export interface NodeSnapshot {
-  tempId: number;
+  id: number;
   tag: string;
   activity: number;
   interaction: number;

@@ -44,7 +44,7 @@ namespace sna_infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactInfos");
+                    b.ToTable("ContactInfos", (string)null);
                 });
 
             modelBuilder.Entity("sna_domain.Entities.Edge", b =>
@@ -97,7 +97,7 @@ namespace sna_infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Graphs");
+                    b.ToTable("Graphs", (string)null);
                 });
 
             modelBuilder.Entity("sna_domain.Entities.Message", b =>
@@ -133,7 +133,7 @@ namespace sna_infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("sna_domain.Entities.Node", b =>
@@ -170,7 +170,7 @@ namespace sna_infrastructure.Migrations
 
                     b.HasIndex("GraphId");
 
-                    b.ToTable("Node");
+                    b.ToTable("Nodes", (string)null);
                 });
 
             modelBuilder.Entity("sna_domain.Entities.Edge", b =>
@@ -178,19 +178,19 @@ namespace sna_infrastructure.Migrations
                     b.HasOne("sna_domain.Entities.Graph", "Graph")
                         .WithMany("Edges")
                         .HasForeignKey("GraphId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("sna_domain.Entities.Node", "NodeA")
                         .WithMany()
                         .HasForeignKey("NodeAId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("sna_domain.Entities.Node", "NodeB")
                         .WithMany()
                         .HasForeignKey("NodeBId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Graph");
@@ -205,7 +205,7 @@ namespace sna_infrastructure.Migrations
                     b.HasOne("sna_domain.Entities.Graph", "Graph")
                         .WithMany("Nodes")
                         .HasForeignKey("GraphId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Graph");

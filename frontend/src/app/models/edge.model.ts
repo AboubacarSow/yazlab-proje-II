@@ -19,7 +19,7 @@ export interface ExportEdgeDto{
 }
 
 export interface EdgeSnapshot {
-  nodeA: number;
-  nodeB: number;
+  nodeAId: number;
+  nodeBId: number;
   weight?: number;
 }

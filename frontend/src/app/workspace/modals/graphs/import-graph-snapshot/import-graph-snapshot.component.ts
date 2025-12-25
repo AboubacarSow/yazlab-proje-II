@@ -5,67 +5,87 @@ import { Graph, GraphSnapshot } from '../../../../models/graph.model';
 import { ToastService } from '../../../../core/utils/toast-service.service';
 import { DialogRef } from '@angular/cdk/dialog';
 import { NgIf } from '@angular/common';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-import-graph-snapshot',
-  imports: [NgIf],
+  imports: [NgIf,FormsModule,ReactiveFormsModule ],
   templateUrl: './import-graph-snapshot.component.html',
   styleUrl: './import-graph-snapshot.component.css'
 })
 export class ImportGraphSnapshotComponent {
-  loading = false;
-  error? : string = ''
+  importForm: FormGroup;
   fileName?: string;
-  snapShot? : GraphSnapshot
+  snapShot?: GraphSnapshot;
+  error?: string;
+  loading = false;
 
   constructor(
-    private graphStateService: GraphStateService,
-    private dialog : DialogRef<Graph>,
-    private toast : ToastService
-  ) {}
+    private fb: FormBuilder,
+    private graphState: GraphStateService,
+    private dialogRef: DialogRef<Graph>,
+    private toast: ToastService
+  ) {
+    this.importForm = this.fb.group({});
+  }
 
   onFileSelected(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file) return;
-    this.fileName =file.name;
-    const reader = new FileReader();
+    this.error = undefined;
+    this.snapShot = undefined;
 
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    if (!file.name.endsWith('.json')) {
+      this.error = 'Only JSON files are allowed';
+      return;
+    }
+
+    this.fileName = file.name;
+
+    const reader = new FileReader();
     reader.onload = () => {
       try {
         const parsed = JSON.parse(reader.result as string) as GraphSnapshot;
-        if (!validateSnapshot(parsed)) {
-          this.error='Invalid snapshot structure';
+
+        const valid = validateSnapshot(parsed);
+        if (!valid) {
+          this.error = 'Invalid snapshot structure';
           return;
         }
-        this.snapShot= parsed;
 
-      }catch {
-        this.error='Invalid JSON format';
-        return;
+        this.snapShot = parsed;
+
+      } catch {
+        this.error = 'Invalid JSON format';
       }
-
     };
+
     reader.readAsText(file);
   }
 
   importSnapshot() {
-    if(!this.snapShot) return;
-
+    if (!this.snapShot) return;
+    console.log('data loaded:', this.snapShot);
     this.loading = true;
-    this.graphStateService.importSnapshot(this.snapShot).subscribe({
+    this.error = undefined;
+
+    this.graphState.importSnapshot(this.snapShot).subscribe({
       next: (graph) => {
-        this.toast.success('Graph imported successfully')
-        this.loading = false
-        this.dialog.close(graph)
-      },
-      error: () => {
-        this.error='Failed to import snapshot';
+        this.graphState.setCurrentGraph(graph);
+        this.toast.success('Graph imported successfully');
         this.loading = false;
+        this.dialogRef.close(graph);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = err?.error?.message ?? 'Failed to import snapshot';
       }
     });
   }
 
-  cancel(){
-    this.dialog.close();
+  cancel() {
+    this.dialogRef.close();
   }
 }

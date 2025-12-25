@@ -12,7 +12,7 @@ using sna_infrastructure.Persistence;
 namespace sna_infrastructure.Migrations
 {
     [DbContext(typeof(GraphVDbContext))]
-    [Migration("20251223194525_Initial")]
+    [Migration("20251225194535_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -173,7 +173,7 @@ namespace sna_infrastructure.Migrations
 
                     b.HasIndex("GraphId");
 
-                    b.ToTable("Node");
+                    b.ToTable("Nodes", (string)null);
                 });
 
             modelBuilder.Entity("sna_domain.Entities.Edge", b =>
@@ -181,19 +181,19 @@ namespace sna_infrastructure.Migrations
                     b.HasOne("sna_domain.Entities.Graph", "Graph")
                         .WithMany("Edges")
                         .HasForeignKey("GraphId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("sna_domain.Entities.Node", "NodeA")
                         .WithMany()
                         .HasForeignKey("NodeAId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("sna_domain.Entities.Node", "NodeB")
                         .WithMany()
                         .HasForeignKey("NodeBId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Graph");
@@ -208,7 +208,7 @@ namespace sna_infrastructure.Migrations
                     b.HasOne("sna_domain.Entities.Graph", "Graph")
                         .WithMany("Nodes")
                         .HasForeignKey("GraphId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Graph");

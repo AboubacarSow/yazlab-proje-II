@@ -3,6 +3,7 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
 {
         public void Configure(EntityTypeBuilder<Node> builder)
         {
+            builder.ToTable("Nodes");
             builder.HasKey(node => node.Id);
 
             builder.Property(n=>n.GraphId).IsRequired();
@@ -10,7 +11,7 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
             builder.HasOne(n=> n.Graph)
                     .WithMany(g=> g.Nodes)
                     .HasForeignKey(g => g.GraphId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
             
         }
 }

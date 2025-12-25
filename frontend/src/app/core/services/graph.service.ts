@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, switchMap, take, tap, throwError } from 'rxjs';
-import { EditGraphCommand, EditGraphResponse, Graph, GraphSnapshot, GraphSummary, Guid, ImportGraphCommand } from '../../models/graph.model';
+import { EditGraphCommand,
+  EditGraphResponse,
+  Graph,
+  GraphSnapshot,
+  GraphSummary,
+  Guid,
+  ImportGraphCommand,
+  ImportGraphResponse } from '../../models/graph.model';
 import { GraphsService } from '../../services/graphs.service';
 
 @Injectable({ providedIn: 'root' })
@@ -18,8 +25,8 @@ export class GraphStateService {
   }
   importGraph(command: ImportGraphCommand) {
   return this.graphsApi.importGraph(command).pipe(
-    tap((graph: Graph) => {
-        this.setCurrentGraph(graph);
+    tap((response: ImportGraphResponse) => {
+        this.setCurrentGraph(response.graph);
       })
     );
   }

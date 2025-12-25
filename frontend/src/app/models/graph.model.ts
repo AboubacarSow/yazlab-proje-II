@@ -92,6 +92,7 @@ export interface ExportGraphResponse{
 }
 
 export interface GraphSnapshot {
+  id:Guid,
   title: string;
   description?: string;
   nodes: NodeSnapshot[];
