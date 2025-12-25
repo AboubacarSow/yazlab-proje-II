@@ -12,7 +12,7 @@ using sna_infrastructure.Persistence;
 namespace sna_infrastructure.Migrations
 {
     [DbContext(typeof(GraphVDbContext))]
-    [Migration("20251223194525_Initial")]
+    [Migration("20251224113638_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

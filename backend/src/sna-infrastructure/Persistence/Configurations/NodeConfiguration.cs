@@ -10,7 +10,7 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
             builder.HasOne(n=> n.Graph)
                     .WithMany(g=> g.Nodes)
                     .HasForeignKey(g => g.GraphId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
             
         }
 }

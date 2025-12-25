@@ -1,0 +1,22 @@
+/* HOST = dialog panel */
+:host {
+	display: block;
+	background: #ffffff;
+	border-radius: 14px;
+	padding: 24px;
+	width: 400px;
+	max-width: 90vw;
+	box-shadow:
+		0 10px 25px rgba(0, 0, 0, 0.15),
+		0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.modal { padding: 16px; max-width: 380px; }
+h3 { margin: 0 0 12px 0; }
+.no-items { padding: 12px; text-align: center; color: #666; }
+.edge-list { margin: 12px 0; }
+.edge-item { display: flex; align-items: center; margin-bottom: 8px; }
+.edge-item input { margin-right: 8px; }
+.edge-item label { cursor: pointer; flex: 1; }
+.actions { display: flex; gap: 8px; margin-top: 16px; }
+.actions button { flex: 1; padding: 8px; }

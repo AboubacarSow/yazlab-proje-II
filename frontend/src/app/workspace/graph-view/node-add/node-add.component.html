@@ -1,0 +1,46 @@
+<div class="modal">
+  <div class="modal-header">
+    <h3>Node Ekle</h3>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="create()">
+      <div class="form-group">
+        <label>Tag</label>
+        <input type="text" formControlName="tag" placeholder="Node adı girin" />
+        <div class="error" *ngIf="submitted && form.controls['tag'].invalid">
+          <span *ngIf="form.controls['tag'].errors?.['required']">Zorunlu alan</span>
+          <span *ngIf="form.controls['tag'].errors?.['minlength']">En az 2 karakter olmalı</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Activity</label>
+          <input type="number" formControlName="activity" placeholder="0-1 arası" min="0" max="1" step="0.1" />
+          <div class="error" *ngIf="submitted && form.controls['activity'].invalid">
+            <span *ngIf="form.controls['activity'].errors?.['required']">Zorunlu alan</span>
+            <span *ngIf="form.controls['activity'].errors?.['min'] || form.controls['activity'].errors?.['max']">0 ile 1 arasında olmalı</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Interaction</label>
+          <input type="number" formControlName="interaction" placeholder="1+" min="1" />
+          <div class="error" *ngIf="submitted && form.controls['interaction'].invalid">
+            <span *ngIf="form.controls['interaction'].errors?.['required']">Zorunlu alan</span>
+            <span *ngIf="form.controls['interaction'].errors?.['min']">1 veya üstü olmalı</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="error" *ngIf="error" style="margin-top: 12px; padding: 8px; background: #ffebee; border-radius: 4px; border-left: 4px solid #d32f2f;">
+        {{ error }}
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="secondary" (click)="cancel()">İptal</button>
+        <button type="submit" class="primary" [disabled]="loading">
+          {{ loading ? 'Ekleniyor...' : 'Ekle' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

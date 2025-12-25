@@ -37,16 +37,40 @@ export class GraphCreationComponent {
     this.submitted=false;
     this.graphService.createGraph(title).subscribe({
       next: (res) => {
-        const graph : Graph = {
-          id: res.id,
-          title: res.title,
-          description: null,
-          order: 0,
-          size: 0,
-          nodes:[],
-          edges:[]
-        };
-        this.dialogRef.close(graph);
+        // Fetch freshly created graph so nodes/edges are available in state
+        this.graphService.loadGraph(res.id).subscribe({
+          next: (loaded) => {
+            const loadedGraph = loaded.graph ?? loaded;
+            // Ensure id and title are preserved from creation response
+            const graph: Graph = {
+              id: res.id || loadedGraph.id,
+              title: res.title || loadedGraph.title,
+              description: loadedGraph.description ?? null,
+              order: loadedGraph.order ?? 0,
+              size: loadedGraph.size ?? 0,
+              nodes: loadedGraph.nodes ?? [],
+              edges: loadedGraph.edges ?? []
+            };
+            console.log('✅ Graph loaded successfully:', graph);
+            this.graphService.setCurrentGraph(graph);
+            this.dialogRef.close(graph);
+          },
+          error: () => {
+            // Fallback to minimal graph if load fails
+            const graph : Graph = {
+              id: res.id,
+              title: res.title,
+              description: null,
+              order: 0,
+              size: 0,
+              nodes:[],
+              edges:[]
+            };
+            console.log('⚠️ Using fallback graph:', graph);
+            this.graphService.setCurrentGraph(graph);
+            this.dialogRef.close(graph);
+          }
+        });
       },
       error: () => {
         this.loading = false;

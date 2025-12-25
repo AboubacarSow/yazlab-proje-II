@@ -14,7 +14,20 @@ export class GraphStateService {
 
   /** CREATE GRAPH */
   createGraph(title: string) {
-    return this.graphsApi.createGraph({ title: title });
+    return this.graphsApi.createGraph({ title: title }).pipe(
+      tap((res) => {
+        const graph: Graph = {
+          id: res.id,
+          title: res.title,
+          description: null,
+          order: 0,
+          size: 0,
+          nodes: [],
+          edges: []
+        };
+        this.setCurrentGraph(graph);
+      })
+    );
   }
   importGraph(command: ImportGraphCommand) {
   return this.graphsApi.importGraph(command).pipe(
@@ -25,14 +38,24 @@ export class GraphStateService {
   }
   /** SET CURRENT GRAPH */
   setCurrentGraph(graph: Graph) {
+    console.log('✅ setCurrentGraph called:', graph);
     this.currentGraphSubject.next(graph);
     localStorage.setItem('currentGraph', JSON.stringify(graph));
-
   }
-   loadCurrentGraphFromStorage() {
+
+  loadCurrentGraphFromStorage() {
     const raw = localStorage.getItem('currentGraph');
+    console.log('📦 localStorage raw:', raw);
     if (raw) {
-      this.currentGraphSubject.next(JSON.parse(raw));
+      try {
+        const parsed = JSON.parse(raw);
+        console.log('✅ Parsed from localStorage:', parsed);
+        this.currentGraphSubject.next(parsed);
+      } catch (err) {
+        console.error('❌ Error parsing localStorage graph:', err);
+      }
+    } else {
+      console.log('⚠️ No graph in localStorage');
     }
   }
   /** LOAD GRAPH */

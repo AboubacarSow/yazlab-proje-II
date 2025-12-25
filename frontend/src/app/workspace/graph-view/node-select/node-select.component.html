@@ -1,0 +1,19 @@
+<div>
+  <h3>{{ modeLabel }} Node'u Seçin</h3>
+  <div *ngIf="nodes.length; else noNodes">
+    <select [(ngModel)]="selectedId">
+      <option [ngValue]="undefined">Seçiniz</option>
+      <option *ngFor="let n of nodes" [ngValue]="n.id">{{ n.tag }} (ID: {{ n.id }})</option>
+    </select>
+    <div class="actions">
+      <button class="secondary" (click)="cancel()">İptal</button>
+      <button class="primary" [disabled]="!selectedId" (click)="confirm()">Devam</button>
+    </div>
+  </div>
+  <ng-template #noNodes>
+    <p>Bu grafikte node bulunmuyor.</p>
+    <div class="actions">
+      <button class="secondary" (click)="cancel()">Kapat</button>
+    </div>
+  </ng-template>
+</div>

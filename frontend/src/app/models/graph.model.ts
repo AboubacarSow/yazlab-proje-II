@@ -1,5 +1,5 @@
 import { Edge, EdgeImportDto } from "./edge.model";
-import { NodeImportDto } from "./node.model";
+import { NodeImportDto, GraphNode } from "./node.model";
 
 
 export type Guid = string;
@@ -10,7 +10,7 @@ export interface Graph {
   description?: string | null,
   order: number | 0;
   size: number | 0;
-  nodes:Node[];
+  nodes:GraphNode[];
   edges:Edge[];
 }
 export interface ImportGraph {

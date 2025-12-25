@@ -1,0 +1,125 @@
+/* HOST = dialog panel */
+:host {
+  display: block;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px;
+  width: 420px;
+  max-width: 90vw;
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.15),
+    0 4px 10px rgba(0, 0, 0, 0.08);
+  outline: none;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header { 
+  margin-bottom: 12px; 
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.modal-body {
+  flex: 1;
+}
+
+.form-group { 
+  margin-bottom: 10px; 
+  display: flex; 
+  flex-direction: column; 
+}
+
+.form-group label {
+  margin-bottom: 4px;
+  font-weight: 500;
+  color: #555;
+  font-size: 14px;
+}
+
+.form-row { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 12px; 
+}
+
+input { 
+  padding: 8px; 
+  border: 1px solid #ddd; 
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+input:focus {
+  outline: none;
+  border-color: #3f51b5;
+  box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.1);
+}
+
+.modal-actions { 
+  display: flex; 
+  justify-content: flex-end; 
+  gap: 8px; 
+  margin-top: 16px; 
+}
+
+.primary { 
+  background: #3f51b5; 
+  color: #fff; 
+  border: none; 
+  padding: 8px 16px; 
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.primary:hover:not(:disabled) {
+  background: #303f9f;
+}
+
+.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondary { 
+  background: #eee; 
+  color: #333; 
+  border: none; 
+  padding: 8px 16px; 
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.secondary:hover {
+  background: #ddd;
+}
+
+.error { 
+  color: #d32f2f; 
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.warn { 
+  background: #fff3cd; 
+  color: #8a6d3b; 
+  padding: 8px; 
+  border-radius: 6px; 
+  margin-bottom: 10px; 
+  font-size: 13px;
+  border: 1px solid #ffc107;
+}

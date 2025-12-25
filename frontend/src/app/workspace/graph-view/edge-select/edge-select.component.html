@@ -1,0 +1,26 @@
+<div class="modal">
+  <h3>{{ modeLabel }}</h3>
+  
+  <div *ngIf="edges.length === 0" class="no-items">
+    Grafikte edge bulunmamaktadır.
+  </div>
+
+  <div *ngIf="edges.length > 0" class="edge-list">
+    <div *ngFor="let item of edges" class="edge-item">
+      <input 
+        type="radio" 
+        [value]="item.edge.id" 
+        [(ngModel)]="selectedId"
+        [id]="'edge-' + item.edge.id"
+      />
+      <label [for]="'edge-' + item.edge.id">
+        {{ item.nodeA?.tag ?? '?' }} → {{ item.nodeB?.tag ?? '?' }} (ID: {{ item.edge.id }})
+      </label>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button (click)="cancel()">İptal</button>
+    <button (click)="confirm()" [disabled]="!selectedId">Seç</button>
+  </div>
+</div>

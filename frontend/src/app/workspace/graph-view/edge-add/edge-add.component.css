@@ -1,0 +1,19 @@
+/* HOST = dialog panel */
+:host {
+	display: block;
+	background: #ffffff;
+	border-radius: 14px;
+	padding: 24px;
+	width: 420px;
+	max-width: 90vw;
+	box-shadow:
+		0 10px 25px rgba(0, 0, 0, 0.15),
+		0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.modal { padding: 16px; max-width: 420px; }
+.form-row { margin-bottom: 12px; display: flex; flex-direction: column; }
+label { font-weight: 600; margin-bottom: 6px; }
+select { padding: 8px; }
+.actions { display: flex; gap: 8px; margin-top: 12px; }
+.error { color: #c00; margin-top: 8px; }
