@@ -127,7 +127,11 @@ internal class ImportGraphHanlder(IGraphRepository graphRepository, IUnitOfWork 
         var nodes = new List<Node>();
         foreach(var nodeDto in request.Nodes)
         {
-            var node = Graph.CreateNode(graph.Id,nodeDto.Tag,nodeDto.Activity,nodeDto.Interaction);
+            var node = Graph.CreateNode(graph.Id,
+                            nodeDto.Tag,
+                            nodeDto.Activity,
+                            nodeDto.Interaction);
+
             nodes.Add(node);
         }
         graph.AddNodes(nodes);
@@ -156,7 +160,7 @@ internal class ImportGraphHanlder(IGraphRepository graphRepository, IUnitOfWork 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         var entity= await graphRepository.GetGraphByIdAsync(graph.Id,false)?? 
         throw new NotFoundException("Graph",graph.Id);
-        var graphDto = new GraphDto(entity.Id, entity.Title, entity.Description, entity.Order, entity.Size)
+        var graphDto = new GraphDto(entity.Id, entity.Title, entity.Description!, entity.Order, entity.Size)
         {
             Nodes= entity.Nodes.ToList().Adapt<List<NodeDto>>(),
             Edges = entity.Edges.ToList().Adapt<List<EdgeDto>>()

@@ -1,0 +1,68 @@
+
+<form
+  [formGroup]="formEdit"
+  (ngSubmit)="save()"
+  class="edit-graph-container"
+>
+
+  <!-- Header -->
+  <header class="edit-graph-header">
+    <h2>Edit Graph</h2>
+    <p class="subtitle">Update graph title and description</p>
+  </header>
+
+  <!-- Body -->
+  <section class="edit-graph-body">
+
+    <!-- Title -->
+    <div class="form-group">
+      <label>Title</label>
+      <input
+        type="text"
+        formControlName="title"
+        placeholder="Graph title"
+      />
+
+      <span class="error"
+        *ngIf="formEdit.get('title')?.touched && formEdit.get('title')?.invalid">
+        Title is required
+      </span>
+    </div>
+
+    <!-- Description -->
+    <div class="form-group">
+      <label>Description</label>
+      <textarea
+        rows="4"
+        formControlName="description"
+        placeholder="Optional description">
+      </textarea>
+    </div>
+
+    <!-- Backend error -->
+    <div *ngIf="error" class="backend-error">
+      {{ error }}
+    </div>
+
+  </section>
+
+  <!-- Footer -->
+  <footer class="edit-graph-actions">
+    <button
+      type="button"
+      class="btn cancel"
+      (click)="cancel()"
+      [disabled]="loading">
+      Cancel
+    </button>
+
+    <button
+      type="submit"
+      class="btn primary"
+      [disabled]="loading">
+      <span *ngIf="!loading">Save</span>
+      <span *ngIf="loading">Saving...</span>
+    </button>
+  </footer>
+
+</form>

@@ -22,3 +22,23 @@ export interface EditNodeDto {
   activity: number;
   interaction: number;
 }
+export interface ExportNodeDto{
+  id:number,
+  graphId:Guid,
+  tag : string,
+  activity: number,
+  interaction: number
+}
+export interface ExportEdge{
+  nodeA: number
+  nodeB: number,
+  weight:number
+}
+
+
+export interface NodeSnapshot {
+  id: number;
+  tag: string;
+  activity: number;
+  interaction: number;
+}

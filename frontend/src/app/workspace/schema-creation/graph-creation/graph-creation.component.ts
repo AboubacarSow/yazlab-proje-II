@@ -17,6 +17,7 @@ import { GraphStateService } from '../../../core/services/graph.service';
 export class GraphCreationComponent {
 
   graphCreationForm : FormGroup;
+  serverError: string | null = null;
   submitted = false;
   loading = false;
   constructor(private formBuilder: FormBuilder,
@@ -29,51 +30,36 @@ export class GraphCreationComponent {
   }
   create() {
     this.submitted= true;
+     this.serverError = null;
     if (this.graphCreationForm.invalid) return;
 
     this.loading = true;
     const title = this.graphCreationForm.value.title;
-    this.graphCreationForm.reset();
+
     this.submitted=false;
     this.graphService.createGraph(title).subscribe({
       next: (res) => {
-        // Fetch freshly created graph so nodes/edges are available in state
-        this.graphService.loadGraph(res.id).subscribe({
-          next: (loaded) => {
-            const loadedGraph = loaded.graph ?? loaded;
-            // Ensure id and title are preserved from creation response
-            const graph: Graph = {
-              id: res.id || loadedGraph.id,
-              title: res.title || loadedGraph.title,
-              description: loadedGraph.description ?? null,
-              order: loadedGraph.order ?? 0,
-              size: loadedGraph.size ?? 0,
-              nodes: loadedGraph.nodes ?? [],
-              edges: loadedGraph.edges ?? []
-            };
-            console.log('✅ Graph loaded successfully:', graph);
-            this.graphService.setCurrentGraph(graph);
-            this.dialogRef.close(graph);
-          },
-          error: () => {
-            // Fallback to minimal graph if load fails
-            const graph : Graph = {
-              id: res.id,
-              title: res.title,
-              description: null,
-              order: 0,
-              size: 0,
-              nodes:[],
-              edges:[]
-            };
-            console.log('⚠️ Using fallback graph:', graph);
-            this.graphService.setCurrentGraph(graph);
-            this.dialogRef.close(graph);
-          }
-        });
+        const graph : Graph = {
+          id: res.id,
+          title: res.title,
+          description: null,
+          order: 0,
+          size: 0,
+          nodes:[],
+          edges:[]
+        };
+        this.graphCreationForm.reset();
+        this.dialogRef.close(graph);
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
+        if (err.status === 500) {
+          this.serverError = 'An internal server error occurred. Please try again.';
+        } else if (err.error?.message) {
+          this.serverError = err.error.message;
+        } else {
+          this.serverError = 'Unexpected error occurred.';
+        }
       }
     });
   }

@@ -1,0 +1,70 @@
+<div class="summary-container">
+
+  <header class="summary-header">
+    <h2>{{ summary.title }} — Summary</h2>
+
+    <p class="summary-description" *ngIf="summary.description">
+      {{ summary.description }}
+    </p>
+    <p class="summary-description" *ngIf="!summary.description">
+     {{summary.title}} has no description.
+    </p>
+  </header>
+
+  <section class="summary-grid">
+
+    <div class="summary-item">
+      <span class="label">Nodes</span>
+      <span class="value">{{ summary.nodeCount }}</span>
+    </div>
+
+    <div class="summary-item">
+      <span class="label">Edges</span>
+      <span class="value">{{ summary.edgeCount }}</span>
+    </div>
+
+    <div class="summary-item">
+      <span class="label">Connected</span>
+      <span
+        class="value"
+        [class.ok]="summary.isConnected"
+        [class.ko]="!summary.isConnected">
+        {{ summary.isConnected ? 'Yes' : 'No' }}
+      </span>
+    </div>
+
+    <div class="summary-item">
+      <span class="label">Density</span>
+      <span class="value">
+        {{ summary.density | number:'1.3-3' }}
+      </span>
+    </div>
+
+    <div class="summary-item">
+      <span class="label">Average Degree</span>
+      <span class="value">
+        {{ summary.averageDegree | number:'1.2-2' }}
+      </span>
+    </div>
+
+    <div class="summary-item">
+      <span class="label">Directed</span>
+      <span class="value">
+        {{ summary.isDirected ? 'Yes' : 'No' }}
+      </span>
+    </div>
+
+    <div class="summary-item">
+      <span class="label">Weighted</span>
+      <span class="value">
+        {{ summary.isWeighted ? 'Yes' : 'No' }}
+      </span>
+    </div>
+
+  </section>
+
+  <footer class="summary-actions">
+    <button class="btn-primary" (click)="close()">Close</button>
+  </footer>
+
+</div>
