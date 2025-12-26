@@ -21,8 +21,8 @@
     <div class="error" *ngIf="submitted && error">{{ error }}</div>
 
     <div class="actions">
-      <button type="submit" [disabled]="loading">Oluştur</button>
       <button type="button" (click)="cancel()" [disabled]="loading">İptal</button>
+      <button type="submit" [disabled]="loading">{{ loading ? 'Ekleniyor...' : 'Ekle' }}</button>
     </div>
   </form>
 </div>

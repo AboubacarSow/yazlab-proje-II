@@ -1,22 +1,88 @@
-/* HOST = dialog panel */
 :host {
-	display: block;
-	background: #ffffff;
-	border-radius: 14px;
-	padding: 24px;
-	width: 400px;
-	max-width: 90vw;
-	box-shadow:
-		0 10px 25px rgba(0, 0, 0, 0.15),
-		0 4px 10px rgba(0, 0, 0, 0.08);
+  display: block;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 450px;
+  max-width: 90vw;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  outline: none;
 }
 
-.modal { padding: 16px; max-width: 380px; }
-h3 { margin: 0 0 12px 0; }
-.no-items { padding: 12px; text-align: center; color: #666; }
-.edge-list { margin: 12px 0; }
-.edge-item { display: flex; align-items: center; margin-bottom: 8px; }
-.edge-item input { margin-right: 8px; }
-.edge-item label { cursor: pointer; flex: 1; }
-.actions { display: flex; gap: 8px; margin-top: 16px; }
-.actions button { flex: 1; padding: 8px; }
+.modal {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+.no-items {
+  padding: 16px;
+  text-align: center;
+  color: #666;
+  background: #f8f8f8;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  background: white;
+  cursor: pointer;
+  margin-bottom: 14px;
+}
+
+select:focus {
+  outline: none;
+  border-color: #5B8DEE;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.actions button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.actions button:first-child {
+  background: #f0f0f0;
+  color: #555;
+}
+
+.actions button:first-child:hover {
+  background: #e0e0e0;
+}
+
+.actions button:last-child {
+  background: #5B8DEE;
+  color: #fff;
+}
+
+.actions button:last-child:hover:not(:disabled) {
+  background: #4A7DD8;
+}
+
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}

@@ -69,12 +69,25 @@ export class NodeAddComponent {
         },
         error: (err) => {
           this.loading = false;
-          this.error = err?.error?.message ?? err?.message ?? 'Node eklenemedi. Lütfen tekrar deneyin.';
+          // ASP.NET Core returns ProblemDetails: use 'detail' field
+          const detail = err?.error?.detail ?? err?.error?.message ?? err?.message ?? '';
+          const title = err?.error?.title ?? '';
+          // Duplicate node name mapping (DomainException: "Node already exists in this graph.")
+          if (
+            err?.status === 400 &&
+            typeof detail === 'string' && /node already exists/i.test(detail)
+          ) {
+            this.error = 'Aynı node oluşturulamaz.';
+            console.log(this.error);
+          } else {
+            this.error = detail || 'Node eklenemedi. Lütfen tekrar deneyin.';
+          }
         }
       });
     } catch (err: any) {
       this.loading = false;
       this.error = err?.message ?? 'Hata: Node eklenemedi.';
+      console.log(err.message);
     }
   }
 

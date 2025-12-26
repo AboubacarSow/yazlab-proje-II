@@ -59,8 +59,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   width: 420px !important;
   max-width: 90vw !important;
 }
+.edge-add-panel {
+  width: 400px !important;
+  max-width: 90vw !important;
+}
 
 .graph-creation-panel .cdk-dialog-container {
+  padding: 0 !important;
+  border-radius: 14px;
+  background: transparent !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+.edge-add-panel .cdk-dialog-container {
   padding: 0 !important;
   border-radius: 14px;
   background: transparent !important;

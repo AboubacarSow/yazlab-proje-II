@@ -115,7 +115,7 @@ export class SidebarComponent {
             alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
             return;
           }
-          this.dialog.open(EdgeAddComponent, { disableClose: true, panelClass: 'graph-creation-panel' });
+          this.dialog.open(EdgeAddComponent, { disableClose: true, panelClass: 'edge-add-panel' });
         }
         break;
       case 'edge-delete':
