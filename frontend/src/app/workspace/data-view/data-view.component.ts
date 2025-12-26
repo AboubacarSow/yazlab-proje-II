@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-data-view',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './data-view.component.html',
   styleUrl: './data-view.component.css'

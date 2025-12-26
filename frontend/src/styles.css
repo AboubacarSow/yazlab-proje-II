@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import '@angular/cdk/overlay-prebuilt.css';
 
 /* Light Theme (Default) */
 :root {
@@ -49,22 +51,54 @@ body {
   box-shadow: var(--shadow);
 }
 
-@import "bootstrap/dist/css/bootstrap.min.css";
-
-@import '@angular/cdk/overlay-prebuilt.css';
-
-
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Dialog Panel Stilleri */
 .graph-creation-panel {
-  width: 420px;
-  max-width: 90vw;
+  width: 420px !important;
+  max-width: 90vw !important;
+}
+.edge-add-panel {
+  width: 400px !important;
+  max-width: 90vw !important;
 }
 
 .graph-creation-panel .cdk-dialog-container {
-  padding: 0;
+  padding: 0 !important;
   border-radius: 14px;
-  background: transparent;
+  background: transparent !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+.edge-add-panel .cdk-dialog-container {
+  padding: 0 !important;
+  border-radius: 14px;
+  background: transparent !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* CDK Dialog Overlay backdrop */
+.cdk-overlay-backdrop {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Focus outline kaldır */
+.cdk-dialog-container {
+  outline: none !important;
+}
+
+/* Modal content */
+.cdk-dialog-container app-node-add,
+.cdk-dialog-container app-graph-creation-modal,
+.cdk-dialog-container app-import-graph,
+.cdk-dialog-container app-node-edit,
+.cdk-dialog-container app-node-delete,
+.cdk-dialog-container app-node-select,
+.cdk-dialog-container app-edge-add,
+.cdk-dialog-container app-edge-select,
+.cdk-dialog-container app-edge-delete {
+  display: block;
+  width: 100%;
 }
 
 .graph-summary-panel .cdk-dialog-container{

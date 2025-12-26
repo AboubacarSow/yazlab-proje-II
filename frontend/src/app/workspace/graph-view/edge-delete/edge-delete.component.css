@@ -1,0 +1,98 @@
+/* HOST = dialog panel */
+:host {
+  display: block;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 450px;
+  max-width: 90vw;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  outline: none;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal h2 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+.info {
+  margin-bottom: 14px;
+  font-weight: 400;
+  color: #666;
+  font-size: 14px;
+}
+
+.edge-info {
+  background: #f8f8f8;
+  padding: 14px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+}
+
+.edge-info p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.edge-info p strong {
+  color: #333;
+  font-weight: 500;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.actions button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.actions button:first-child {
+  background: #f0f0f0;
+  color: #555;
+}
+
+.actions button:first-child:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.actions button.danger {
+  background: #E74C3C;
+  color: white;
+}
+
+.actions button.danger:hover:not(:disabled) {
+  background: #C0392B;
+}
+
+.actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error {
+  color: #ED4245;
+  font-size: 13px;
+  margin-top: 12px;
+  padding: 12px;
+  background: #FEE;
+  border-radius: 8px;
+  border-left: 4px solid #ED4245;
+}

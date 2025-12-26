@@ -12,6 +12,7 @@ import { GraphsService } from '../../services/graphs.service';
 
 @Component({
   selector: 'app-sidebar',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
@@ -98,9 +99,78 @@ export class SidebarComponent implements OnInit{
     }
   }
 
+  constructor(private dialog: Dialog, private graphState: GraphStateService) {}
+
   // Actions
   onAction(action: string) {
-    console.log('Action:', action);
+    switch(action) {
+      case 'node-add':
+        this.graphState.loadCurrentGraphFromStorage(); // Refresh state before check
+        const currentGraph = this.graphState.getCurrentGraph();
+        if (!currentGraph) {
+          alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
+          return;
+        }
+        this.dialog.open(NodeAddComponent, { disableClose: true, panelClass: 'graph-creation-panel' });
+        break;
+      case 'node-edit':
+        this.openNodeSelectThenEdit();
+        break;
+      case 'node-delete':
+        this.openNodeSelectThenDelete();
+        break;
+      case 'edge-add':
+        {
+          this.graphState.loadCurrentGraphFromStorage();
+          const cg = this.graphState.getCurrentGraph();
+          if (!cg) {
+            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
+            return;
+          }
+          this.dialog.open(EdgeAddComponent, { disableClose: true, panelClass: 'edge-add-panel' });
+        }
+        break;
+      case 'edge-delete':
+        this.openEdgeSelectThenDelete();
+        break;
+      default:
+        console.log('Action:', action);
+        break;
+    }
+  }
+
+  private openNodeSelectThenEdit() {
+    const ref = this.dialog.open(NodeSelectComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { mode: 'edit' } });
+    ref.closed.subscribe(value => {
+      const node = value as GraphNode | null;
+      if (!node) return;
+      const current = this.graphState.getCurrentGraph();
+      if (!current) return;
+      this.dialog.open(NodeEditComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { node, graphId: current.id } });
+    });
+  }
+
+  private openNodeSelectThenDelete() {
+    const ref = this.dialog.open(NodeSelectComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { mode: 'delete' } });
+    ref.closed.subscribe(value => {
+      const node = value as GraphNode | null;
+      if (!node) return;
+      const current = this.graphState.getCurrentGraph();
+      if (!current) return;
+      this.dialog.open(NodeDeleteComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { node, graphId: current.id } });
+    });
+  }
+
+  private openEdgeSelectThenDelete() {
+    this.graphState.loadCurrentGraphFromStorage();
+    const ref = this.dialog.open(EdgeSelectComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { mode: 'delete' } });
+    ref.closed.subscribe(value => {
+      const edge = value as Edge | null;
+      if (!edge) return;
+      const current = this.graphState.getCurrentGraph();
+      if (!current) return;
+      this.dialog.open(EdgeDeleteComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { edge, graphId: current.id } });
+    });
   }
   // Modals Actions
   openSummary(){

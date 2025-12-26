@@ -10,7 +10,7 @@ export interface Graph {
   description?: string | null,
   order: number | 0;
   size: number | 0;
-  nodes:Node[];
+  nodes:GraphNode[];
   edges:Edge[];
 }
 export interface ImportGraph {

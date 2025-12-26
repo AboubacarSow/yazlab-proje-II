@@ -8,7 +8,7 @@ export interface EdgeImportDto {
   nodeTagB: string;
 }
 export interface AddEdgeDto {
-  graphId: number;
+  graphId: import('./graph.model').Guid;
   nodeAId: number;
   nodeBId: number;
 }

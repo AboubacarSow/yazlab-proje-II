@@ -1,0 +1,96 @@
+/* HOST = dialog panel */
+:host {
+  display: block;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 450px;
+  max-width: 90vw;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  outline: none;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal h2 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+.form-row {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #888;
+  font-size: 14px;
+}
+
+select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  background: white;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: #5B8DEE;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.actions button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.actions button[type="submit"] {
+  background: #5B8DEE;
+  color: #fff;
+}
+
+.actions button[type="submit"]:hover:not(:disabled) {
+  background: #4A7DD8;
+}
+
+.actions button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.actions button[type="button"] {
+  background: #f0f0f0;
+  color: #555;
+}
+
+.actions button[type="button"]:hover {
+  background: #e0e0e0;
+}
+
+.error {
+  color: #E74C3C;
+  font-size: 13px;
+  margin-top: 10px;
+}

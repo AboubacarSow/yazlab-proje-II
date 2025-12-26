@@ -1,0 +1,20 @@
+<div class="modal">
+  <h3>{{ modeLabel }}</h3>
+  
+  <div *ngIf="edges.length === 0" class="no-items">
+    Grafikte edge bulunmamaktadır.
+  </div>
+
+  <div *ngIf="edges.length > 0">
+    <select [(ngModel)]="selectedId">
+      <option [ngValue]="undefined">Seçiniz</option>
+      <option *ngFor="let item of edges" [ngValue]="item.edge.id">
+        {{ item.nodeA?.tag ?? '?' }} → {{ item.nodeB?.tag ?? '?' }} (ID: {{ item.edge.id }})
+      </option>
+    </select>
+    <div class="actions">
+      <button (click)="cancel()">İptal</button>
+      <button (click)="confirm()" [disabled]="!selectedId">Seç</button>
+    </div>
+  </div>
+</div>

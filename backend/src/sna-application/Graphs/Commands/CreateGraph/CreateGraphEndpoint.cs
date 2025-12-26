@@ -16,4 +16,3 @@ public class CreateGraphEndpoint : ICarterModule
         .Produces<CreateGraphResponse>();
     }
 }
-

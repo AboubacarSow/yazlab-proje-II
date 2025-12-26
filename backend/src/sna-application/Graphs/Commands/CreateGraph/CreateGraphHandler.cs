@@ -10,7 +10,7 @@ public class CreateGraphCommandValidator : AbstractValidator<CreateGraphCommand>
 {
     public CreateGraphCommandValidator()
     {
-        RuleFor(g=>g.Title).NotEmpty().WithMessage("Graph's Tag is required to create a new one");
+        RuleFor(g=>g.Title).NotEmpty().WithMessage("Graph's Title is required to create a new one");
     }
 }
 
