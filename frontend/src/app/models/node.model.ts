@@ -5,7 +5,7 @@ export interface NodeImportDto {
   activity: number;
   interaction: number;
 }
-export interface GraphNode {
+export interface Node {
   id: number;
   graphId: Guid;
   tag: string;

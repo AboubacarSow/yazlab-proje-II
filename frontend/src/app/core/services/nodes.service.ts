@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { GraphStateService } from './graph.service';
 import { NodesService as NodesApiService } from '../../services/nodes.service';
-import { AddNodeDto, EditNodeDto, GraphNode } from '../../models/node.model';
+import { AddNodeDto, EditNodeDto, Node } from '../../models/node.model';
 import { Graph, Guid } from '../../models/graph.model';
-import { tap } from 'rxjs';
+import { filter, map, Observable, switchMap, take, tap } from 'rxjs';
 
 /**
  * NodeStateService - Handles node operations and state management
@@ -22,94 +22,108 @@ export class NodesService {
   /**
    * Add node to current graph
    */
-  addNode(tag: string, activity: number, interaction: number) {
-    const current = this.graphState.getCurrentGraph();
-    
-    if (!current || !current.id) {
-      throw new Error('No active graph selected');
-    }
+  addNode(
+  tag: string,
+  activity: number,
+  interaction: number
+): Observable<Node> {
 
+  const payloadBase = {
+    tag,
+    activity: Number(activity),
+    interaction: Number(interaction)
+  };
+
+  return this.withCurrentGraph(graph => {
     const payload: AddNodeDto = {
-      graphId: current.id as Guid,
-      tag,
-      activity: Number(activity),
-      interaction: Number(interaction)
+      graphId: graph.id,
+      ...payloadBase
     };
 
     return this.nodesApi.addNodeToGraph(payload).pipe(
-      tap((res) => {
-        const node = (res as any)?.nodeDto as GraphNode ?? (res as any)?.node as GraphNode;
-        if (node) {
-          const updatedGraph: Graph = {
-            ...current,
-            nodes: [...(current.nodes ?? []), node]
-          };
-          this.graphState.setCurrentGraph(updatedGraph);
-        }
-      })
-    );
+      tap(res => {
+        const node = res.nodeDto
+        if (!node) return;
+        const updatedGraph: Graph = {
+          ...graph,
+          nodes: [...(graph.nodes ?? []), node]
+        };
+        this.graphState.setCurrentGraph(updatedGraph);
+      }),
+        map(res =>
+          (res as any)?.nodeDto as Node )
+      );
+    });
   }
+
 
   /**
    * Edit node in current graph
    */
-  editNode(nodeId: number, tag: string, activity: number, interaction: number) {
-    const current = this.graphState.getCurrentGraph();
-    
-    if (!current || !current.id) {
-      throw new Error('No active graph selected');
+ 
+  editNode(
+      nodeId: number,
+      tag: string,
+      activity: number,
+      interaction: number
+      ): Observable<Node> {
+      const payload: EditNodeDto = {
+        nodeId,
+        tag,
+        activity: Number(activity),
+        interaction: Number(interaction)
+      };
+
+      return this.withCurrentGraph(graph =>
+        this.nodesApi.editNodeInGraph(graph.id, payload).pipe(
+          tap(res => {
+            const node =(res as any)?.nodeDto as Node
+
+            if (!node) return;
+            const updatedGraph: Graph = {
+              ...graph,
+              nodes: (graph.nodes ?? []).map(n =>
+                n.id === node.id ? node : n
+              )
+            };
+
+            this.graphState.setCurrentGraph(updatedGraph);
+          }),
+          map(res =>
+            (res as any)?.nodeDto as Node ??
+            (res as any)?.node as Node
+          )
+        )
+      );
     }
-
-    const payload: EditNodeDto = {
-      nodeId,
-      tag,
-      activity: Number(activity),
-      interaction: Number(interaction)
-    };
-
-    return this.nodesApi.editNodeInGraph(current.id as Guid, payload).pipe(
-      tap((res) => {
-        const node = (res as any)?.nodeDto as GraphNode ?? (res as any)?.node as GraphNode;
-        if (node && current) {
-          const updatedNodes = (current.nodes ?? []).map(n => n.id === node.id ? node : n);
-          const updatedGraph: Graph = {
-            ...current,
-            nodes: updatedNodes
-          };
-          this.graphState.setCurrentGraph(updatedGraph);
-        }
-      })
-    );
-  }
 
   /**
    * Delete node from current graph
    */
-  deleteNode(nodeId: number) {
-    const current = this.graphState.getCurrentGraph();
-    
-    if (!current || !current.id) {
-      throw new Error('No active graph selected');
-    }
-
-    return this.nodesApi.deleteNodeFromGraph(current.id as Guid, nodeId).pipe(
-      tap(() => {
-        if (current) {
-          const updatedNodes = (current.nodes ?? []).filter(n => n.id !== nodeId);
+  deleteNode(nodeId: number): Observable<void> {
+    return this.withCurrentGraph(graph =>
+      this.nodesApi.deleteNodeFromGraph(graph.id, nodeId).pipe(
+        tap(() => {
           const updatedGraph: Graph = {
-            ...current,
-            nodes: updatedNodes
+            ...graph,
+            nodes: (graph.nodes ?? []).filter(n => n.id !== nodeId)
           };
+
           this.graphState.setCurrentGraph(updatedGraph);
-        }
-      })
+        }),
+        map(() => void 0)
+      )
     );
   }
 
-  /**
-   * Get all nodes from current graph
-   */
-  getCurrentNodes(): GraphNode[] {
-    return this.graphState.getCurrentGraph()?.nodes ?? [];
+  private withCurrentGraph<T>(
+    action: (graph: Graph) => Observable<T>
+  ): Observable<T> {
+    return this.graphState.currentGraph$.pipe(
+      take(1),
+      filter((g): g is Graph => !!g && !!g.id),
+      switchMap(action)
+    );
   }
+
 }

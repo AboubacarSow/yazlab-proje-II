@@ -1,6 +1,6 @@
+import { Node } from './../../models/node.model';
 import { Edge } from "../../models/edge.model";
 import { GraphLink, GraphNode } from "../../models/graph.model";
-import { Node } from "../../models/node.model";
 
 export function mapToGraphVisualization(
   nodes: Node[],
