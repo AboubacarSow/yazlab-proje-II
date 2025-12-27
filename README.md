@@ -23,7 +23,7 @@
 
 ### 👥 Ekip Üyeleri
 
-| İsim Soyisim        | Öğrenci Numarası |
+| İsim Soyisim        | Öğrenci Numarası |  
 |---------------------|------------------|
 | Emre Yasin Yıldan   | 231307058        |
 | Aboubacar Sow       | 221307117        |
@@ -57,45 +57,97 @@ Amaç, bu analizleri hem **görsel** hem de **sayısal** olarak sunabilen, kulla
 ## 3. Kullanılan Algoritmalar
 
 ### 3.1 BFS (Breadth First Search)
+#### Çalışma Mantığı    
 
-Bir başlangıç düğümünden itibaren tüm komşuların katman katman ziyaret edilmesini sağlar.
+Breadth First Search (BFS), bir graf üzerinde seçilen başlangıç düğümünden itibaren düğümleri **katman (seviye)** bazlı olarak ziyaret eden bir arama algoritmasıdır. Algoritma, başlangıç düğümüne en yakın düğümleri önce ziyaret eder ve daha sonra bir sonraki seviyeye geçer.
+
+BFS algoritması, ziyaret sırasını koruyabilmek için **kuyruk (Queue)** veri yapısını kullanır. Her düğüm yalnızca bir kez ziyaret edilir ve ziyaret edilen düğümlerin komşuları sırayla kuyruğa eklenir.
+
+Bu özellikleri sayesinde BFS, özellikle **erişilebilirlik analizi** ve **ağırlıksız graflarda en kısa yolun bulunması** problemlerinde etkin bir şekilde kullanılmaktadır.
+
 
 **Zaman Karmaşıklığı:** O(V + E)
+Burada:
 
+V: Düğüm (vertex) sayısı
+
+E: Kenar (edge) sayısı
+
+### BFS (Breadth First Search)
 ```mermaid
 flowchart TD
-A[Başlangıç Düğümü] --> B[Kuyruğa Ekle]
-B --> C[Komşuları Ziyaret Et]
-C --> D{Ziyaret Edilmemiş Var mı?}
-D -->|Evet| B
-D -->|Hayır| E[Bitiş]
+    A[Başlangıç Düğümünü Seç] --> B[Düğümü Ziyaret Et]
+    B --> C[Kuyruğa Ekle]
+    C --> D{Kuyruk Boş mu?}
+    D -->|Hayır| E[Kuyruktan Düğüm Çıkar]
+    E --> F[Ziyaret Edilmemiş Komşuları Bul]
+    F --> G[Komşuları Ziyaret Et ve Kuyruğa Ekle]
+    G --> D
+    D -->|Evet| H[Bitiş]
 ```
+### Literatür İncelemesi 
+
+BFS algoritması, ilk kez E. F. Moore (1959) tarafından tanımlanmış olup, daha sonra Cormen, Leiserson, Rivest ve Stein tarafından yazılan Introduction to Algorithms adlı eserde detaylı biçimde ele alınmıştır. Günümüzde BFS, sosyal ağ analizi, ağ güvenliği ve yapay zekâ alanlarında yaygın olarak kullanılmaktadır.
 
 ---
 
 ### 3.2 DFS (Depth First Search)
+#### Çalışma Mantığı  
 
-Bir düğümden başlayarak mümkün olduğunca derine inerek arama yapar.
+Depth First Search (DFS), bir graf üzerinde verilen başlangıç düğümünden başlayarak mümkün olduğunca **derine inerek** arama yapan bir algoritmadır. Algoritma, bir düğümün tüm komşularını ziyaret etmeden geri dönmez.
+
+DFS algoritması, **özyineleme (recursive)** yaklaşımıyla veya **yığın (Stack)** veri yapısı kullanılarak gerçekleştirilebilir. Bu yapı, algoritmanın derinlik öncelikli çalışmasını sağlar.
+
+DFS, özellikle **bağlı bileşenlerin bulunması, çevrim (cycle) tespiti** ve **topolojik sıralama** gibi problemlerde etkili sonuçlar üretmektedir.
 
 **Zaman Karmaşıklığı:** O(V + E)
 
+V: Düğüm (vertex) sayısı
+
+E: Kenar (edge) sayısı 
+
+### DFS (Depth First Search)
 ```mermaid
 flowchart TD
-A[Başlangıç] --> B[Düğümü Ziyaret Et]
-B --> C[Bir Sonraki Komşuya Git]
-C --> D{Komşu Var mı?}
-D -->|Evet| B
-D -->|Hayır| E[Geri Dön]
+    A[Başlangıç Düğümünü Seç] --> B[Düğümü Ziyaret Et]
+    B --> C[Ziyaret Edilmemiş Komşu Seç]
+    C --> D{Komşu Var mı?}
+    D -->|Evet| B
+    D -->|Hayır| E[Geri Dön]
+    E --> F{Gidilecek Başka Düğüm Var mı?}
+    F -->|Evet| B
+    F -->|Hayır| G[Bitiş]
 ```
+### Literatür İncelemesi   
+
+DFS algoritması, graf teorisinin temel algoritmalarından biri olup Robert Tarjan tarafından geliştirilen çalışmalarla yaygınlaşmıştır. DFS, Introduction to Algorithms (Cormen et al.) ve Algorithms (Sedgewick & Wayne) gibi temel kaynaklarda ayrıntılı olarak açıklanmaktadır.
 
 ---
 
 ### 3.3 Dijkstra Algoritması
 
-Ağırlıklı graflarda iki düğüm arasındaki en kısa yolu bulur.
+#### Çalışma Mantığı
+
+Dijkstra algoritması, **ağırlıklı ve negatif olmayan kenarlara sahip** bir graf üzerinde, seçilen bir başlangıç düğümünden diğer tüm düğümlere olan **en kısa yolları** hesaplayan bir algoritmadır.
+
+Algoritma, her adımda başlangıç düğümüne olan uzaklığı en küçük olan ve henüz ziyaret edilmemiş düğümü seçer. Seçilen düğümün komşularına olan mesafeler güncellenir ve bu işlem tüm düğümler ziyaret edilene kadar devam eder.
+
+Bu projede Dijkstra algoritması, düğümler arasındaki **dinamik olarak hesaplanan kenar ağırlıkları** kullanılarak iki düğüm arasındaki en kısa yolun bulunması amacıyla kullanılmıştır.
 
 **Zaman Karmaşıklığı:** O(E log V)
 
+### Dijkstra Akış Diyagramı
+
+```mermaid
+flowchart TD
+    A[Başlangıç Düğümünü Seç] --> B[Tüm Mesafeleri Sonsuz Yap]
+    B --> C[Başlangıç Mesafesini 0 Yap]
+    C --> D{Ziyaret Edilmemiş Düğüm Var mı?}
+    D -->|Evet| E[En Küçük Mesafeli Düğümü Seç]
+    E --> F[Komşuların Mesafelerini Güncelle]
+    F --> G[Düğümü Ziyaret Edildi Olarak İşaretle]
+    G --> D
+    D -->|Hayır| H[Bitiş]
 ---
 
 ### 3.4 A* Algoritması
