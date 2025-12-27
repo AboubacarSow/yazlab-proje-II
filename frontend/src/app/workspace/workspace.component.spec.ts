@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { WorkspaceComponent } from './workspace.component';
 
-import { SidebarItemComponent } from './sidebar-item.component';
 
-describe('SidebarItemComponent', () => {
-  let component: SidebarItemComponent;
-  let fixture: ComponentFixture<SidebarItemComponent>;
+describe('WorkspaceComponent', () => {
+  let component: WorkspaceComponent;
+  let fixture: ComponentFixture<WorkspaceComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SidebarItemComponent]
+      imports: [WorkspaceComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SidebarItemComponent);
+    fixture = TestBed.createComponent(WorkspaceComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

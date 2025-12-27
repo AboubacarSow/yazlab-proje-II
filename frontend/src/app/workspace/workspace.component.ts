@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../header/header.component';
-import { SidebarComponent } from '../sidebar/sidebar.component';
-import { GraphViewComponent } from '../graph-view/graph-view.component';
-import { DataViewComponent } from '../data-view/data-view.component';
-import { SchemaCreationComponent } from '../schema-creation/schema-creation.component';
-import { GraphStateService } from '../../core/services/graph.service';
-import { Guid } from '../../models/graph.model';
+import { HeaderComponent } from './header/header.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { GraphViewComponent } from './graph-view/graph-view.component';
+import { SchemaCreationComponent } from './schema-creation/schema-creation.component';
+import { DataViewComponent } from './data-view/data-view.component';
+import { GraphStateService } from '../core/services/graph.service';
+import { Guid } from '../models/graph.model';
+
 
 @Component({
   selector: 'app-workspace',

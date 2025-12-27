@@ -11,8 +11,7 @@ import { HomeComponent } from './public/landing/home/home.component';
 import { AboutComponent } from './public/landing/about/about.component';
 import { ContactComponent } from './public/landing/contact/contact.component';
 import { FeaturesComponent } from './public/landing/features/features.component';
-import { WorkspaceComponent } from './workspace/workspace/workspace.component';
-import { SchemaCreationComponent } from './workspace/schema-creation/schema-creation.component';
+import { WorkspaceComponent } from './workspace/workspace.component';
 
 export const routes: Routes = [
   // Public Landing Pages
