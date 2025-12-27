@@ -16,7 +16,7 @@
 
 # Sosyal Ağ Analizi Uygulaması
 
-**Ders:** Yazılım Geliştirme Laboratuvarı-I  
+**Ders:** Yazılım Geliştirme Laboratuvarı-I 
 **Bölüm:** Bilişim Sistemleri Mühendisliği – Teknoloji Fakültesi  
 **Üniversite:** Kocaeli Üniversitesi  
 **Proje:** Proje – 2  
@@ -24,8 +24,8 @@
 
 **Ekip Üyeleri:**
 
-* Öğrenci 1 (No)
-* Öğrenci 2 (No)
+* Emre Yasin Yıldan 231307058
+* Aboubacar Sow     221307117
 
 ---
 
