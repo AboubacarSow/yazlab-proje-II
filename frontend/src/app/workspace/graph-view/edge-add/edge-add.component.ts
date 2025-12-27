@@ -29,6 +29,7 @@ export class EdgeAddComponent implements OnInit {
     private graphState: GraphStateService,
     private edgesService: EdgesService
   ) {
+    console.log('🟦 EdgeAddComponent ctor');
     this.form = this.fb.group({
       nodeAId: [null, [Validators.required]],
       nodeBId: [null, [Validators.required]],
@@ -39,6 +40,7 @@ export class EdgeAddComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('🟦 EdgeAddComponent ngOnInit');
     // Ensure current graph is loaded and nodes are available
     this.graphState.loadCurrentGraphFromStorage();
     const current = this.graphState.getCurrentGraph();

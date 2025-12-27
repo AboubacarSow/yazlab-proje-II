@@ -21,9 +21,17 @@ export class EdgesService {
     // Edge operations
   addEdgeToGraph(edgeDto: AddEdgeDto): Observable<{ IsSuccess: boolean, Edge: Edge }> {
     // Backend expects AddEdgeToGraphRequest { Edge: AddEdgeToGraphCommand }
+    // Backend uses PascalCase: GraphId, NodeAId, NodeBId
+    const requestBody = {
+      Edge: {
+        GraphId: edgeDto.graphId,
+        NodeAId: edgeDto.nodeAId,
+        NodeBId: edgeDto.nodeBId
+      }
+    };
     return this.http.post<{ IsSuccess: boolean, Edge: Edge }>(
       this.POST_EDGE(edgeDto.graphId),
-      { Edge: edgeDto }
+      requestBody
     );
   }
 

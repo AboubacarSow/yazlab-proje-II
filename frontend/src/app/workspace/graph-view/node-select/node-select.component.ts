@@ -6,7 +6,7 @@ import { GraphStateService } from '../../../core/services/graph.service';
 import { Graph } from '../../../models/graph.model';
 import { GraphNode } from '../../../models/node.model';
 
-export interface NodeSelectData { mode: 'edit' | 'delete'; }
+export interface NodeSelectData { mode: 'add' | 'edit' | 'delete'; }
 
 @Component({
   selector: 'app-node-select',
