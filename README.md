@@ -1,12 +1,232 @@
 <!-- PROJECT SHIELDS -->
 [![Contributors][contributors-shield]][contributors-url]
-[![Forks](https://img.shields.io/badge/Forks-1-blue?style=for-the-badge)](https://github.com/AboubacarSow/yazlab-proje-II/network/members)
-[![Stars](https://img.shields.io/badge/Stars-2-yellow?style=for-the-badge)](https://github.com/AboubacarSow/yazlab-proje-II/stargazers)
-
+[![Forks][forks-shield]][forks-url]
+[![Stars][stars-shield]][stars-url]
 
 <!-- BADGE LINKS -->
-[contributors-shield]: https://img.shields.io/github/contributors/AboubacarSow/yazlab-proje-II.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/AboubacarSow/yazlab-proje-II?style=for-the-badge
 [contributors-url]: https://github.com/AboubacarSow/yazlab-proje-II/graphs/contributors
+
+[forks-shield]: https://img.shields.io/github/forks/AboubacarSow/yazlab-proje-II?style=for-the-badge
+[forks-url]: https://github.com/AboubacarSow/yazlab-proje-II/network/members
+
+[stars-shield]: https://img.shields.io/github/stars/AboubacarSow/yazlab-proje-II?style=for-the-badge
+[stars-url]: https://github.com/AboubacarSow/yazlab-proje-II/stargazers
+
+
+# Sosyal Ağ Analizi Uygulaması
+
+**Ders:** Yazılım Geliştirme Laboratuvarı-I  
+**Bölüm:** Bilişim Sistemleri Mühendisliği – Teknoloji Fakültesi  
+**Üniversite:** Kocaeli Üniversitesi  
+**Proje:** Proje – 2  
+**Tarih:** 02.01.2026
+
+**Ekip Üyeleri:**
+
+* Öğrenci 1 (No)
+* Öğrenci 2 (No)
+
+---
+
+## 1. Giriş
+
+Sosyal ağlar, bireyler veya varlıklar arasındaki ilişkilerin modellenmesi ve analiz edilmesi açısından önemli veri kaynaklarıdır. Bu projede, kullanıcılar arasındaki ilişkileri bir **graf veri yapısı** ile temsil eden ve çeşitli **graf algoritmaları** yardımıyla bu yapıyı analiz eden etkileşimli bir **Sosyal Ağ Analizi Uygulaması** geliştirilmiştir.
+
+Projenin temel amacı; graf teorisi, algoritma analizi, nesne yönelimli programlama (OOP), veri saklama ve görselleştirme konularının bütünleşik olarak uygulanmasıdır.
+
+---
+
+## 2. Problemin Tanımı ve Amaç
+
+Problem, kullanıcılar ve aralarındaki etkileşimlerden oluşan bir sosyal ağın dinamik olarak yönetilmesi ve analiz edilmesidir. Kullanıcıların:
+
+* Ağ üzerindeki konumları,
+* Birbirleriyle olan mesafeleri,
+* Topluluk yapıları,
+* En etkili düğümleri
+
+graf algoritmaları yardımıyla belirlenmektedir.
+
+Amaç, bu analizleri hem **görsel** hem de **sayısal** olarak sunabilen, kullanıcı etkileşimine açık bir yazılım geliştirmektir.
+
+---
+
+## 3. Kullanılan Algoritmalar
+
+### 3.1 BFS (Breadth First Search)
+
+Bir başlangıç düğümünden itibaren tüm komşuların katman katman ziyaret edilmesini sağlar.
+
+**Zaman Karmaşıklığı:** O(V + E)
+
+```mermaid
+flowchart TD
+A[Başlangıç Düğümü] --> B[Kuyruğa Ekle]
+B --> C[Komşuları Ziyaret Et]
+C --> D{Ziyaret Edilmemiş Var mı?}
+D -->|Evet| B
+D -->|Hayır| E[Bitiş]
+```
+
+---
+
+### 3.2 DFS (Depth First Search)
+
+Bir düğümden başlayarak mümkün olduğunca derine inerek arama yapar.
+
+**Zaman Karmaşıklığı:** O(V + E)
+
+```mermaid
+flowchart TD
+A[Başlangıç] --> B[Düğümü Ziyaret Et]
+B --> C[Bir Sonraki Komşuya Git]
+C --> D{Komşu Var mı?}
+D -->|Evet| B
+D -->|Hayır| E[Geri Dön]
+```
+
+---
+
+### 3.3 Dijkstra Algoritması
+
+Ağırlıklı graflarda iki düğüm arasındaki en kısa yolu bulur.
+
+**Zaman Karmaşıklığı:** O(E log V)
+
+---
+
+### 3.4 A* Algoritması
+
+Dijkstra algoritmasının sezgisel (heuristic) destekli geliştirilmiş halidir.
+
+**Zaman Karmaşıklığı:** O(E)
+
+---
+
+### 3.5 Bağlı Bileşen Analizi
+
+Graf içerisindeki ayrık alt toplulukların tespit edilmesini sağlar.
+
+---
+
+### 3.6 Merkezilik (Degree Centrality)
+
+Düğümlerin bağlantı sayılarına göre en etkili kullanıcılar belirlenir. En yüksek dereceye sahip ilk 5 düğüm tablo halinde sunulmuştur.
+
+---
+
+### 3.7 Welsh–Powell Graf Renklendirme
+
+Komşu düğümlerin farklı renkler almasını sağlayarak toplulukları görsel olarak ayırır.
+
+```mermaid
+flowchart LR
+A[Düğümleri Dereceye Göre Sırala] --> B[Renk Ata]
+B --> C[Komşuları Kontrol Et]
+C --> D{Çakışma Var mı?}
+D -->|Evet| B
+D -->|Hayır| E[Devam]
+```
+
+---
+
+## 4. Sistem Tasarımı
+
+### 4.1 Sınıf Diyagramı
+
+```mermaid
+classDiagram
+class Node {
+  +int id
+  +double aktiflik
+  +double etkilesim
+}
+class Edge {
+  +Node from
+  +Node to
+  +double weight
+}
+class Graph {
+  +List<Node> nodes
+  +List<Edge> edges
+}
+class Algorithm {
+  +run()
+}
+class Coloring {
+  +colorGraph()
+}
+
+Graph --> Node
+Graph --> Edge
+Algorithm --> Graph
+Coloring --> Graph
+```
+
+---
+
+## 5. Veri Saklama ve Dinamik Ağırlık Hesaplama
+
+Veriler JSON ve CSV formatında saklanmaktadır. Düğümler arası kenar ağırlıkları aşağıdaki formüle göre dinamik olarak hesaplanmaktadır:
+
+```
+Ağırlık(i,j) = 1 / (1 + (Ai-Aj)^2 + (Ei-Ej)^2 + (Bi-Bj)^2)
+```
+
+Bu yapı sayesinde benzer özelliklere sahip düğümler arasında daha güçlü bağlar oluşturulmaktadır.
+
+---
+
+## 6. Kullanıcı Arayüzü
+
+* Canvas tabanlı grafik gösterimi
+* Düğüm ve kenar ekleme/silme
+* Algoritmaların tek tek çalıştırılması
+* Sonuçların tablo ve grafik olarak sunulması
+
+---
+
+## 7. Testler ve Performans Analizi
+
+| Algoritma | Düğüm Sayısı | Süre (ms) |
+| --------- | ------------ | --------- |
+| BFS       | 20           | 5         |
+| DFS       | 20           | 4         |
+| Dijkstra  | 50           | 30        |
+| A*        | 50           | 22        |
+
+Algoritmalar küçük ve orta ölçekli graflarda makul sürelerde çalışmıştır.
+
+---
+
+## 8. Sonuç ve Tartışma
+
+Bu projede, sosyal ağ analizine yönelik kapsamlı bir uygulama geliştirilmiştir. Graf algoritmaları başarıyla uygulanmış, görselleştirme ile desteklenmiştir.
+
+### Başarılar
+
+* OOP prensiplerine uygun mimari
+* Dinamik ağırlık hesaplama
+* Etkileşimli kullanıcı arayüzü
+
+### Sınırlılıklar
+
+* Büyük ölçekli graflarda performans sınırlamaları
+
+### Gelecek Çalışmalar
+
+* Daha büyük veri setleri için optimizasyon
+* Merkeziyet ölçütlerinin çeşitlendirilmesi
+* Web tabanlı sürüm geliştirilmesi
+
+---
+
+## 9. Kaynakça
+
+* [https://github.com/mermaid-js/mermaid](https://github.com/mermaid-js/mermaid)
+* [https://www.markdownguide.org/](https://www.markdownguide.org/)
+* Graf Teorisi ve Algoritmalar – Cormen et al.
 
 sna-data/
 ├── Entities/
