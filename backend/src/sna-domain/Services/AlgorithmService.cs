@@ -1,14 +1,17 @@
+using System.Linq;
 using sna_domain.Exceptions;
 
 namespace sna_domain.Services;
 
+public record TraversalResult(
+    IReadOnlyList<Node> Nodes,
+    IReadOnlyList<Edge> Edges
+);
+
 public class GraphAlgorithmService
 {
-    public  IReadOnlyList<Node> BFS(Graph graph, Node start, HashSet<Node> visited)
+    public static IReadOnlyList<Node> BFS(Graph graph, Node start, HashSet<Node> visited)
     {
-        if (!graph.ContainsNode(start))
-            throw new NotFoundException($"Node {start.Tag}", start.Id.ToString(), graph.Title);
-
         visited ??= [];
         var queue = new Queue<Node>();
         var result = new List<Node>();
@@ -24,16 +27,15 @@ public class GraphAlgorithmService
             foreach (var neighbor in current.GetNeighbors(graph))
             {
                 if (visited.Add(neighbor))
-                {
                     queue.Enqueue(neighbor);
-                }
+                
             }
         }
 
         return result;
     }
     //Making DFS symetric to BFS 
-    public IReadOnlyList<Node> DFS(Graph graph, Node start,HashSet<Node> visited)
+    public static IReadOnlyList<Node> DFS(Graph graph, Node start,HashSet<Node> visited)
     {
         if (!graph.ContainsNode(start))
             throw new NotFoundException($"Node {start.Tag}", start.Id.ToString(), graph.Title);
@@ -55,19 +57,26 @@ public class GraphAlgorithmService
         }
     }
 
-    public IReadOnlyList<Node> TopDegreeCentrality(Graph graph, int k)
+    public static IReadOnlyList<(Node Node, int Degree)> KDegreeCentrality(Graph graph, int? k)
     {
-        if (k <= 0)
+        if (k < 0)
             throw new DomainException("k must be positive.");
         if(!graph.ComputeDegreeCentrality())
             throw new EmptyGraphException(graph.Id.ToString());
 
-        return [.. graph.Nodes
-            .OrderByDescending(n => n.DegreeCentrality)
-            .Take(k)];
+        if(k is null)
+            return [..graph.Nodes
+                .Select(node => ( Node : node, node.DegreeCentrality))
+                .OrderByDescending(node => node.DegreeCentrality)];
+
+        return [..graph.Nodes
+                .Select(node => ( Node : node, node.DegreeCentrality))
+                .OrderByDescending(node => node.DegreeCentrality)
+                .Take(k.Value)];
+           
     }
 
-    public IReadOnlyList<IReadOnlyCollection<Node>> GetConnectedComponents(Graph graph)
+    public static IReadOnlyList<IReadOnlyCollection<Node>> GetConnectedComponents(Graph graph)
     {
         var visited = new HashSet<Node>();
         var components = new List<IReadOnlyCollection<Node>>();
@@ -84,7 +93,7 @@ public class GraphAlgorithmService
 
     // Welsh-Powell graph coloring: assigns a color index to each node.
     // Color indices are integers; UI tarafında gerçek renge palette ile dönüştürülebilir.
-    public IReadOnlyDictionary<Node, int> WelshPowell(Graph graph)
+    public static IReadOnlyDictionary<Node, int> WelshPowell(Graph graph)
     {
         if (!graph.Nodes.Any())
             return new Dictionary<Node, int>();
@@ -114,7 +123,7 @@ public class GraphAlgorithmService
         return colorOf;
     }
 
-    public IReadOnlyList<Node> Dijkstra(Graph graph, Node start, Node target)
+    public static IReadOnlyList<Node> Dijkstra(Graph graph, Node start, Node target)
     {
         if (!graph.Nodes.Contains(start))
             throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Title);
@@ -151,7 +160,7 @@ public class GraphAlgorithmService
         throw new DomainException("No path found between the provided nodes.");
     }
 
-    public IReadOnlyList<Node> AStar(Graph graph, Node start, Node target)
+    public static IReadOnlyList<Node> AStar(Graph graph, Node start, Node target)
     {
         if (!graph.Nodes.Contains(start))
             throw new NotFoundException(start.Tag, start.Id.ToString(), graph.Title);
@@ -193,10 +202,8 @@ public class GraphAlgorithmService
 
     private static double GetEdgeWeight(Graph graph, Node from, Node to)
     {
-        var edge = graph.Edges.FirstOrDefault(e => e.Connects(from, to));
-        if (edge is null)
-            throw new DomainException("Edge not found between the provided nodes.");
-
+        var edge = graph.Edges.FirstOrDefault(e => e.Connects(from, to)) ??
+         throw new DomainException("Edge not found between the provided nodes.");
         return edge.Weight;
     }
 
@@ -223,6 +230,5 @@ public class GraphAlgorithmService
         return 0;
     }
 
-    
-
+  
 }

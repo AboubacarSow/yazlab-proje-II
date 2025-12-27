@@ -15,6 +15,8 @@ public class Graph
     public string? Description { get; set;} =default!;
     public ICollection<Node> Nodes => _nodes;
     public ICollection<Edge> Edges => _edges;
+    private readonly Dictionary<int, List<Edge>> _adjacencyList = new();
+
 
     public int Order => _nodes.Count;
     public int Size => _edges.Count;
