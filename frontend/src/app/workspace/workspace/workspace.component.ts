@@ -21,36 +21,23 @@ export class WorkspaceComponent implements OnInit, OnDestroy  {
 
   graphCreated = false;
   currentGraphId?: Guid;
-  private graphSub?: Subscription;
-
-  constructor(private graphService: GraphStateService){
+  constructor(private graphStateService: GraphStateService){
     console.log(`Workspace initiated. GraphCreate value: ${this.graphCreated}`);
   }
 
   ngOnInit(): void {
-    // Workspace girişinde localStorage'dan graph yükle
-    this.graphService.loadCurrentGraphFromStorage();
-    
-    // Subscribe to real-time graph state changes
-    this.graphSub = this.graphService.currentGraph$.subscribe(graph => {
-      if (graph && graph.id) {
-        console.log('📊 Graph state changed - setting graphCreated to true:', graph);
-        this.graphCreated = true;
-        this.currentGraphId = graph.id;
-      } else {
-        console.log('📊 Graph state cleared - setting graphCreated to false');
-        this.graphCreated = false;
-      }
-    });
+    this.graphStateService.loadCurrentGraphFromStorage();
 
-    // Also check on init
-    const current = this.graphService.getCurrentGraph();
-    if (current && current.id) {
-      this.graphCreated = true;
-      this.currentGraphId = current.id;
-    } else {
-      this.graphCreated = false;
-    }
+    this.graphStateService.currentGraph$.subscribe(graph=>{
+      if(!graph){
+        this.graphCreated=false;
+        this.currentGraphId=undefined
+        return;
+      }
+      this.graphCreated=true;
+      this.currentGraphId=graph.id;
+    })
+
   }
 
   ngOnDestroy(): void {

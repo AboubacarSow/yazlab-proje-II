@@ -12,7 +12,7 @@ public class GraphConfiguration : IEntityTypeConfiguration<Graph>
         builder.Property(g => g.Description).IsRequired(false);
 
         builder.Navigation(g => g.Nodes)
-                .HasField("_vertices")
+                .HasField("_nodes")
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
 
 
@@ -28,7 +28,7 @@ public class GraphConfiguration : IEntityTypeConfiguration<Graph>
         builder.HasMany(g=>g.Edges)
                 .WithOne(e=>e.Graph)
                 .HasForeignKey(e=>e.GraphId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
         
     }
 }

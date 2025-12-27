@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { GraphStateService } from './../../core/services/graph.service';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { map, Observable, take,pipe, filter, switchMap } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { NodeAddComponent } from '../graph-view/node-add/node-add.component';
 import { NodeEditComponent } from '../graph-view/node-edit/node-edit.component';
@@ -22,7 +24,7 @@ import { Edge } from '../../models/edge.model';
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit{
   // Expandable sections state
   isGraphlarimExpanded = false;
   isNodeExpanded = false;
@@ -32,12 +34,12 @@ export class SidebarComponent {
   isDFSExpanded = false;
   isMetricsExpanded = false;
   isComponentsExpanded = false;
-  
+
   // Graph dropdown state
   showGraphDropdown = false;
   dropdownPosition = { top: '0px', left: '0px' };
   private hideTimeout: any;
-  
+
   // Traversals dropdown state
   showTraversalsDropdown = false;
   traversalsDropdownPosition = { top: '0px', left: '0px' };
@@ -51,7 +53,7 @@ export class SidebarComponent {
   // Graph selection
   selectedGraph: string = '';
   graphs: string[] = ['Graph 1', 'Graph 2', 'Graph 3'];
-  
+
   // Algorithms list
   algorithms = [
     { id: 'bfs', name: 'BFS', icon: '🔍' },
@@ -59,6 +61,21 @@ export class SidebarComponent {
     { id: 'dijkstra', name: 'Dijkstra', icon: '🛤️' },
     { id: 'astar', name: 'A*', icon: '⭐' }
   ];
+  graphTitle$!: Observable<string>;
+  graphId$!:Observable<Guid>;
+  private dialog = inject(Dialog);
+  constructor(private graphStateService: GraphStateService,private graphApiService: GraphsService,
+     private toast : ToastService){
+  }
+  ngOnInit(): void {
+    this.graphTitle$ = this.graphStateService.currentGraph$.pipe(
+    map(graph => graph?.title ?? 'Default')
+  );
+  this.graphId$ = this.graphStateService.currentGraph$.pipe(
+    map(graph => graph?.id?? 'undefined'))
+  }
+
+
 
   toggleSection(section: string) {
     switch(section) {
@@ -208,13 +225,82 @@ export class SidebarComponent {
       this.dialog.open(EdgeDeleteComponent, { disableClose: true, panelClass: 'edge-delete-panel', data: { edge, graphId: current.id } });
     });
   }
-  
+  // Modals Actions
+  openSummary(){
+    this.graphStateService.getGraphSummary().subscribe({
+    next: summary => {
+      this.dialog.open(GraphSummaryComponent, {
+        data: summary,
+        panelClass: 'graph-summary-panel',
+        disableClose: true
+      });
+    },
+    error: () => {
+      this.toast.error('Unable to load graph summary')
+    }
+  });
+  }
+
+  openEditGraph() {
+  this.graphStateService.getCurrentGraph$().pipe(
+    take(1), // On prend le snapshot actuel
+    filter((g): g is Graph => !!g && !!g.id) // On s'assure qu'il existe
+    ).subscribe({
+    next: (currentGraph) => {
+      const command: EditGraphCommand = {
+        id: currentGraph.id,
+        title: currentGraph.title,
+        description: currentGraph.description ?? ''
+      };
+
+      const dialogRef = this.dialog.open(EditGraphComponent, {
+        data: command,
+        panelClass: 'edit-graph-panel',
+        disableClose: true
+      });
+      dialogRef.closed.subscribe(response=>{
+        if(response){
+          this.toast.success( `Graph ${(response as EditGraphResponse).title}  successfully updated`);
+          return;
+        }
+      })
+    },
+    error: () => this.toast.error('Unable to load Graph')
+  });
+  }
+
+
+  export() {
+    this.graphStateService.currentGraph$.pipe(
+      take(1),
+      filter((g): g is Graph => !!g),
+      switchMap(graph =>
+        this.graphApiService.exportGraph(graph.id)
+      )
+    ).subscribe({
+      next: response => {
+        const blob = new Blob(
+          [JSON.stringify(response.graph, null, 2)],
+          { type: 'application/json' }
+        );
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${response.graph.title}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+      error: () => this.toast.error('Unable to export graph')
+    });
+}
+
   selectGraph(graph: string) {
     this.selectedGraph = graph;
     this.showGraphDropdown = false;
     console.log('Selected graph:', graph);
   }
-  
+
   showDropdown(event: MouseEvent) {
     if (this.hideTimeout) {
       clearTimeout(this.hideTimeout);
@@ -227,19 +313,19 @@ export class SidebarComponent {
     };
     this.showGraphDropdown = true;
   }
-  
+
   hideDropdown() {
     this.hideTimeout = setTimeout(() => {
       this.showGraphDropdown = false;
     }, 200);
   }
-  
+
   keepDropdownOpen() {
     if (this.hideTimeout) {
       clearTimeout(this.hideTimeout);
     }
   }
-  
+
   // Traversals Dropdown Methods
   showTraversalsDropdownMenu(event: MouseEvent) {
     if (this.traversalsHideTimeout) {
@@ -253,19 +339,19 @@ export class SidebarComponent {
     };
     this.showTraversalsDropdown = true;
   }
-  
+
   hideTraversalsDropdown() {
     this.traversalsHideTimeout = setTimeout(() => {
       this.showTraversalsDropdown = false;
     }, 200);
   }
-  
+
   keepTraversalsDropdownOpen() {
     if (this.traversalsHideTimeout) {
       clearTimeout(this.traversalsHideTimeout);
     }
   }
-  
+
   selectAlgorithm(algorithm: any) {
     console.log('Selected algorithm:', algorithm);
     this.showTraversalsDropdown = false;
@@ -285,13 +371,13 @@ export class SidebarComponent {
     };
     this.showComponentsDropdown = true;
   }
-  
+
   hideComponentsDropdown() {
     this.componentsHideTimeout = setTimeout(() => {
       this.showComponentsDropdown = false;
     }, 200);
   }
-  
+
   keepComponentsDropdownOpen() {
     if (this.componentsHideTimeout) {
       clearTimeout(this.componentsHideTimeout);

@@ -16,3 +16,8 @@ public class NotFoundException : Exception
     {
     }
 }
+
+
+public class FailedToImportGraphSnapshotException(string message) : Exception(message)
+{
+}

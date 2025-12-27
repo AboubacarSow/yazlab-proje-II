@@ -22,7 +22,7 @@ public class EdgeConfiguration : IEntityTypeConfiguration<Edge>
         builder.HasOne(e=>e.NodeA)
             .WithMany()
             .HasForeignKey(n=>n.NodeAId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(e=>e.NodeB)
             .WithMany()
@@ -32,7 +32,7 @@ public class EdgeConfiguration : IEntityTypeConfiguration<Edge>
         builder.HasOne(e => e.Graph)
                .WithMany(g => g.Edges)
                .HasForeignKey(e => e.GraphId)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.NoAction);
 
 
     }
