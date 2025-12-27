@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { AddNodeDto, EditNodeDto, GraphNode } from '../models/node.model';
+import { AddNodeDto, EditNodeDto, Node } from '../models/node.model';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Guid } from '../models/graph.model';
@@ -19,15 +19,15 @@ export class NodesService {
 
 
     // Node operations
-    addNodeToGraph(nodeDto: AddNodeDto): Observable<{ nodeDto: GraphNode }> {
+    addNodeToGraph(nodeDto: AddNodeDto): Observable<{ nodeDto: Node }> {
       // Backend expects AddNodeToGraphRequest { Node: AddNodeToGraphCommand }
-      return this.http.post<{ nodeDto: GraphNode }>(
+      return this.http.post<{ nodeDto: Node }>(
         this.POST_NODE(nodeDto.graphId),
         { node: nodeDto }
       );
     }
 
-    editNodeInGraph(graphId: Guid, nodeDto: EditNodeDto): Observable<{ nodeDto: GraphNode }> {
+    editNodeInGraph(graphId: Guid, nodeDto: EditNodeDto): Observable<{ nodeDto: Node }> {
       // Backend expects EditNodeInGraphRequest { Vertex: EditNodeInGraphCommand }
       const payload = {
         vertex: {
@@ -38,7 +38,7 @@ export class NodesService {
           interaction: nodeDto.interaction
         }
       };
-      return this.http.put<{ nodeDto: GraphNode }>(
+      return this.http.put<{ nodeDto: Node }>(
         this.PUT_NODE(graphId, nodeDto.nodeId),
         payload
       );

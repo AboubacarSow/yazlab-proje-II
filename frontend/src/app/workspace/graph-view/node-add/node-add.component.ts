@@ -4,7 +4,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule, NgIf } from '@angular/common';
 import { GraphStateService } from '../../../core/services/graph.service';
 import { NodesService } from '../../../core/services/nodes.service';
-import { GraphNode } from '../../../models/node.model';
+import { filter, take } from 'rxjs';
+import { Graph } from '../../../models/graph.model';
+import { Node } from '../../../models/node.model';
 
 @Component({
   selector: 'app-node-add',
@@ -21,7 +23,7 @@ export class NodeAddComponent {
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: DialogRef<GraphNode>,
+    private dialogRef: DialogRef<Node>,
     private graphState: GraphStateService,
     private nodesService: NodesService
   ) {
@@ -31,6 +33,52 @@ export class NodeAddComponent {
       interaction: [1, [Validators.required, Validators.min(1)]]
     });
   }
+  private createNode(): void {
+    this.loading = true;
+
+    this.nodesService
+      .addNode(
+        this.form.value.tag,
+        this.form.value.activity,
+        this.form.value.interaction
+      )
+      .subscribe({
+        next: (res) => {
+          this.loading = false;
+
+          const node =
+            (res as any)?.nodeDto as Node ??
+            (res as any)?.node as Node;
+
+          if (node) {
+            this.dialogRef.close(node);
+          }
+        },
+        error: (err) => {
+          this.loading = false;
+          this.handleCreateError(err);
+        }
+      });
+  }
+
+  private handleCreateError(err: any): void {
+    const detail =
+      err?.error?.detail ??
+      err?.error?.message ??
+      err?.message ??
+      '';
+
+    if (
+      err?.status === 400 &&
+      typeof detail === 'string' &&
+      /node already exists/i.test(detail)
+    ) {
+      this.error = 'Node must be un.';
+    } else {
+      this.error = detail || 'Node eklenemedi. Lütfen tekrar deneyin.';
+    }
+  }
+
 
   create() {
     this.submitted = true;
@@ -41,56 +89,23 @@ export class NodeAddComponent {
       return;
     }
 
-    // Timing sorununun önüne geçmek için localStorage'dan yeniden yükle
+    // Ensure state is hydrated
     this.graphState.loadCurrentGraphFromStorage();
-    const current = this.graphState.getCurrentGraph();
-    console.log('📌 Node-add create - Current graph:', current);
-    
-    if (!current || !current.id) {
-      console.error('❌ No active graph', current);
-      this.error = 'Aktif bir graph yok. Önce graph oluşturun veya içe aktarın.';
-      return;
-    }
 
-    this.loading = true;
-
-    try {
-      this.nodesService.addNode(
-        this.form.value.tag,
-        this.form.value.activity,
-        this.form.value.interaction
-      ).subscribe({
-        next: (res) => {
-          const node = (res as any)?.nodeDto as GraphNode ?? (res as any)?.node as GraphNode;
-          this.loading = false;
-          if (node) {
-            this.dialogRef.close(node);
-          }
+    this.graphState.currentGraph$
+      .pipe(
+        take(1),
+        filter((g): g is Graph => !!g && !!g.id)
+      )
+      .subscribe({
+        next: () => {
+          this.createNode();
         },
-        error: (err) => {
-          this.loading = false;
-          // ASP.NET Core returns ProblemDetails: use 'detail' field
-          const detail = err?.error?.detail ?? err?.error?.message ?? err?.message ?? '';
-          const title = err?.error?.title ?? '';
-          // Duplicate node name mapping (DomainException: "Node already exists in this graph.")
-          if (
-            err?.status === 400 &&
-            typeof detail === 'string' && /node already exists/i.test(detail)
-          ) {
-            this.error = 'Aynı node oluşturulamaz.';
-            console.log(this.error);
-          } else {
-            this.error = detail || 'Node eklenemedi. Lütfen tekrar deneyin.';
-          }
+        error: () => {
+          this.error = 'Aktif bir graph yok. Önce graph oluşturun veya içe aktarın.';
         }
       });
-    } catch (err: any) {
-      this.loading = false;
-      this.error = err?.message ?? 'Hata: Node eklenemedi.';
-      console.log(err.message);
-    }
   }
-
   cancel() {
     this.dialogRef.close();
   }
