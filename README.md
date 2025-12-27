@@ -87,7 +87,7 @@ flowchart TD
 ```
 ### Literatür İncelemesi 
 
-BFS algoritması, ilk kez E. F. Moore (1959) tarafından tanımlanmış olup, daha sonra Cormen, Leiserson, Rivest ve Stein tarafından yazılan Introduction to Algorithms adlı eserde detaylı biçimde ele alınmıştır. Günümüzde BFS, sosyal ağ analizi, ağ güvenliği ve yapay zekâ alanlarında yaygın olarak kullanılmaktadır.
+BFS algoritması, ilk kez **E. F. Moore (1959)** tarafından tanımlanmış olup, daha sonra **Cormen, Leiserson, Rivest ve Stein** tarafından yazılan Introduction to Algorithms adlı eserde detaylı biçimde ele alınmıştır. Günümüzde BFS, sosyal ağ analizi, ağ güvenliği ve yapay zekâ alanlarında yaygın olarak kullanılmaktadır.
 
 ---
 
@@ -120,7 +120,7 @@ flowchart TD
 ```
 ### Literatür İncelemesi   
 
-DFS algoritması, graf teorisinin temel algoritmalarından biri olup Robert Tarjan tarafından geliştirilen çalışmalarla yaygınlaşmıştır. DFS, Introduction to Algorithms (Cormen et al.) ve Algorithms (Sedgewick & Wayne) gibi temel kaynaklarda ayrıntılı olarak açıklanmaktadır.
+DFS algoritması, graf teorisinin temel algoritmalarından biri olup **Robert Tarjan** tarafından geliştirilen çalışmalarla yaygınlaşmıştır. DFS, Introduction to Algorithms (Cormen et al.) ve Algorithms (Sedgewick & Wayne) gibi temel kaynaklarda ayrıntılı olarak açıklanmaktadır.
 
 ---
 
@@ -136,6 +136,10 @@ Bu projede Dijkstra algoritması, düğümler arasındaki **dinamik olarak hesap
 
 **Zaman Karmaşıklığı:** O(E log V)
 
+V: Düğüm (vertex) sayısı
+
+E: Kenar (edge) sayısı 
+
 ### Dijkstra Akış Diyagramı
 
 ```mermaid
@@ -148,13 +152,51 @@ flowchart TD
     F --> G[Düğümü Ziyaret Edildi Olarak İşaretle]
     G --> D
     D -->|Hayır| H[Bitiş]
+```
+### Literatür İncelemesi
+
+Dijkstra algoritması, **Edsger W. Dijkstra** tarafından 1956 yılında geliştirilmiştir. Algoritma, A Note on Two Problems in Connexion with Graphs adlı çalışmada tanıtılmış ve daha sonra Introduction to Algorithms (Cormen et al.) gibi temel kaynaklarda detaylandırılmıştır. Günümüzde ağ yönlendirme protokolleri ve sosyal ağ analizlerinde yaygın olarak kullanılmaktadır.
+
 ---
 
 ### 3.4 A* Algoritması
+#### Çalışma Mantığı
 
-Dijkstra algoritmasının sezgisel (heuristic) destekli geliştirilmiş halidir.
+A* algoritması, Dijkstra algoritmasının geliştirilmiş bir versiyonu olup, en kısa yolu bulma sürecini hızlandırmak amacıyla sezgisel (heuristic) bir fonksiyon kullanır.
+
+Algoritma, her düğüm için aşağıdaki maliyet fonksiyonunu hesaplar:
+
+f(n) = g(n) + h(n)
+
+Burada:
+
+g(n): Başlangıç düğümünden mevcut düğüme olan gerçek maliyet
+
+h(n): Mevcut düğümden hedef düğüme olan tahmini maliyet
+
+A* algoritması, hedefe daha yakın olduğu tahmin edilen düğümleri öncelikli olarak ziyaret ederek arama süresini azaltır.
+
+Bu projede A* algoritması, dinamik ağırlıklar kullanılarak iki düğüm arasındaki en kısa yolun daha hızlı bulunması için kullanılmıştır.
 
 **Zaman Karmaşıklığı:** O(E)
+
+### A* Algoritması  
+
+flowchart TD
+
+    A[Başlangıç ve Hedef Düğümü Belirle] --> B[Başlangıç f Değerini Hesapla] 
+    B --> C{Açık Liste Boş mu?}  
+    C -->|Hayır| D[En Küçük f Değerli Düğümü Seç]
+    D --> E[Düğüm Hedef mi?]
+    E -->|Evet| F[Yolu Oluştur ve Bitir]
+    E -->|Hayır| G[Komşular için g, h, f Hesapla]
+    G --> H[Açık Listeyi Güncelle]
+    H --> C
+    C -->|Evet| I[Yol Bulunamadı]
+
+### Literatür İncelemesi
+
+A* algoritması, **Peter Hart, Nils Nilsson** ve **Bertram Raphael** tarafından 1968 yılında geliştirilmiştir. Algoritma, A Formal Basis for the Heuristic Determination of Minimum Cost Paths adlı çalışmada tanıtılmıştır. Günümüzde oyun geliştirme, yapay zekâ ve yol bulma problemlerinde yaygın olarak kullanılmaktadır.
 
 ---
 
