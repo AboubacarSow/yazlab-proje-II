@@ -42,3 +42,6 @@ export interface NodeSnapshot {
   activity: number;
   interaction: number;
 }
+
+
+

@@ -1,18 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../header/header.component';
-import { SidebarComponent } from '../sidebar/sidebar.component';
-import { GraphViewComponent } from '../graph-view/graph-view.component';
-import { DataViewComponent } from '../data-view/data-view.component';
-import { SchemaCreationComponent } from '../schema-creation/schema-creation.component';
-import { GraphStateService } from '../../core/services/graph.service';
-import { Guid } from '../../models/graph.model';
-import { Subscription } from 'rxjs';
+import { HeaderComponent } from './header/header.component';
+import { GraphViewComponent } from './graph-view/graph-view.component';
+import { SchemaCreationComponent } from './schema-creation/schema-creation.component';
+import { DataViewComponent } from './data-view/data-view.component';
+import { GraphStateService } from '../core/services/graph.service';
+import { Guid } from '../models/graph.model';
+import { Subject } from 'rxjs';
+import { Sidebar } from "../User-Interface/main-layout/sidebar/sidebar";
+
 
 @Component({
   selector: 'app-workspace',
-  imports: [CommonModule, HeaderComponent, SidebarComponent, GraphViewComponent, SchemaCreationComponent,
-    DataViewComponent],
+  imports: [CommonModule, HeaderComponent, GraphViewComponent, SchemaCreationComponent,
+    DataViewComponent, Sidebar],
   templateUrl: './workspace.component.html',
   styleUrl: './workspace.component.css'
 })
@@ -21,6 +22,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy  {
 
   graphCreated = false;
   currentGraphId?: Guid;
+
+  private destroy$ = new Subject<void>()
   constructor(private graphStateService: GraphStateService){
     console.log(`Workspace initiated. GraphCreate value: ${this.graphCreated}`);
   }
@@ -41,7 +44,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy  {
   }
 
   ngOnDestroy(): void {
-    this.graphSub?.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onGraphCreated(graphId: Guid) {
@@ -51,7 +55,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy  {
   }
 
   onResetRequested() {
-    this.graphService.clearCurrentGraph();
+    this.graphStateService.clearCurrentGraph();
     this.graphCreated = false;
     this.activeTab = 'graph';
   }

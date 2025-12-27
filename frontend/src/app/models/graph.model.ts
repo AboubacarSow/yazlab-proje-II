@@ -1,5 +1,5 @@
 import { Edge, EdgeImportDto,EdgeSnapshot,ExportEdgeDto } from "./edge.model";
-import { ExportNodeDto, NodeImportDto, NodeSnapshot } from "./node.model";
+import { ExportNodeDto, NodeImportDto, NodeSnapshot, Node } from "./node.model";
 
 
 export type Guid = string;
@@ -99,6 +99,20 @@ export interface GraphSnapshot {
   edges: EdgeSnapshot[];
 }
 
+export interface GraphNode extends d3.SimulationNodeDatum {
+  id: string;
+  label: string;
+  color?: string;
+  domain: Node
+}
+
+export interface GraphLink extends d3.SimulationLinkDatum<GraphNode> {
+  id?: string;
+  source: string | GraphNode;
+  target: string | GraphNode;
+  weight:number;
+  domain: Edge
+}
 
 
 

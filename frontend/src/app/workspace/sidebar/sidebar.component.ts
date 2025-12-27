@@ -16,6 +16,11 @@ import { EdgeListComponent } from '../graph-view/edge-list/edge-list.component';
 import { GraphStateService } from '../../core/services/graph.service';
 import { GraphNode } from '../../models/node.model';
 import { Edge } from '../../models/edge.model';
+import { EditGraphCommand, EditGraphResponse, Graph, Guid } from '../../models/graph.model';
+import { GraphsService } from '../../services/graphs.service';
+import { ToastService } from '../../core/utils/toast-service.service';
+import { EditGraphComponent } from '../modals/graphs/edit-graph/edit-graph.component';
+import { GraphSummaryComponent } from '../modals/graphs/graph-summary/graph-summary.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -106,21 +111,20 @@ export class SidebarComponent implements OnInit{
     }
   }
 
-  constructor(private dialog: Dialog, private graphState: GraphStateService) {}
 
   // Actions
   onAction(action: string) {
     switch(action) {
       case 'node-add':
         {
-          this.graphState.loadCurrentGraphFromStorage();
-          const cg = this.graphState.getCurrentGraph();
+          this.graphStateService.loadCurrentGraphFromStorage();
+          const cg = this.graphStateService.getCurrentGraph();
           if (!cg) {
             alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
             return;
           }
-          this.dialog.open(NodeListComponent, { 
-            disableClose: true, 
+          this.dialog.open(NodeListComponent, {
+            disableClose: true,
             panelClass: 'node-list-panel',
             data: { mode: 'add' }
           });
@@ -128,14 +132,14 @@ export class SidebarComponent implements OnInit{
         break;
       case 'node-edit':
         {
-          this.graphState.loadCurrentGraphFromStorage();
-          const cg = this.graphState.getCurrentGraph();
+          this.graphStateService.loadCurrentGraphFromStorage();
+          const cg = this.graphStateService.getCurrentGraph();
           if (!cg) {
             alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
             return;
           }
-          this.dialog.open(NodeListComponent, { 
-            disableClose: true, 
+          this.dialog.open(NodeListComponent, {
+            disableClose: true,
             panelClass: 'node-list-panel',
             data: { mode: 'edit' }
           });
@@ -143,14 +147,14 @@ export class SidebarComponent implements OnInit{
         break;
       case 'node-delete':
         {
-          this.graphState.loadCurrentGraphFromStorage();
-          const cg = this.graphState.getCurrentGraph();
+          this.graphStateService.loadCurrentGraphFromStorage();
+          const cg = this.graphStateService.getCurrentGraph();
           if (!cg) {
             alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
             return;
           }
-          this.dialog.open(NodeListComponent, { 
-            disableClose: true, 
+          this.dialog.open(NodeListComponent, {
+            disableClose: true,
             panelClass: 'node-list-panel',
             data: { mode: 'delete' }
           });
@@ -158,14 +162,14 @@ export class SidebarComponent implements OnInit{
         break;
       case 'edge-add':
         {
-          this.graphState.loadCurrentGraphFromStorage();
-          const cg = this.graphState.getCurrentGraph();
+          this.graphStateService.loadCurrentGraphFromStorage();
+          const cg = this.graphStateService.getCurrentGraph();
           if (!cg) {
             alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
             return;
           }
-          this.dialog.open(EdgeListComponent, { 
-            disableClose: true, 
+          this.dialog.open(EdgeListComponent, {
+            disableClose: true,
             panelClass: 'edge-list-panel',
             data: { mode: 'add' }
           });
@@ -173,14 +177,14 @@ export class SidebarComponent implements OnInit{
         break;
       case 'edge-delete':
         {
-          this.graphState.loadCurrentGraphFromStorage();
-          const cg = this.graphState.getCurrentGraph();
+          this.graphStateService.loadCurrentGraphFromStorage();
+          const cg = this.graphStateService.getCurrentGraph();
           if (!cg) {
             alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
             return;
           }
-          this.dialog.open(EdgeListComponent, { 
-            disableClose: true, 
+          this.dialog.open(EdgeListComponent, {
+            disableClose: true,
             panelClass: 'edge-list-panel',
             data: { mode: 'delete' }
           });
@@ -197,7 +201,7 @@ export class SidebarComponent implements OnInit{
     ref.closed.subscribe(value => {
       const node = value as GraphNode | null;
       if (!node) return;
-      const current = this.graphState.getCurrentGraph();
+      const current = this.graphStateService.getCurrentGraph();
       if (!current) return;
       this.dialog.open(NodeEditComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { node, graphId: current.id } });
     });
@@ -208,19 +212,19 @@ export class SidebarComponent implements OnInit{
     ref.closed.subscribe(value => {
       const node = value as GraphNode | null;
       if (!node) return;
-      const current = this.graphState.getCurrentGraph();
+      const current = this.graphStateService.getCurrentGraph();
       if (!current) return;
       this.dialog.open(NodeDeleteComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { node, graphId: current.id } });
     });
   }
 
   private openEdgeSelectThenDelete() {
-    this.graphState.loadCurrentGraphFromStorage();
+    this.graphStateService.loadCurrentGraphFromStorage();
     const ref = this.dialog.open(EdgeSelectComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { mode: 'delete' } });
     ref.closed.subscribe(value => {
       const edge = value as Edge | null;
       if (!edge) return;
-      const current = this.graphState.getCurrentGraph();
+      const current = this.graphStateService.getCurrentGraph();
       if (!current) return;
       this.dialog.open(EdgeDeleteComponent, { disableClose: true, panelClass: 'edge-delete-panel', data: { edge, graphId: current.id } });
     });
