@@ -1,5 +1,3 @@
-using sna_domain.Entities;
-
 namespace sna_application.Graphs.Dtos;
 public record GraphDto(Guid Id, 
                     string Title,

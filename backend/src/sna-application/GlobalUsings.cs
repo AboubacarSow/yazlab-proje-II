@@ -9,4 +9,7 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Routing;
 global using sna_domain.Exceptions;
 global using sna_application.Graphs.Dtos;
-
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.Extensions.Logging;
+global using sna_domain.Services;
+global using System.Diagnostics;
