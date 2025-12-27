@@ -4,14 +4,27 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { map, Observable, take,pipe, filter, switchMap } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
+import { NodeAddComponent } from '../graph-view/node-add/node-add.component';
+import { NodeEditComponent } from '../graph-view/node-edit/node-edit.component';
+import { NodeDeleteComponent } from '../graph-view/node-delete/node-delete.component';
+import { NodeSelectComponent } from '../graph-view/node-select/node-select.component';
+import { NodeListComponent } from '../graph-view/node-list/node-list.component';
+import { EdgeAddComponent } from '../graph-view/edge-add/edge-add.component';
+import { EdgeSelectComponent } from '../graph-view/edge-select/edge-select.component';
+import { EdgeDeleteComponent } from '../graph-view/edge-delete/edge-delete.component';
+import { EdgeListComponent } from '../graph-view/edge-list/edge-list.component';
+import { GraphStateService } from '../../core/services/graph.service';
+import { GraphNode } from '../../models/node.model';
+import { Edge } from '../../models/edge.model';
 import { EditGraphCommand, EditGraphResponse, Graph, Guid } from '../../models/graph.model';
-import { GraphSummaryComponent } from '../modals/graphs/graph-summary/graph-summary.component';
-import { EditGraphComponent } from '../modals/graphs/edit-graph/edit-graph.component';
-import { ToastService } from '../../core/utils/toast-service.service';
 import { GraphsService } from '../../services/graphs.service';
+import { ToastService } from '../../core/utils/toast-service.service';
+import { EditGraphComponent } from '../modals/graphs/edit-graph/edit-graph.component';
+import { GraphSummaryComponent } from '../modals/graphs/graph-summary/graph-summary.component';
 
 @Component({
   selector: 'app-sidebar',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
@@ -98,9 +111,123 @@ export class SidebarComponent implements OnInit{
     }
   }
 
+
   // Actions
   onAction(action: string) {
-    console.log('Action:', action);
+    switch(action) {
+      case 'node-add':
+        {
+          this.graphStateService.loadCurrentGraphFromStorage();
+          const cg = this.graphStateService.getCurrentGraph();
+          if (!cg) {
+            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
+            return;
+          }
+          this.dialog.open(NodeListComponent, {
+            disableClose: true,
+            panelClass: 'node-list-panel',
+            data: { mode: 'add' }
+          });
+        }
+        break;
+      case 'node-edit':
+        {
+          this.graphStateService.loadCurrentGraphFromStorage();
+          const cg = this.graphStateService.getCurrentGraph();
+          if (!cg) {
+            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
+            return;
+          }
+          this.dialog.open(NodeListComponent, {
+            disableClose: true,
+            panelClass: 'node-list-panel',
+            data: { mode: 'edit' }
+          });
+        }
+        break;
+      case 'node-delete':
+        {
+          this.graphStateService.loadCurrentGraphFromStorage();
+          const cg = this.graphStateService.getCurrentGraph();
+          if (!cg) {
+            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
+            return;
+          }
+          this.dialog.open(NodeListComponent, {
+            disableClose: true,
+            panelClass: 'node-list-panel',
+            data: { mode: 'delete' }
+          });
+        }
+        break;
+      case 'edge-add':
+        {
+          this.graphStateService.loadCurrentGraphFromStorage();
+          const cg = this.graphStateService.getCurrentGraph();
+          if (!cg) {
+            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
+            return;
+          }
+          this.dialog.open(EdgeListComponent, {
+            disableClose: true,
+            panelClass: 'edge-list-panel',
+            data: { mode: 'add' }
+          });
+        }
+        break;
+      case 'edge-delete':
+        {
+          this.graphStateService.loadCurrentGraphFromStorage();
+          const cg = this.graphStateService.getCurrentGraph();
+          if (!cg) {
+            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
+            return;
+          }
+          this.dialog.open(EdgeListComponent, {
+            disableClose: true,
+            panelClass: 'edge-list-panel',
+            data: { mode: 'delete' }
+          });
+        }
+        break;
+      default:
+        console.log('Action:', action);
+        break;
+    }
+  }
+
+  private openNodeSelectThenEdit() {
+    const ref = this.dialog.open(NodeSelectComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { mode: 'edit' } });
+    ref.closed.subscribe(value => {
+      const node = value as GraphNode | null;
+      if (!node) return;
+      const current = this.graphStateService.getCurrentGraph();
+      if (!current) return;
+      this.dialog.open(NodeEditComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { node, graphId: current.id } });
+    });
+  }
+
+  private openNodeSelectThenDelete() {
+    const ref = this.dialog.open(NodeSelectComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { mode: 'delete' } });
+    ref.closed.subscribe(value => {
+      const node = value as GraphNode | null;
+      if (!node) return;
+      const current = this.graphStateService.getCurrentGraph();
+      if (!current) return;
+      this.dialog.open(NodeDeleteComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { node, graphId: current.id } });
+    });
+  }
+
+  private openEdgeSelectThenDelete() {
+    this.graphStateService.loadCurrentGraphFromStorage();
+    const ref = this.dialog.open(EdgeSelectComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { mode: 'delete' } });
+    ref.closed.subscribe(value => {
+      const edge = value as Edge | null;
+      if (!edge) return;
+      const current = this.graphStateService.getCurrentGraph();
+      if (!current) return;
+      this.dialog.open(EdgeDeleteComponent, { disableClose: true, panelClass: 'edge-delete-panel', data: { edge, graphId: current.id } });
+    });
   }
   // Modals Actions
   openSummary(){

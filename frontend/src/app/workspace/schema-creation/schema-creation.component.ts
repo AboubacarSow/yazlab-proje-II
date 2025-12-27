@@ -20,17 +20,21 @@ export class SchemaCreationComponent {
   constructor( private graphStateService : GraphStateService) {}
 
   openCreateModal() {
-    const dialogRef = this.dialog.open(GraphCreationComponent, {disableClose:true,
-    panelClass: 'graph-creation-panel'})
+    console.log('🔨 Opening create graph modal...');
+    const dialogRef = this.dialog.open(GraphCreationComponent, {
+      disableClose: true,
+      panelClass: 'graph-creation-panel'
+    });
 
     dialogRef.closed.subscribe(graph => {
       if (!graph || typeof graph !== 'object') return;
       this.graphStateService.setCurrentGraph((graph as Graph));
       this.graphCreated.emit((graph as Graph).id);
     });
-  };
+  }
 
   openImportModal() {
+    console.log('🔨 Opening import graph modal...');
     const dialogRef = this.dialog.open(ImportGraphComponent, {
       disableClose : true,
       panelClass : 'import-graph-panel'});

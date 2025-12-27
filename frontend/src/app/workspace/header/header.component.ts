@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-header',
+  standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -11,6 +12,7 @@ import { RouterLink } from '@angular/router';
 export class HeaderComponent {
   @Input() activeTab: 'graph' | 'data' = 'graph';
   @Output() tabChange = new EventEmitter<'graph' | 'data'>();
+  @Output() reset = new EventEmitter<void>();
 
   @Input() isgraphCreated= false;
   isDropdownOpen = false;
@@ -25,5 +27,10 @@ export class HeaderComponent {
 
   closeDropdown() {
     this.isDropdownOpen = false;
+  }
+
+  requestReset() {
+    this.reset.emit();
+    this.closeDropdown();
   }
 }

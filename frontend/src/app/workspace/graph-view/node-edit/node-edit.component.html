@@ -1,0 +1,35 @@
+<div class="modal">
+  <div class="modal-header">
+    <h3>Node Düzenle</h3>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="form-group">
+        <label>Tag</label>
+        <input type="text" formControlName="tag" />
+        <div class="error" *ngIf="submitted && form.controls['tag'].invalid">Zorunlu alan</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Activity</label>
+          <input type="number" formControlName="activity" />
+          <div class="error" *ngIf="submitted && form.controls['activity'].invalid">0 veya üstü olmalı</div>
+        </div>
+        <div class="form-group">
+          <label>Interaction</label>
+          <input type="number" formControlName="interaction" />
+          <div class="error" *ngIf="submitted && form.controls['interaction'].invalid">0 veya üstü olmalı</div>
+        </div>
+      </div>
+
+      <div class="error" *ngIf="error">{{ error }}</div>
+
+      <div class="modal-actions">
+        <button type="button" class="secondary" (click)="cancel()" [disabled]="loading">İptal</button>
+        <button type="submit" class="primary" [disabled]="loading">
+          {{ loading ? 'Kaydediliyor...' : 'Kaydet' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

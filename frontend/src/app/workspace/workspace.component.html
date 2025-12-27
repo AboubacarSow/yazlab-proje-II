@@ -1,5 +1,5 @@
 <div class="workspace-container">
-  <app-header [activeTab]="activeTab" (tabChange)="onTabChange($event)" [isgraphCreated]="graphCreated"></app-header>
+  <app-header [activeTab]="activeTab" (tabChange)="onTabChange($event)" [isgraphCreated]="graphCreated" (reset)="onResetRequested()"></app-header>
 
   <app-schema-creation
     *ngIf="!graphCreated"

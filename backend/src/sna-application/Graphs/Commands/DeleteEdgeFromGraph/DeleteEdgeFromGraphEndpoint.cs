@@ -8,7 +8,7 @@ public class DeleteEdgeFromGraphEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapDelete("api/graphs/{graphId:int}/edges", 
+        app.MapDelete("api/graphs/{graphId:guid}/edges", 
         async ([FromRoute]Guid graphId,[FromBody]DeleteEdgeFromGraphRequest request, ISender sender) =>
         {
             if(graphId != request.Edge.GraphId) return Results.BadRequest("Ids mismatch");
