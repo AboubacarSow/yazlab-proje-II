@@ -22,7 +22,7 @@ export class NodeListComponent implements OnInit {
   private graphState = inject(GraphStateService);
   private nodesService = inject(NodesService);
   private data = inject<NodeListData>(DIALOG_DATA, { optional: true });
-  mode: 'add' | 'edit' | 'delete';
+  mode: 'add' | 'edit' | 'delete' = 'add';
   nodes: GraphNode[] = [];
   currentGraph: Graph | null = null;
   showAddForm = false;
@@ -36,7 +36,7 @@ export class NodeListComponent implements OnInit {
 
   constructor() {
     // Mode'u data'dan al, yoksa 'add' olarak ayarla
-    this.mode = this.data?.mode ?? 'add';
+    this.mode = (this.data?.mode as 'add' | 'edit' | 'delete') ?? 'add';
     
     this.addForm = this.fb.group({
       tag: ['', [Validators.required, Validators.minLength(2)]],
@@ -54,7 +54,7 @@ export class NodeListComponent implements OnInit {
   ngOnInit(): void {
     // Mode'u tekrar kontrol et (data inject edilmiş olabilir)
     if (this.data) {
-      this.mode = this.data.mode;
+      this.mode = this.data.mode as 'add' | 'edit' | 'delete';
     }
     this.loadNodes();
     // Add mode için formu otomatik aç
