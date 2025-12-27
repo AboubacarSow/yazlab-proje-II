@@ -182,6 +182,7 @@ Bu projede A* algoritması, dinamik ağırlıklar kullanılarak iki düğüm ara
 
 ### A* Algoritması  
 
+```mermaid
 flowchart TD
 
     A[Başlangıç ve Hedef Düğümü Belirle] --> B[Başlangıç f Değerini Hesapla] 
@@ -193,6 +194,7 @@ flowchart TD
     G --> H[Açık Listeyi Güncelle]
     H --> C
     C -->|Evet| I[Yol Bulunamadı]
+```
 
 ### Literatür İncelemesi
 
