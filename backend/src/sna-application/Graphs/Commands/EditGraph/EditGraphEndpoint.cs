@@ -6,6 +6,8 @@ namespace sna_application.Graphs.Commands.EditGraph;
 
 
 public record EditGraphRequest(EditGraphCommand Graph);
+
+public record EditGraphResponse(string Title, string Description);
 public class EditGraphEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
@@ -17,8 +19,9 @@ public class EditGraphEndpoint : ICarterModule
 
             return !result ? 
                     Results.BadRequest("An error occured") 
-                    : Results.NoContent();
+                    : Results.Ok(new EditGraphResponse(request.Graph.Title, request.Graph.Description));
         }).WithTags("Graphs")
-        .WithName("EditGraph");
+        .WithName("EditGraph")
+        .Produces<EditGraphResponse>();
     }
 }

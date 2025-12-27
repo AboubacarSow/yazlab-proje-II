@@ -16,7 +16,7 @@ public class EditNodeInGraphEndpoint : ICarterModule
             if(id!= request.Vertex.Id) return Results.BadRequest("NodeIds mismatch");
 
             var (node,isSuccess) = await sender.Send(request.Vertex);
-            if(isSuccess) 
+            if(!isSuccess) 
                 return Results.BadRequest($"An error occured while attempting to edit Node with Id:{id}");
             return Results.Ok(new EditNodeInGraphResponse(node));
             

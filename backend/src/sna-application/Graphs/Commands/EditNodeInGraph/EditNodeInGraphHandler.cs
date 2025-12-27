@@ -22,7 +22,7 @@ IRequestHandler<EditNodeInGraphCommand, (NodeDto, bool)>
         node.Activity = request.Activity;
         node.Interaction = request.Interaction;
         var nodeDto = node.Adapt<NodeDto>();
-         var result = await unitOfWork.SaveChangesAsync(cancellationToken);
-         return (nodeDto, result);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+         return (nodeDto, true);
     }
 }

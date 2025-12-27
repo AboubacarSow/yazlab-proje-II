@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../header/header.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
@@ -7,6 +7,7 @@ import { DataViewComponent } from '../data-view/data-view.component';
 import { SchemaCreationComponent } from '../schema-creation/schema-creation.component';
 import { GraphStateService } from '../../core/services/graph.service';
 import { Guid } from '../../models/graph.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-workspace',
@@ -15,26 +16,44 @@ import { Guid } from '../../models/graph.model';
   templateUrl: './workspace.component.html',
   styleUrl: './workspace.component.css'
 })
-export class WorkspaceComponent implements OnInit  {
+export class WorkspaceComponent implements OnInit, OnDestroy  {
   activeTab: 'graph' | 'data' = 'graph';
 
   graphCreated = false;
   currentGraphId?: Guid;
-  constructor(private graphService: GraphStateService){
+  constructor(private graphStateService: GraphStateService){
     console.log(`Workspace initiated. GraphCreate value: ${this.graphCreated}`);
   }
-  ngOnInit(): void {
-    this.graphService.loadCurrentGraphFromStorage();
 
-    const graph = this.graphService.getCurrentGraph();
-    if (graph) {
-      this.graphCreated = true;
-      this.currentGraphId = graph.id;
-    }
+  ngOnInit(): void {
+    this.graphStateService.loadCurrentGraphFromStorage();
+
+    this.graphStateService.currentGraph$.subscribe(graph=>{
+      if(!graph){
+        this.graphCreated=false;
+        this.currentGraphId=undefined
+        return;
+      }
+      this.graphCreated=true;
+      this.currentGraphId=graph.id;
+    })
+
   }
+
+  ngOnDestroy(): void {
+    this.graphSub?.unsubscribe();
+  }
+
   onGraphCreated(graphId: Guid) {
+    console.log('✅ Graph created with ID:', graphId);
     this.graphCreated = true;
     this.currentGraphId = graphId;
+  }
+
+  onResetRequested() {
+    this.graphService.clearCurrentGraph();
+    this.graphCreated = false;
+    this.activeTab = 'graph';
   }
 
 

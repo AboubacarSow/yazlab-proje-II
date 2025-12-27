@@ -8,7 +8,12 @@ IRequestHandler<GetAllGraphsQuery, List<GraphDto>>
     public async Task<List<GraphDto>> Handle(GetAllGraphsQuery request, CancellationToken cancellationToken)
     {
         var entities = await _repository.GetAllGraphsAsync(false);
-        var dtos = entities.Adapt<List<GraphDto>>();
+        var dtos = entities.Select(entity=>
+        new GraphDto(entity.Id, entity.Title, entity.Description!, entity.Order, entity.Size)
+        {
+            Nodes= entity.Nodes.ToList().Adapt<List<NodeDto>>(),
+            Edges = entity.Edges.ToList().Adapt<List<EdgeDto>>()
+        }).ToList();
         return dtos;
     }
 }

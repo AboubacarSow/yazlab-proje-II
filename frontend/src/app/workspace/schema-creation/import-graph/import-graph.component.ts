@@ -16,7 +16,7 @@ export class ImportGraphComponent {
 
   private dialogRef = inject(DialogRef<Graph>);
   private graphState = inject(GraphStateService);
-   graphImport: FormGroup;
+  graphImport: FormGroup;
   fileContent?: ImportGraph;
   fileName?: string;
 
@@ -73,11 +73,10 @@ export class ImportGraphComponent {
     if (!this.fileContent) return;
 
     this.loading = true;
-
     this.graphState.importGraph(this.fileContent).subscribe({
-      next: graph => {
-        this.graphState.setCurrentGraph(graph);
-        this.dialogRef.close(graph);
+      next: response => {
+        this.graphState.setCurrentGraph(response.graph);
+        this.dialogRef.close(response.graph);
       },
       error: err => {
         this.loading = false;
