@@ -54,14 +54,25 @@ body {
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+/* Base overlay centering */
+.cdk-overlay-pane {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Dialog Panel Stilleri */
 .graph-creation-panel {
   width: 420px !important;
   max-width: 90vw !important;
 }
-.edge-add-panel {
-  width: 400px !important;
-  max-width: 90vw !important;
+
+.edge-add-panel,
+.edge-delete-panel,
+.edge-list-panel,
+.node-list-panel {
+  width: auto !important;
+  max-width: 950px !important;
 }
 
 .graph-creation-panel .cdk-dialog-container {
@@ -70,11 +81,28 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background: transparent !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.08);
 }
-.edge-add-panel .cdk-dialog-container {
+
+.cdk-overlay-pane.edge-add-panel,
+.cdk-overlay-pane.edge-delete-panel,
+.cdk-overlay-pane.edge-list-panel,
+.cdk-overlay-pane.node-list-panel {
+  pointer-events: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   padding: 0 !important;
-  border-radius: 14px;
-  background: transparent !important;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Remove background override so modal card is visible */
+.cdk-overlay-pane.edge-add-panel > .cdk-dialog-container,
+.cdk-overlay-pane.edge-delete-panel > .cdk-dialog-container,
+.cdk-overlay-pane.edge-list-panel > .cdk-dialog-container,
+.cdk-overlay-pane.node-list-panel > .cdk-dialog-container {
+  padding: 0 !important;
+  background: unset !important;
+  box-shadow: none !important;
+  border: none !important;
+  display: block !important;
 }
 
 /* CDK Dialog Overlay backdrop */
@@ -85,6 +113,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 /* Focus outline kaldır */
 .cdk-dialog-container {
   outline: none !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 /* Modal content */
@@ -94,9 +125,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .cdk-dialog-container app-node-edit,
 .cdk-dialog-container app-node-delete,
 .cdk-dialog-container app-node-select,
+.cdk-dialog-container app-node-list,
 .cdk-dialog-container app-edge-add,
 .cdk-dialog-container app-edge-select,
-.cdk-dialog-container app-edge-delete {
+.cdk-dialog-container app-edge-delete,
+.cdk-dialog-container app-edge-list {
   display: block;
   width: 100%;
 }

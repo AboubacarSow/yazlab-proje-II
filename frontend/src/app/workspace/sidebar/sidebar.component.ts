@@ -4,11 +4,18 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { map, Observable, take,pipe, filter, switchMap } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
-import { EditGraphCommand, EditGraphResponse, Graph, Guid } from '../../models/graph.model';
-import { GraphSummaryComponent } from '../modals/graphs/graph-summary/graph-summary.component';
-import { EditGraphComponent } from '../modals/graphs/edit-graph/edit-graph.component';
-import { ToastService } from '../../core/utils/toast-service.service';
-import { GraphsService } from '../../services/graphs.service';
+import { NodeAddComponent } from '../graph-view/node-add/node-add.component';
+import { NodeEditComponent } from '../graph-view/node-edit/node-edit.component';
+import { NodeDeleteComponent } from '../graph-view/node-delete/node-delete.component';
+import { NodeSelectComponent } from '../graph-view/node-select/node-select.component';
+import { NodeListComponent } from '../graph-view/node-list/node-list.component';
+import { EdgeAddComponent } from '../graph-view/edge-add/edge-add.component';
+import { EdgeSelectComponent } from '../graph-view/edge-select/edge-select.component';
+import { EdgeDeleteComponent } from '../graph-view/edge-delete/edge-delete.component';
+import { EdgeListComponent } from '../graph-view/edge-list/edge-list.component';
+import { GraphStateService } from '../../core/services/graph.service';
+import { GraphNode } from '../../models/node.model';
+import { Edge } from '../../models/edge.model';
 
 @Component({
   selector: 'app-sidebar',
@@ -105,19 +112,49 @@ export class SidebarComponent implements OnInit{
   onAction(action: string) {
     switch(action) {
       case 'node-add':
-        this.graphState.loadCurrentGraphFromStorage(); // Refresh state before check
-        const currentGraph = this.graphState.getCurrentGraph();
-        if (!currentGraph) {
-          alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
-          return;
+        {
+          this.graphState.loadCurrentGraphFromStorage();
+          const cg = this.graphState.getCurrentGraph();
+          if (!cg) {
+            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
+            return;
+          }
+          this.dialog.open(NodeListComponent, { 
+            disableClose: true, 
+            panelClass: 'node-list-panel',
+            data: { mode: 'add' }
+          });
         }
-        this.dialog.open(NodeAddComponent, { disableClose: true, panelClass: 'graph-creation-panel' });
         break;
       case 'node-edit':
-        this.openNodeSelectThenEdit();
+        {
+          this.graphState.loadCurrentGraphFromStorage();
+          const cg = this.graphState.getCurrentGraph();
+          if (!cg) {
+            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
+            return;
+          }
+          this.dialog.open(NodeListComponent, { 
+            disableClose: true, 
+            panelClass: 'node-list-panel',
+            data: { mode: 'edit' }
+          });
+        }
         break;
       case 'node-delete':
-        this.openNodeSelectThenDelete();
+        {
+          this.graphState.loadCurrentGraphFromStorage();
+          const cg = this.graphState.getCurrentGraph();
+          if (!cg) {
+            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
+            return;
+          }
+          this.dialog.open(NodeListComponent, { 
+            disableClose: true, 
+            panelClass: 'node-list-panel',
+            data: { mode: 'delete' }
+          });
+        }
         break;
       case 'edge-add':
         {
@@ -127,11 +164,27 @@ export class SidebarComponent implements OnInit{
             alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
             return;
           }
-          this.dialog.open(EdgeAddComponent, { disableClose: true, panelClass: 'edge-add-panel' });
+          this.dialog.open(EdgeListComponent, { 
+            disableClose: true, 
+            panelClass: 'edge-list-panel',
+            data: { mode: 'add' }
+          });
         }
         break;
       case 'edge-delete':
-        this.openEdgeSelectThenDelete();
+        {
+          this.graphState.loadCurrentGraphFromStorage();
+          const cg = this.graphState.getCurrentGraph();
+          if (!cg) {
+            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
+            return;
+          }
+          this.dialog.open(EdgeListComponent, { 
+            disableClose: true, 
+            panelClass: 'edge-list-panel',
+            data: { mode: 'delete' }
+          });
+        }
         break;
       default:
         console.log('Action:', action);
@@ -169,7 +222,7 @@ export class SidebarComponent implements OnInit{
       if (!edge) return;
       const current = this.graphState.getCurrentGraph();
       if (!current) return;
-      this.dialog.open(EdgeDeleteComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { edge, graphId: current.id } });
+      this.dialog.open(EdgeDeleteComponent, { disableClose: true, panelClass: 'edge-delete-panel', data: { edge, graphId: current.id } });
     });
   }
   // Modals Actions
