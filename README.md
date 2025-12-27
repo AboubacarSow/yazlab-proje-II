@@ -1,3 +1,13 @@
+<!-- PROJECT SHIELDS -->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks](https://img.shields.io/badge/Forks-1-blue?style=for-the-badge)](https://github.com/AboubacarSow/yazlab-proje-II/network/members)
+[![Stars](https://img.shields.io/badge/Stars-2-yellow?style=for-the-badge)](https://github.com/AboubacarSow/yazlab-proje-II/stargazers)
+
+
+<!-- BADGE LINKS -->
+[contributors-shield]: https://img.shields.io/github/contributors/AboubacarSow/yazlab-proje-II.svg?style=for-the-badge
+[contributors-url]: https://github.com/AboubacarSow/yazlab-proje-II/graphs/contributors
+
 sna-data/
 ├── Entities/
 │   ├── Node.cs          (Düğüm)
