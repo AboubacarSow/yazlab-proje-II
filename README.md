@@ -15,17 +15,19 @@
 
 
 # Sosyal Ağ Analizi Uygulaması
-
-**Ders:** Yazılım Geliştirme Laboratuvarı-I 
-**Bölüm:** Bilişim Sistemleri Mühendisliği – Teknoloji Fakültesi  
 **Üniversite:** Kocaeli Üniversitesi  
+**Bölüm:** Bilişim Sistemleri Mühendisliği – Teknoloji Fakültesi   
+**Ders:** Yazılım Geliştirme Laboratuvarı-I  
 **Proje:** Proje – 2  
 **Tarih:** 02.01.2026
 
-**Ekip Üyeleri:**
+### 👥 Ekip Üyeleri
 
-* Emre Yasin Yıldan 231307058
-* Aboubacar Sow     221307117
+| İsim Soyisim        | Öğrenci Numarası |
+|---------------------|------------------|
+| Emre Yasin Yıldan   | 231307058        |
+| Aboubacar Sow       | 221307117        |
+
 
 ---
 
