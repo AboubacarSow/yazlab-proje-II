@@ -2,7 +2,7 @@ using sna_application.Analysis.Dtos;
 
 namespace sna_application.Analysis.ConnectedComponents;
 
-public record ConnectedComponentsResult(Guid GraphId, IReadOnlyList<ComponentDto> Components);
+public record ConnectedComponentsResult(Guid GraphId, IReadOnlyList<ComponentDto> Components, double ExecutionTime);
 
 public record ConnectedComponentsQuery(Guid GraphId) : IRequest<ConnectedComponentsResult>;
 
@@ -28,7 +28,7 @@ internal class ConnectedComponentsHandler(
             ))
             .ToList();
 
-        return new ConnectedComponentsResult(graph.Id, componentsDto);
+        return new ConnectedComponentsResult(graph.Id, componentsDto,timer.ElapsedMilliseconds);
     }
 }
 

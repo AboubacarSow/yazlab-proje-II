@@ -8,8 +8,9 @@
   <div class="workspace-content" *ngIf="graphCreated">
     <app-sidebar></app-sidebar>
 
+
     <main class="workspace-main">
-      <app-graph-view *ngIf="activeTab === 'graph'"></app-graph-view>
+      <app-graph-view *ngIf="activeTab === 'graph'" ></app-graph-view>
       <app-data-view *ngIf="activeTab === 'data'"></app-data-view>
     </main>
   </div>

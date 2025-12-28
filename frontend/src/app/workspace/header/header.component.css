@@ -43,6 +43,7 @@
 .title{
   color:#639ada;
   font-size: 18px;
+  font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
 }
 .tab-btn.active {

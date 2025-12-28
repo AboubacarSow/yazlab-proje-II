@@ -10,7 +10,7 @@ public class GetAllGraphsEndpoint : ICarterModule
         {
             var result = await sender.Send(new GetAllGraphsQuery());
             return Results.Ok(new GetAllGraphsResponse(result));
-        }).WithName("GetAllGraphs")
+        }).WithName("GetAllGraphsAsync")
         .WithTags("Graphs")
         .WithDescription("Retrieves all graphs")
         .Produces<GetAllGraphsResponse>();

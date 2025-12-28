@@ -1,21 +1,16 @@
 import { GraphStateService } from './../../core/services/graph.service';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, Output, inject, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { map, Observable, take, filter, switchMap } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
-import { NodeAddComponent } from '../graph-view/node-add/node-add.component';
-import { NodeEditComponent } from '../graph-view/node-edit/node-edit.component';
-import { NodeDeleteComponent } from '../graph-view/node-delete/node-delete.component';
-import { NodeSelectComponent } from '../graph-view/node-select/node-select.component';
-import { EdgeAddComponent } from '../graph-view/edge-add/edge-add.component';
-import { EdgeSelectComponent } from '../graph-view/edge-select/edge-select.component';
-import { EdgeDeleteComponent } from '../graph-view/edge-delete/edge-delete.component';
 import { EditGraphCommand, EditGraphResponse, Graph, Guid } from '../../models/graph.model';
 import { GraphsService } from '../../services/graphs.service';
 import { ToastService } from '../../core/utils/toast-service.service';
 import { EditGraphComponent } from '../modals/graphs/edit-graph/edit-graph.component';
 import { GraphSummaryComponent } from '../modals/graphs/graph-summary/graph-summary.component';
+import { AlgorithmCategory, AlgorithmDefinition, AlgorithmResultSummary, ALGORITHMS } from '../../core/utils/algorithm-definition';
+import { AlgorithmsStateService } from '../../core/services/algorithms-state.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -25,219 +20,61 @@ import { GraphSummaryComponent } from '../modals/graphs/graph-summary/graph-summ
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent implements OnInit{
+
+  onAction(arg0: string) {
+  throw new Error('Method not implemented.');
+  }
   // Expandable sections state
-  isGraphlarimExpanded = false;
   isNodeExpanded = false;
   isEdgeExpanded = false;
-  isTraversalsExpanded = false;
-  isBFSExpanded = false;
-  isDFSExpanded = false;
-  isMetricsExpanded = false;
-  isComponentsExpanded = false;
 
   // Graph dropdown state
   showGraphDropdown = false;
   dropdownPosition = { top: '0px', left: '0px' };
   private hideTimeout: any;
 
-  // Traversals dropdown state
-  showTraversalsDropdown = false;
-  traversalsDropdownPosition = { top: '0px', left: '0px' };
-  private traversalsHideTimeout: any;
-
-  // Components dropdown state
-  showComponentsDropdown = false;
-  componentsDropdownPosition = { top: '0px', left: '0px' };
-  private componentsHideTimeout: any;
-
-  // Graph selection
-  selectedGraph: string = '';
-  graphs: string[] = ['Graph 1', 'Graph 2', 'Graph 3'];
-
-  // Algorithms list
-  algorithms = [
-    { id: 'bfs', name: 'BFS', icon: '🔍' },
-    { id: 'dfs', name: 'DFS', icon: '🎯' },
-    { id: 'dijkstra', name: 'Dijkstra', icon: '🛤️' },
-    { id: 'astar', name: 'A*', icon: '⭐' }
-  ];
   graphTitle$!: Observable<string>;
   graphId$!:Observable<Guid>;
   private dialog = inject(Dialog);
+
+  //Algoritms Section Variables
+  categories = AlgorithmCategory;
+  algorithms = ALGORITHMS;
+  selectedAlgorithm? : AlgorithmDefinition;
+  //@Input() algorithmResult?: AlgorithmResultSummary;
+
+  //End of the section
+
   constructor(private graphStateService: GraphStateService,private graphApiService: GraphsService,
-     private toast : ToastService){
-  }
+    private toast : ToastService, private algorithmState: AlgorithmsStateService){
+    }
+
+
+
   ngOnInit(): void {
     this.graphTitle$ = this.graphStateService.currentGraph$.pipe(
-    map(graph => graph?.title ?? 'Default')
-  );
-  this.graphId$ = this.graphStateService.currentGraph$.pipe(
+    map(graph => graph?.title ?? 'Default'));
+
+    this.graphId$ = this.graphStateService.currentGraph$.pipe(
     map(graph => graph?.id?? 'undefined'))
+
   }
 
 
 
   toggleSection(section: string) {
     switch(section) {
-      case 'graphlarim':
-        this.isGraphlarimExpanded = !this.isGraphlarimExpanded;
-        break;
       case 'node':
         this.isNodeExpanded = !this.isNodeExpanded;
         break;
       case 'edge':
         this.isEdgeExpanded = !this.isEdgeExpanded;
         break;
-      case 'traversals':
-        this.isTraversalsExpanded = !this.isTraversalsExpanded;
-        break;
-      case 'bfs':
-        this.isBFSExpanded = !this.isBFSExpanded;
-        break;
-      case 'dfs':
-        this.isDFSExpanded = !this.isDFSExpanded;
-        break;
-      case 'metrics':
-        this.isMetricsExpanded = !this.isMetricsExpanded;
-        break;
-      case 'components':
-        this.isComponentsExpanded = !this.isComponentsExpanded;
-        break;
+
     }
   }
 
 
-  // Actions
-  onAction(action: string) {
-    switch(action) {
-      case 'node-add':
-        this.withCurrentGraph(() => {
-          this.dialog.open(NodeAddComponent, {
-            disableClose: true,
-            panelClass: 'node-list-panel',
-            data: { mode: 'add' }
-            });
-        });
-        break;
-      case 'node-edit':
-          this.withCurrentGraph(() => {
-            this.dialog.open(NodeEditComponent, {
-              disableClose: true,
-              panelClass: 'node-list-panel',
-              data: { mode: 'edit' }
-            });
-          });
-        break;
-      case 'node-delete':
-        this.withCurrentGraph(() => {
-          this.dialog.open(NodeDeleteComponent, {
-            disableClose: true,
-            panelClass: 'node-list-panel',
-            data: { mode: 'delete' }
-            });
-        });
-      break;
-      case 'edge-add':
-        this.withCurrentGraph(() => {
-          this.dialog.open(EdgeAddComponent, {
-            disableClose: true,
-            panelClass: 'edge-list-panel',
-            data: { mode: 'add' }
-          });
-        });
-        break;
-      case 'edge-delete':
-        this.withCurrentGraph(() => {
-          this.dialog.open(EdgeDeleteComponent, {
-            disableClose: true,
-            panelClass: 'edge-list-panel',
-            data: { mode: 'delete' }
-          });
-        });
-        break;
-      default:
-        console.log('Action:', action);
-        break;
-    }
-  }
-
-  private withCurrentGraph(
-  onGraphAvailable: (graph: Graph) => void
-  ): void {
-    this.graphStateService.currentGraph$
-      .pipe(
-        take(1),
-        filter((g): g is Graph => !!g && !!g.id)
-      )
-      .subscribe({
-        next: onGraphAvailable,
-        error: () => {
-          this.toast.error("There is no graph available for this operation");
-        }
-      });
-  }
-
-
-  private openNodeSelectThenEdit(): void {
-    const ref = this.dialog.open(NodeSelectComponent, {
-      disableClose: true,
-      panelClass: 'graph-creation-panel',
-      data: { mode: 'edit' }
-    });
-
-    ref.closed.subscribe(value => {
-      if (!value) return;
-
-      this.withCurrentGraph((graph) => {
-        this.dialog.open(NodeEditComponent, {
-          disableClose: true,
-          panelClass: 'graph-creation-panel',
-          data: { node: value as Node, graphId: graph.id }
-        });
-      });
-    });
-  }
-
-
-  private openNodeSelectThenDelete(): void {
-    const ref = this.dialog.open(NodeSelectComponent, {
-      disableClose: true,
-      panelClass: 'graph-creation-panel',
-      data: { mode: 'delete' }
-    });
-
-    ref.closed.subscribe(value=> {
-      if (!value) return;
-
-      this.withCurrentGraph((graph) => {
-        this.dialog.open(NodeDeleteComponent, {
-          disableClose: true,
-          panelClass: 'graph-creation-panel',
-          data: { node: value as Node, graphId: graph.id }
-        });
-      });
-    });
-  }
-
- private openEdgeSelectThenDelete(): void {
-  const ref = this.dialog.open(EdgeSelectComponent, {
-    disableClose: true,
-    panelClass: 'graph-creation-panel',
-    data: { mode: 'delete' }
-  });
-
-  ref.closed.subscribe(value => {
-    if (!value) return;
-
-    this.withCurrentGraph((graph) => {
-      this.dialog.open(EdgeDeleteComponent, {
-        disableClose: true,
-        panelClass: 'edge-delete-panel',
-        data: { edge: value, graphId: graph.id }
-      });
-    });
-  });
-}
 
   // Modals Actions
   openSummary(){
@@ -309,11 +146,6 @@ export class SidebarComponent implements OnInit{
     });
 }
 
-  selectGraph(graph: string) {
-    this.selectedGraph = graph;
-    this.showGraphDropdown = false;
-    console.log('Selected graph:', graph);
-  }
 
   showDropdown(event: MouseEvent) {
     if (this.hideTimeout) {
@@ -340,61 +172,17 @@ export class SidebarComponent implements OnInit{
     }
   }
 
-  // Traversals Dropdown Methods
-  showTraversalsDropdownMenu(event: MouseEvent) {
-    if (this.traversalsHideTimeout) {
-      clearTimeout(this.traversalsHideTimeout);
-    }
-    const target = event.currentTarget as HTMLElement;
-    const rect = target.getBoundingClientRect();
-    this.traversalsDropdownPosition = {
-      top: `${rect.top}px`,
-      left: `${rect.right + 8}px`
-    };
-    this.showTraversalsDropdown = true;
+
+
+  //Algoritms Section Functions
+  getAlgorithmsByCategory(category: AlgorithmCategory) {
+      return this.algorithms.filter(a => a.category === category);
+  }
+  selectAlgorithm(algo: AlgorithmDefinition) {
+    this.selectedAlgorithm = algo;
+    console.log(this.selectedAlgorithm)
+    this.algorithmState.setSelectedAlgorithm(algo);
   }
 
-  hideTraversalsDropdown() {
-    this.traversalsHideTimeout = setTimeout(() => {
-      this.showTraversalsDropdown = false;
-    }, 200);
-  }
-
-  keepTraversalsDropdownOpen() {
-    if (this.traversalsHideTimeout) {
-      clearTimeout(this.traversalsHideTimeout);
-    }
-  }
-
-  selectAlgorithm(algorithm: any) {
-    console.log('Selected algorithm:', algorithm);
-    this.showTraversalsDropdown = false;
-    this.onAction(`algorithm-${algorithm.id}`);
-  }
-
-  // Components Dropdown Methods
-  showComponentsDropdownMenu(event: MouseEvent) {
-    if (this.componentsHideTimeout) {
-      clearTimeout(this.componentsHideTimeout);
-    }
-    const target = event.currentTarget as HTMLElement;
-    const rect = target.getBoundingClientRect();
-    this.componentsDropdownPosition = {
-      top: `${rect.top}px`,
-      left: `${rect.right + 8}px`
-    };
-    this.showComponentsDropdown = true;
-  }
-
-  hideComponentsDropdown() {
-    this.componentsHideTimeout = setTimeout(() => {
-      this.showComponentsDropdown = false;
-    }, 200);
-  }
-
-  keepComponentsDropdownOpen() {
-    if (this.componentsHideTimeout) {
-      clearTimeout(this.componentsHideTimeout);
-    }
-  }
+  //End of the section
 }
