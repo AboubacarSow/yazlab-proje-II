@@ -7,6 +7,12 @@ import * as d3 from 'd3';
 })
 export class GraphrenderService {
 
+
+
+
+
+
+
   private width = 0;
   private height = 0;
 
@@ -20,6 +26,16 @@ export class GraphrenderService {
   private simulation!: d3.Simulation<GraphNode, GraphLink>;
 
   private tooltip!: d3.Selection<HTMLDivElement, unknown, any, any>;
+
+  //Algorithm Visualization & Animation
+  private traversalTimer: any;
+  private traversalSpeed = 600;
+  private selectedNodes = new Set<string>();
+  private selectionCallback?: (ids: string[]) => void;
+  private traversalActive = false;
+  selectionEnabled: boolean=false;
+  private selectionMax = 0;
+  // Ends
 
 
   constructor() { }
@@ -41,29 +57,33 @@ export class GraphrenderService {
 
 
     this.svg = d3.select(container)
-      .append('svg')
-      .attr('width', '100%')
-      .attr('height', '100%')
-      .attr('viewBox', `0 0 ${this.width} ${this.height}`);
+    .append('svg')
+    .attr('width', '100%')
+    .attr('height', '100%')
+    .attr('viewBox', `0 0 ${this.width} ${this.height}`);
 
     this.containerG = this.svg.append('g');
 
     this.simulation = d3.forceSimulation<GraphNode>()
-      .force('link', d3.forceLink<GraphNode, GraphLink>().id(d => d.id).distance(120))
-      .force('charge', d3.forceManyBody().strength(-300))
-      .force('center', d3.forceCenter(this.width / 2, this.height / 2))
-      .force('collide', d3.forceCollide(30));
+    .force('link', d3.forceLink<GraphNode, GraphLink>().id(d => d.id).distance(120))
+    .force('charge', d3.forceManyBody().strength(-300))
+    .force('center', d3.forceCenter(this.width / 2, this.height / 2))
+    .force('collide', d3.forceCollide(30));
 
     this.simulation.on('tick', () => this.ticked());
     this.enableZoom()
   }
+
+
+
+
 
   setData(nodes: GraphNode[], links: GraphLink[]): void {
     // --- LINKS ---
     this.links = this.containerG.selectAll<SVGLineElement, GraphLink>('line')
       .data(links, d => d.id ?? `${d.source}-${d.target}`)
       .join('line')
-      .attr('stroke', '#999')
+      .attr('stroke', '#384f52ff')
       .attr('stroke-width', 2);
 
     // --- NODES ---
@@ -80,7 +100,7 @@ export class GraphrenderService {
           .transition()
           .duration(200)
           .attr('r', 28)
-          .attr('fill', '#ff9800');
+          .attr('fill', '#1f2e5bff');
 
         this.highlightLinks(d.id);
         this.tooltip
@@ -89,11 +109,11 @@ export class GraphrenderService {
           <div class="tooltip-title">${d.label}</div>
           <div class="tooltip-row">
             <span class="tooltip-key">Activity</span>
-            <span class="tooltip-value">${(d as GraphNode).domain.activity ?? '-'}</span>
+            <span class="tooltip-value text-primary">${(d as GraphNode).domain.activity ?? '-'}</span>
           </div>
           <div class="tooltip-row">
             <span class="tooltip-key">Interaction</span>
-            <span class="tooltip-value">${(d as GraphNode).domain.interaction ?? '-'}</span>
+            <span class="tooltip-value text-primary">${(d as GraphNode).domain.interaction ?? '-'}</span>
           </div>`);
       })
       .on('mousemove', (event) => {
@@ -102,6 +122,7 @@ export class GraphrenderService {
           .style('top', event.offsetY + 15 + 'px');
       })
       .on('mouseleave', (event, d) => {
+        if (this.traversalActive) return;
         d3.select(event.currentTarget)
           .transition()
           .duration(200)
@@ -110,6 +131,16 @@ export class GraphrenderService {
 
           this.tooltip.style('opacity', 0);
           this.resetStyles();
+        })
+        .on('click', (_, d) => {
+          if (!this.selectionEnabled) return;
+          if (this.selectedNodes.has(d.id)) return;
+          if (this.selectedNodes.size >= this.selectionMax) return;
+
+          this.selectedNodes.add(d.id);
+          this.highlightNode(d.id);
+
+          this.selectionCallback?.([...this.selectedNodes]);
         });
 
     // --- LABELS ---
@@ -171,6 +202,7 @@ export class GraphrenderService {
       .attr('fill', '#69b3a2')
       .attr('r', 20);
   }
+
   private enableZoom(): void {
     const zoom = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.1, 4]) // min / max zoom
@@ -196,6 +228,97 @@ export class GraphrenderService {
           : 1
       );
   }
+
+  //Algorithm Visualisation & Animation
+  reset(): void {
+    this.traversalActive = false;
+
+    if (this.traversalTimer) {
+      clearTimeout(this.traversalTimer);
+      this.traversalTimer = null;
+    }
+
+    this.resetStyles();
+  }
+
+  private highlightNode(nodeId: string) {
+    this.nodes
+      .filter(d => d.id === nodeId)
+      .interrupt() // IMPORTANT
+      .raise()
+      .transition()
+      .duration(300)
+      .attr('fill', '#291ce7ff')
+      .attr('r', 28);
+  }
+  private highlightEdge(a: string, b: string) {
+    this.links
+      .filter(d =>
+        ((d.source as GraphNode).id === a &&
+        (d.target as GraphNode).id === b) ||
+        ((d.source as GraphNode).id === b &&
+        (d.target as GraphNode).id === a)
+      )
+      .interrupt() // IMPORTANT
+      .raise()
+      .transition()
+      .duration(300)
+      .attr('stroke', '#ff2290ff')
+      .attr('stroke-width', 4);
+  }
+
+
+  renderTraversal(result: {
+    visitOrder: number[];
+    edgesTraversed: [number, number][];
+    }) {
+    this.simulation.stop();
+    this.reset();
+    this.traversalActive = true;
+
+    let step = 0;
+
+    const animate = () => {
+      if (!this.traversalActive) return;
+      if (step >= result.visitOrder.length) return;
+
+      const nodeId = result.visitOrder[step];
+      console.log('highlight node:',nodeId)
+      this.highlightNode(String(nodeId));
+
+      if (step > 0 && result.edgesTraversed[step - 1]) {
+        const [a, b] = result.edgesTraversed[step - 1];
+        console.log('highlight edge:',a,b)
+        this.highlightEdge(String(a), String(b));
+      }
+
+      step++;
+      console.log('step:', step);
+      this.traversalTimer = setTimeout(
+        animate,
+        this.traversalSpeed
+      );
+    };
+
+    animate();
+  }
+
+  enableNodeSelection(options: { max: number; label: string }) {
+    this.selectionEnabled = true;
+    this.selectionMax = options.max;
+    this.selectedNodes.clear();
+  }
+
+  disableNodeSelection() {
+    this.selectionEnabled=false;
+    this.nodes.on('click', null);
+  }
+
+
+  onSelectionChange(cb: (ids: string[]) => void) {
+    this.selectionCallback = cb;
+  }
+
 
 
 }

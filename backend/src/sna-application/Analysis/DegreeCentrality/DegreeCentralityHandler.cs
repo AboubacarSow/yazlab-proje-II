@@ -3,7 +3,7 @@ using sna_application.Analysis.Dtos;
 
 namespace sna_application.Analysis.DegreeCentrality;
 
-public record DegreeCentralityResult(Guid Id, IReadOnlyList<NodeDegreeDto> Nodes);
+public record DegreeCentralityResult(Guid Id, IReadOnlyList<NodeDegreeDto> Nodes, double ExecutionTime);
 public record DegreeCentralityCommand(Guid GraphId) : IRequest<DegreeCentralityResult>;
 
 internal class DegreeCentralityHandler(IGraphRepository graphRepository, ILogger<DegreeCentralityHandler> logger) 
@@ -19,6 +19,6 @@ internal class DegreeCentralityHandler(IGraphRepository graphRepository, ILogger
         timer.Stop();
         logger.LogInformation("DegreeCentrality Alogrithm executed in:{Elapsed} ms",timer.ElapsedMilliseconds);
         var nodeDtos = degreeList.Select(d => new NodeDegreeDto(d.Node.Id, d.Node.Tag, d.Degree)).ToList();
-        return new DegreeCentralityResult(graph.Id, nodeDtos);
+        return new DegreeCentralityResult(graph.Id, nodeDtos, timer.ElapsedMilliseconds);
     }
 }

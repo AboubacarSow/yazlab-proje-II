@@ -12,14 +12,14 @@ internal class GraphRepository(GraphVDbContext context)
     public void EditGraph(Graph graph)
         => _context.Update(graph);
 
-    public async Task<IEnumerable<Graph>> GetAllGraphsAsync(bool trackChChanges)
+    public async Task<List<Graph>> GetAllGraphsAsync(bool trackChChanges)
     {
         IQueryable<Graph> query = _context.Graphs;
         if(!trackChChanges) 
             query= query.AsNoTracking();
         var graphs= query.Include(g=>g.Nodes)
                         .Include(g=>g.Edges);
-        return graphs.AsEnumerable();
+        return await graphs.ToListAsync();
     }
 
     public async Task<Graph?> GetGraphByIdAsync(Guid graphId, bool trackChChanges)
@@ -29,6 +29,9 @@ internal class GraphRepository(GraphVDbContext context)
         if(!trackChChanges) query = query.AsNoTracking();
         var graph = await query.Include(g=>g.Nodes)
                     .Include(g=>g.Edges)
+                        .ThenInclude(e=>e.NodeA)
+                    .Include(g=>g.Edges)
+                        .ThenInclude(e=>e.NodeB)
                     .FirstOrDefaultAsync(g=>g.Id==graphId); 
             
         return graph;

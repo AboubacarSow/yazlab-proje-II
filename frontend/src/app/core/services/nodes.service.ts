@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { GraphStateService } from './graph.service';
 import { NodesService as NodesApiService } from '../../services/nodes.service';
 import { AddNodeDto, EditNodeDto, Node } from '../../models/node.model';
-import { Graph, Guid } from '../../models/graph.model';
+import { Graph } from '../../models/graph.model';
 import { filter, map, Observable, switchMap, take, tap } from 'rxjs';
 
 /**
@@ -60,7 +60,7 @@ export class NodesService {
   /**
    * Edit node in current graph
    */
- 
+
   editNode(
       nodeId: number,
       tag: string,

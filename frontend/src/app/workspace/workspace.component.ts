@@ -7,17 +7,24 @@ import { DataViewComponent } from './data-view/data-view.component';
 import { GraphStateService } from '../core/services/graph.service';
 import { Guid } from '../models/graph.model';
 import { Subject } from 'rxjs';
-import { Sidebar } from "../User-Interface/main-layout/sidebar/sidebar";
+import { SidebarComponent } from './sidebar/sidebar.component';
+
 
 
 @Component({
   selector: 'app-workspace',
   imports: [CommonModule, HeaderComponent, GraphViewComponent, SchemaCreationComponent,
-    DataViewComponent, Sidebar],
+    DataViewComponent, SidebarComponent],
   templateUrl: './workspace.component.html',
   styleUrl: './workspace.component.css'
 })
 export class WorkspaceComponent implements OnInit, OnDestroy  {
+
+  //Algorithm Section
+
+
+  // End Algorithm Section
+
   activeTab: 'graph' | 'data' = 'graph';
 
   graphCreated = false;

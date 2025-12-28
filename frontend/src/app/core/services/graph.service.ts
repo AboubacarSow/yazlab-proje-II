@@ -19,6 +19,7 @@ export class GraphStateService {
 
   private currentGraphSubject = new BehaviorSubject<Graph | null>(null);
   currentGraph$ = this.currentGraphSubject.asObservable();
+
   //Visualisation Settings
   visualizationGraph$ = combineLatest([
     this.getCurrentGraphNodes(),
@@ -112,6 +113,14 @@ export class GraphStateService {
     return this.currentGraph$.pipe(
       map(g => g?.edges ?? [])
     )
+  }
+
+  getCurrentGraphEdgesSnapshot(): Edge[] {
+    return this.currentGraphSubject.value?.edges ?? [];
+  }
+
+  getCurrentGraphNodesSnapshot(): Node[] {
+    return this.currentGraphSubject.value?.nodes ?? [];
   }
 
    getCurrentGraphTitle$(): Observable<string | undefined> {

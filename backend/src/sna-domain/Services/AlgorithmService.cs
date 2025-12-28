@@ -23,8 +23,8 @@ public class GraphAlgorithmService
         {
             var current = queue.Dequeue();
             result.Add(current);
-
-            foreach (var neighbor in current.GetNeighbors(graph))
+            var neighbors = current.GetNeighbors(graph).ToList();
+            foreach (var neighbor in neighbors )
             {
                 if (visited.Add(neighbor))
                     queue.Enqueue(neighbor);

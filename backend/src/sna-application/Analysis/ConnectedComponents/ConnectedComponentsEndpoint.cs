@@ -5,7 +5,7 @@ public class ConnectedComponentsEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/analysis/connectedcomponents/graphId={id:guid}", 
+        app.MapGet("api/analysis/connected-components/graphId={id:guid}", 
         async (Guid id, ISender sender) =>
         {
             var result = await sender.Send(new ConnectedComponentsQuery(id));
