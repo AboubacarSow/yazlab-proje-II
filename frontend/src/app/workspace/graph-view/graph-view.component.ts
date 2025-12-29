@@ -35,39 +35,29 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
               private toast : ToastService){}
 
 
-  ngOnInit() {
-    // Subscribe to graph changes
+   ngOnInit() {
+      // Subscribe to graph changes
     this.graphState.currentGraph$.subscribe(graph => {
       this.currentGraph = graph;
       this.nodes = graph?.nodes ?? [];
       this.edges = graph?.edges ?? [];
     });
+    this.algorithmState.selectedAlgorithm$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(algo => {
+        if (!algo) return;
+        this.prepareVisualization(algo);
+      });
   }
+  prepareVisualization(algo: AlgorithmDefinition) {
+    this.renderer.reset();
+    this.currentAlgorithm = algo;
 
-  // Simple circular layout for nodes
-  getNodeX(index: number): number {
-    const radius = 200;
-    const centerX = 400;
-    const angle = (index / Math.max(this.nodes.length, 1)) * 2 * Math.PI;
-    return centerX + radius * Math.cos(angle);
-  }
+   // this.renderer.setMod(this.currentAlgorithm.key);
 
-  getNodeY(index: number): number {
-    const radius = 200;
-    const centerY = 300;
-    const angle = (index / Math.max(this.nodes.length, 1)) * 2 * Math.PI;
-    return centerY + radius * Math.sin(angle);
-  }
+   // this.renderer.setMod(algo.key);
 
-  getNodePosition(nodeId: number): { x: number; y: number } | null {
-    const index = this.nodes.findIndex(n => n.id === nodeId);
-    if (index === -1) return null;
-    return { x: this.getNodeX(index), y: this.getNodeY(index) };
-  }
 
-  onZoomChange(level: number) {
-    this.zoomLevel = level;
-  }
 
     switch (this.currentAlgorithm.key){
       case 'bfs': {
@@ -118,25 +108,31 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
         console.log('Invalid key algorthim')
       break
     }
-    
-    const dialogRef = this.dialog.open(NodeAddComponent, { 
-      disableClose: true, 
-      panelClass: 'graph-creation-panel'
-    });
-    
-    dialogRef.closed.subscribe((node) => {
-      // Node başarıyla eklendi, UI güncellenecek
-      console.log('Node ekleme tamamlandı:', node);
+
+    this.renderer.onSelectionChange(ids => {
+      this.onNodesSelected(ids);
+      console.log("selected nodes:",ids);
     });
   }
 
-  openEditNode(node: GraphNode) {
-    const current = this.graphState.getCurrentGraph();
-    if (!current) return;
-    this.dialog.open(NodeEditComponent, {
-      disableClose: true,
-      panelClass: 'graph-creation-panel',
-      data: { node, graphId: current.id }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  ngAfterViewInit(): void {
+    this.renderer.init(this.containerRef.nativeElement);
+
+    combineLatest([
+      this.graphStateService.graphNodes$,
+      this.graphStateService.graphLinks$
+    ])
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(([nodes, links]) => {
+      console.log('NODES', nodes);
+      console.log('LINKS', links);
+      this.renderer.setData(nodes, links);
     });
   }
 
@@ -195,4 +191,51 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
       break
     }
   }
+
+  // Simple circular layout for nodes
+  getNodeX(index: number): number {
+    const radius = 200;
+    const centerX = 400;
+    const angle = (index / Math.max(this.nodes.length, 1)) * 2 * Math.PI;
+    return centerX + radius * Math.cos(angle);
+  }
+
+  getNodeY(index: number): number {
+    const radius = 200;
+    const centerY = 300;
+    const angle = (index / Math.max(this.nodes.length, 1)) * 2 * Math.PI;
+    return centerY + radius * Math.sin(angle);
+  }
+
+  getNodePosition(nodeId: number): { x: number; y: number } | null {
+    const index = this.nodes.findIndex(n => n.id === nodeId);
+    if (index === -1) return null;
+    return { x: this.getNodeX(index), y: this.getNodeY(index) };
+  }
+
+    
+    openAddNode(node:GraphNode){
+    const dialogRef = this.dialog.open(NodeAddComponent, { 
+      disableClose: true, 
+      panelClass: 'graph-creation-panel'
+    });
+    
+    dialogRef.closed.subscribe((node) => {
+      // Node başarıyla eklendi, UI güncellenecek
+      console.log('Node ekleme tamamlandı:', node);
+    });
+  }
+
+  openEditNode(node: GraphNode) {
+    const current = this.graphState.getCurrentGraph();
+    if (!current) return;
+    this.dialog.open(NodeEditComponent, {
+      disableClose: true,
+      panelClass: 'graph-creation-panel',
+      data: { node, graphId: current.id }
+    });
+  }
+
+ 
+  
 }
