@@ -1,8 +1,6 @@
-import { GraphStateService } from './../../core/services/graph.service';
-import { Component, Input, OnInit, Output, inject, EventEmitter } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { map, Observable, take, filter, switchMap } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { EditGraphCommand, EditGraphResponse, Graph, Guid } from '../../models/graph.model';
 import { GraphsService } from '../../services/graphs.service';
@@ -13,6 +11,8 @@ import { AlgorithmCategory, AlgorithmDefinition, AlgorithmResultSummary, ALGORIT
 import { AlgorithmsStateService } from '../../core/services/algorithms-state.service';
 import { GraphrenderService } from '../../core/services/graphrender.service';
 import { AlgorithmsService } from '../../services/algorithms.service';
+import { filter, map, Observable, switchMap, take } from 'rxjs';
+import { GraphStateService } from '../../core/services/graph.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -21,12 +21,9 @@ import { AlgorithmsService } from '../../services/algorithms.service';
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
-export class SidebarComponent implements OnInit{
-
-  onAction(arg0: string) {
-  throw new Error('Method not implemented.');
-  }
+export class SidebarComponent {
   // Expandable sections state
+  isGraphlarimExpanded = false;
   isNodeExpanded = false;
   isEdgeExpanded = false;
 
@@ -39,11 +36,10 @@ export class SidebarComponent implements OnInit{
   graphId$!:Observable<Guid>;
   private dialog = inject(Dialog);
 
-  //Algoritms Section Variables
-  categories = AlgorithmCategory;
-  algorithms = ALGORITHMS;
-  selectedAlgorithm? : AlgorithmDefinition;
-  //@Input() algorithmResult?: AlgorithmResultSummary;
+  // Components dropdown state
+  showComponentsDropdown = false;
+  componentsDropdownPosition = { top: '0px', left: '0px' };
+  private componentsHideTimeout: any;
 
   //End of the section
 
@@ -70,6 +66,9 @@ export class SidebarComponent implements OnInit{
 
   toggleSection(section: string) {
     switch(section) {
+      case 'graphlarim':
+        this.isGraphlarimExpanded = !this.isGraphlarimExpanded;
+        break;
       case 'node':
         this.isNodeExpanded = !this.isNodeExpanded;
         break;
