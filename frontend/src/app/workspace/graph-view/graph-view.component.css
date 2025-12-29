@@ -1,7 +1,55 @@
-.graph-container {
-  width: 100%;
-  height: 800px; /* IMPORTANT */
-  border: 1px solid #ddd;
-  background: rgb(255, 255, 255);
+.graph-view {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rem;
+  overflow: auto;
+  background: 
+    linear-gradient(#e0e0e0 1px, transparent 1px),
+    linear-gradient(90deg, #e0e0e0 1px, transparent 1px);
+  background-size: 20px 20px;
+  position: relative;
 }
 
+.toolbar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 1;
+}
+
+.canvas-container {
+  transition: transform 0.2s ease;
+  transform-origin: center;
+}
+
+.graph-canvas {
+  width: 100%;
+  max-width: 800px;
+  height: 600px;
+  background-color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.node {
+  fill: #4a90e2;
+  stroke: #2c5aa0;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.node:hover {
+  fill: #357abd;
+  r: 25;
+}
+
+.edge {
+  stroke: #999;
+  stroke-width: 2;
+}

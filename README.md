@@ -233,33 +233,134 @@ D -->|Hayır| E[Devam]
 
 ### 4.1 Sınıf Diyagramı
 
-```mermaid
-classDiagram
-class Node {
   +int id
   +double aktiflik
   +double etkilesim
-}
-class Edge {
   +Node from
   +Node to
   +double weight
-}
-class Graph {
   +List<Node> nodes
   +List<Edge> edges
-}
-class Algorithm {
   +run()
-}
-class Coloring {
   +colorGraph()
+```mermaid
+classDiagram
+%% --- Entities ---
+class Node {
+  +int Id
+  +string Name
+  +double Aktiflik
+  +double Etkilesim
+  +int Baglanti
+  +List~Edge~ Edges
+}
+class Edge {
+  +int Id
+  +int SourceNodeId
+  +int TargetNodeId
+  +double Weight
+  +Node SourceNode
+  +Node TargetNode
+}
+class Graph {
+  +int Id
+  +string Name
+  +List~Node~ Nodes
+  +List~Edge~ Edges
 }
 
-Graph --> Node
-Graph --> Edge
-Algorithm --> Graph
-Coloring --> Graph
+%% --- DTOs ---
+class NodeCreateDto {
+  +string Name
+  +double Aktiflik
+  +double Etkilesim
+  +int Baglanti
+}
+class NodeDto {
+  +int Id
+  +string Name
+  +double Aktiflik
+  +double Etkilesim
+  +int Baglanti
+}
+class EdgeCreateDto {
+  +int SourceNodeId
+  +int TargetNodeId
+}
+class EdgeDto {
+  +int Id
+  +int SourceNodeId
+  +int TargetNodeId
+  +double Weight
+}
+
+%% --- Repositories ---
+class INodeRepository {
+  +Task~List~<Node>> GetAllAsync()
+  +Task<Node> GetByIdAsync(int id)
+  +Task AddAsync(Node node)
+  +Task UpdateAsync(Node node)
+  +Task DeleteAsync(int id)
+}
+class IEdgeRepository
+class IGraphRepository
+
+%% --- Services ---
+class INodeService {
+  +Task~List~<NodeDto>> GetAllAsync()
+  +Task<NodeDto> GetByIdAsync(int id)
+  +Task<NodeDto> AddAsync(NodeCreateDto dto)
+  +Task UpdateAsync(int id, NodeCreateDto dto)
+  +Task DeleteAsync(int id)
+}
+class IEdgeService
+class IGraphService
+
+%% --- Algorithms ---
+class IGraphAlgorithms {
+  +List~int~ BFS(int startNodeId)
+  +List~int~ DFS(int startNodeId)
+  +List~int~ Dijkstra(int sourceId, int targetId)
+  +List~int~ AStar(int sourceId, int targetId)
+  +List~List~<int>> ConnectedComponents()
+  +List<CentralityResult> DegreeCentralityTop5()
+  +List<ColoringResult> WelshPowell()
+}
+class CentralityResult {
+  +int NodeId
+  +int Degree
+}
+class ColoringResult {
+  +int NodeId
+  +int Color
+}
+
+%% --- Controllers ---
+class NodesController
+class EdgesController
+class AlgorithmsController
+class ImportExportController
+
+%% --- Relationships ---
+Graph "1" -- "many" Node
+Graph "1" -- "many" Edge
+Node "1" -- "many" Edge : OutEdges
+Edge "1" -- "1" Node : SourceNode
+Edge "1" -- "1" Node : TargetNode
+
+NodesController ..> INodeService
+EdgesController ..> IEdgeService
+AlgorithmsController ..> IGraphAlgorithms
+ImportExportController ..> IGraphService
+
+INodeService ..> INodeRepository
+IEdgeService ..> IEdgeRepository
+IGraphService ..> IGraphRepository
+
+NodeDto <.. Node
+EdgeDto <.. Edge
+NodeCreateDto <.. Node
+EdgeCreateDto <.. Edge
 ```
 
 ---

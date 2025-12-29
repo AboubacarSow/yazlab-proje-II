@@ -1,2 +1,43 @@
-<div #container class="graph-container"></div>
-
+<div class="graph-view">
+  
+  <div class="canvas-container" [style.transform]="'scale(' + zoomLevel / 100 + ')'">
+    <svg class="graph-canvas" viewBox="0 0 800 600">
+      <g class="graph-elements">
+        <!-- Edges -->
+        <line 
+          *ngFor="let edge of edges" 
+          [attr.x1]="getNodePosition(edge.nodeAId)?.x ?? 100" 
+          [attr.y1]="getNodePosition(edge.nodeAId)?.y ?? 100"
+          [attr.x2]="getNodePosition(edge.nodeBId)?.x ?? 200" 
+          [attr.y2]="getNodePosition(edge.nodeBId)?.y ?? 200"
+          class="edge" 
+        />
+        
+        <!-- Nodes -->
+        <g *ngFor="let node of nodes; let i = index">
+          <circle 
+            [attr.cx]="getNodeX(i)" 
+            [attr.cy]="getNodeY(i)" 
+            r="20" 
+            class="node" 
+            [attr.data-id]="node.id"
+          />
+          <text 
+            [attr.x]="getNodeX(i)" 
+            [attr.y]="getNodeY(i)" 
+            class="node-label"
+            text-anchor="middle"
+            dominant-baseline="middle"
+          >
+            {{ node.tag }}
+          </text>
+        </g>
+      </g>
+    </svg>
+    
+    <!-- Empty state -->
+    <div *ngIf="nodes.length === 0" class="empty-state">
+      <p>Henüz node eklenmemiş</p>
+      <small>Sidebar'dan "Node Ekle" butonuna tıklayarak başlayın</small>
+    </div>
+  </div>
