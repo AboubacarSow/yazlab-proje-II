@@ -7,6 +7,7 @@ import { GraphStateService } from '../../core/services/graph.service';
 import { AlgorithmsStateService } from '../../core/services/algorithms-state.service';
 import { AlgorithmDefinition } from '../../core/utils/algorithm-definition';
 import { AlgorithmsService } from '../../services/algorithms.service';
+import { ToastService } from '../../core/utils/toast-service.service';
 
 @Component({
   selector: 'app-graph-view',
@@ -28,7 +29,8 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
               private renderer : GraphrenderService,
               private algorithmState: AlgorithmsStateService,
               private algorithmService: AlgorithmsService,
-              private adapter : AlgorithmResultAdapterService){}
+              private adapter : AlgorithmResultAdapterService,
+              private toast : ToastService){}
 
 
   ngOnInit() {
@@ -50,30 +52,38 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
 
 
     switch (this.currentAlgorithm.key){
-      case 'bfs':
+      case 'bfs': {
         this.renderer.enableNodeSelection({
         max: 1,
         label: 'Select start node'
       });
+        this.toast.algo("Selet start node")
       break;
-      case 'dfs':
+      }
+      case 'dfs':{
         this.renderer.enableNodeSelection({
         max: 1,
         label: 'Select start node'
-      });
+        });
+        this.toast.algo("select start node")
       break;
-      case 'dijkstra':
+      }
+      case 'dijkstra':{
         this.renderer.enableNodeSelection({
-        max: 2,
-        label: 'Select start and end nodes'
-      });
-      break;
-      case 'astar':
+          max: 2,
+          label: 'Select start and end nodes'
+        });
+        this.toast.algo("select source and target nodes")
+        break;
+      }
+      case 'astar':{
         this.renderer.enableNodeSelection({
-        max: 2,
-        label: 'Select start and end nodes'
-      });
-      break;
+          max: 2,
+          label: 'Select start and end nodes'
+        });
+        this.toast.algo("Select source and target nodes")
+        break;
+      }
       case 'degree-centrality':
         this.renderer.disableNodeSelection();
       break;
@@ -87,7 +97,7 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
         this.renderer.disableNodeSelection();
       break;
       default:
-        console.log('invalid key algorithm')
+        console.log('Invalid key algorthim')
       break
     }
 
@@ -139,10 +149,33 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
               console.log("Result of bfs:",res);
               const traversal = this.adapter.buildTraversalResult(res.result);
               this.renderer.renderTraversal(traversal);
-              console.log("rendering is done")
+              this.toast.info(`Algorithm execution took ${res.result.executionTime} ms `)
             });
         });
 
+        break;
+      }
+      case 'dfs': {
+        if (nodeIds.length !== 1) return;
+        this.graphStateService.currentGraph$
+        .pipe(take(1))
+        .subscribe(graph => {
+          if (!graph) return;
+
+          const startNodeId = Number(nodeIds[0]);
+          console.log('selected node Id:',startNodeId);
+          this.algorithmService
+            .runDFS(graph.id, startNodeId)
+            .subscribe(res => {
+              console.log("algorithm service api is called")
+              console.log("Result of dfs:",res);
+              const traversal = this.adapter.buildTraversalResult(res.result);
+              this.renderer.renderTraversal(traversal);
+              this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              console.log("rendering is done")
+
+            });
+        });
         break;
       }
       default:

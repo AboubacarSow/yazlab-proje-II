@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class ToastService {
 
+
   constructor(private snackBar : MatSnackBar) { }
 
   success(message: string) {
@@ -33,6 +34,22 @@ export class ToastService {
       panelClass: ['toast-info'],
       horizontalPosition: 'right',
       verticalPosition: 'bottom'
+    });
+  }
+  algo(message: string) {
+    this.snackBar.open(message, undefined, {
+      duration: 5000,
+      panelClass: ['toast-algo'],
+      horizontalPosition: 'right',
+      verticalPosition: 'top'
+    });
+  }
+  runtime(message: string) {
+    this.snackBar.open(message, undefined, {
+      duration: 6000,
+      panelClass: ['toast-runtime'],
+      horizontalPosition: 'right',
+      verticalPosition: 'top'
     });
   }
 }

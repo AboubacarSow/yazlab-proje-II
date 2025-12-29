@@ -1,4 +1,3 @@
-using System.Diagnostics;
 
 namespace sna_application.Analysis.DFS;
 
@@ -17,11 +16,11 @@ internal class DFSHandler(IGraphRepository graphRepository, ILogger<DFSHandler> 
             ?? throw new NotFoundException($"Node: {request.StartNodeId}", graph.Title);
 
         var timer = Stopwatch.StartNew();
-        logger.LogInformation("DFS Algorithm executed in : {Elapsed} ms", timer.ElapsedMilliseconds);
+        logger.LogInformation("DFS Algorithm executed in : {Elapsed} ms", timer.Elapsed.TotalMilliseconds);
         var visitedNodes = GraphAlgorithmService.DFS(graph, node, visited: []);
         timer.Stop();
         var nodeDtos = visitedNodes.Adapt<IReadOnlyList<NodeDto>>();
-        return new DFSResult(request.GraphId, nodeDtos, timer.ElapsedMilliseconds);
+        return new DFSResult(request.GraphId, nodeDtos, timer.Elapsed.TotalMilliseconds);
     }
 }
 

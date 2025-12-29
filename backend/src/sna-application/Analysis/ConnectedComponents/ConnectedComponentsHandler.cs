@@ -20,7 +20,7 @@ internal class ConnectedComponentsHandler(
         timer.Start();
         var components = GraphAlgorithmService.GetConnectedComponents(graph);
         timer.Stop();
-        logger.LogInformation("Detection of Connected Components Algorithm executed in:{Elapsed} ms",timer.ElapsedMilliseconds);
+        logger.LogInformation("Detection of Connected Components Algorithm executed in:{Elapsed} ms",timer.Elapsed.TotalMilliseconds);
         var componentsDto = components
             .Select((nodes, idx) => new ComponentDto(
                 Id: idx + 1, 
@@ -28,7 +28,7 @@ internal class ConnectedComponentsHandler(
             ))
             .ToList();
 
-        return new ConnectedComponentsResult(graph.Id, componentsDto,timer.ElapsedMilliseconds);
+        return new ConnectedComponentsResult(graph.Id, componentsDto,timer.Elapsed.TotalMilliseconds);
     }
 }
 

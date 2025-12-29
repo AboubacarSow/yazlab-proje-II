@@ -89,3 +89,5 @@ export interface AlgorithmResultSummary {
   edgeCount?: number;
   pathLength?: number;
 }
+
+

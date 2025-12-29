@@ -113,7 +113,8 @@ public class GraphAlgorithmService
                                       .Select(n => colorOf[n])
                                       .ToHashSet();
 
-          /* Graph Color service 27.satır */  var color = 0;
+          /* Graph Color service 27.satır */  
+            var color = 0;
             while (neighborColors.Contains(color))
                 color++;
 
