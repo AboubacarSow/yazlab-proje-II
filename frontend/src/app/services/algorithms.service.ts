@@ -29,11 +29,11 @@ export class AlgorithmsService {
   }
 
   runDFS(graphId: Guid, startNodeId: number): Observable<DFSResponse> {
-     const payload = {
+     const command = {
       graphId:graphId,
       startNodeId: startNodeId
     }
-    return this.http.post<DFSResponse>(this.DFS(graphId), payload);
+    return this.http.post<DFSResponse>(this.DFS(graphId), {command});
   }
 
   runDegreeCentrality(graphId: Guid): Observable<DegreeCentralityResponse> {

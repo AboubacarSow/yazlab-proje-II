@@ -5,9 +5,10 @@ import { NodeAddComponent } from './node-add/node-add.component';
 import { NodeEditComponent } from './node-edit/node-edit.component';
 import { NodeDeleteComponent } from './node-delete/node-delete.component';
 import { GraphStateService } from '../../core/services/graph.service';
-import { GraphNode } from '../../models/node.model';
-import { Graph } from '../../models/graph.model';
-import { Edge } from '../../models/edge.model';
+import { AlgorithmsStateService } from '../../core/services/algorithms-state.service';
+import { AlgorithmDefinition } from '../../core/utils/algorithm-definition';
+import { AlgorithmsService } from '../../services/algorithms.service';
+import { ToastService } from '../../core/utils/toast-service.service';
 
 @Component({
   selector: 'app-graph-view',
@@ -16,14 +17,23 @@ import { Edge } from '../../models/edge.model';
   templateUrl: './graph-view.component.html',
   styleUrl: './graph-view.component.css'
 })
-export class GraphViewComponent implements OnInit {
-  zoomLevel = 100;
-  private dialog = inject(Dialog);
-  private graphState = inject(GraphStateService);
-  
-  currentGraph: Graph | null = null;
-  nodes: GraphNode[] = [];
-  edges: Edge[] = [];
+export class GraphViewComponent implements AfterViewInit, OnDestroy{
+
+
+  @ViewChild('container', { static: true })
+  containerRef!: ElementRef<HTMLDivElement>;
+
+  currentAlgorithm? : AlgorithmDefinition
+
+  private destroy$ = new Subject<void>();
+
+  constructor(private graphStateService: GraphStateService,
+              private renderer : GraphrenderService,
+              private algorithmState: AlgorithmsStateService,
+              private algorithmService: AlgorithmsService,
+              private adapter : AlgorithmResultAdapterService,
+              private toast : ToastService){}
+
 
   ngOnInit() {
     // Subscribe to graph changes
@@ -59,11 +69,54 @@ export class GraphViewComponent implements OnInit {
     this.zoomLevel = level;
   }
 
-  openAddNode() {
-    const current = this.graphState.getCurrentGraph();
-    if (!current) {
-      console.error('Aktif graph bulunamadı');
-      return;
+    switch (this.currentAlgorithm.key){
+      case 'bfs': {
+        this.renderer.enableNodeSelection({
+        max: 1,
+        label: 'Select start node'
+      });
+        this.toast.algo("Selet start node")
+      break;
+      }
+      case 'dfs':{
+        this.renderer.enableNodeSelection({
+        max: 1,
+        label: 'Select start node'
+        });
+        this.toast.algo("select start node")
+      break;
+      }
+      case 'dijkstra':{
+        this.renderer.enableNodeSelection({
+          max: 2,
+          label: 'Select start and end nodes'
+        });
+        this.toast.algo("select source and target nodes")
+        break;
+      }
+      case 'astar':{
+        this.renderer.enableNodeSelection({
+          max: 2,
+          label: 'Select start and end nodes'
+        });
+        this.toast.algo("Select source and target nodes")
+        break;
+      }
+      case 'degree-centrality':
+        this.renderer.disableNodeSelection();
+      break;
+      case 'connected-components':
+        this.renderer.disableNodeSelection();
+      break;
+      case 'community-detection':
+        this.renderer.disableNodeSelection();
+      break;
+      case 'coloring':
+        this.renderer.disableNodeSelection();
+      break;
+      default:
+        console.log('Invalid key algorthim')
+      break
     }
     
     const dialogRef = this.dialog.open(NodeAddComponent, { 
@@ -87,13 +140,59 @@ export class GraphViewComponent implements OnInit {
     });
   }
 
-  openDeleteNode(node: GraphNode) {
-    const current = this.graphState.getCurrentGraph();
-    if (!current) return;
-    this.dialog.open(NodeDeleteComponent, {
-      disableClose: true,
-      panelClass: 'graph-creation-panel',
-      data: { node, graphId: current.id }
-    });
+  private onNodesSelected(nodeIds: string[]) {
+    if (!this.currentAlgorithm) return;
+
+    switch (this.currentAlgorithm.key) {
+
+      case 'bfs': {
+        if (nodeIds.length !== 1) return;
+        this.graphStateService.currentGraph$
+        .pipe(take(1))
+        .subscribe(graph => {
+          if (!graph) return;
+
+          const startNodeId = Number(nodeIds[0]);
+          console.log('selected node Id:',startNodeId);
+          this.algorithmService
+            .runBFS(graph.id, startNodeId)
+            .subscribe(res => {
+              console.log("algorithm service api is called")
+              console.log("Result of bfs:",res);
+              const traversal = this.adapter.buildTraversalResult(res.result);
+              this.renderer.renderTraversal(traversal);
+              this.toast.info(`Algorithm execution took ${res.result.executionTime} ms `)
+            });
+        });
+
+        break;
+      }
+      case 'dfs': {
+        if (nodeIds.length !== 1) return;
+        this.graphStateService.currentGraph$
+        .pipe(take(1))
+        .subscribe(graph => {
+          if (!graph) return;
+
+          const startNodeId = Number(nodeIds[0]);
+          console.log('selected node Id:',startNodeId);
+          this.algorithmService
+            .runDFS(graph.id, startNodeId)
+            .subscribe(res => {
+              console.log("algorithm service api is called")
+              console.log("Result of dfs:",res);
+              const traversal = this.adapter.buildTraversalResult(res.result);
+              this.renderer.renderTraversal(traversal);
+              this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              console.log("rendering is done")
+
+            });
+        });
+        break;
+      }
+      default:
+        console.log("_default")
+      break
+    }
   }
 }

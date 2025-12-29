@@ -17,8 +17,8 @@ internal class DegreeCentralityHandler(IGraphRepository graphRepository, ILogger
         timer.Start();
         var degreeList = GraphAlgorithmService.KDegreeCentrality(graph, null);
         timer.Stop();
-        logger.LogInformation("DegreeCentrality Alogrithm executed in:{Elapsed} ms",timer.ElapsedMilliseconds);
+        logger.LogInformation("DegreeCentrality Alogrithm executed in:{Elapsed} ms",timer.Elapsed.TotalMilliseconds);
         var nodeDtos = degreeList.Select(d => new NodeDegreeDto(d.Node.Id, d.Node.Tag, d.Degree)).ToList();
-        return new DegreeCentralityResult(graph.Id, nodeDtos, timer.ElapsedMilliseconds);
+        return new DegreeCentralityResult(graph.Id, nodeDtos, timer.Elapsed.TotalMilliseconds);
     }
 }

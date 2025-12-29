@@ -21,10 +21,11 @@ internal class BFSHandler(IGraphRepository graphRepository, ILogger<BFSHandler> 
         timer.Start();
         var visitedNodes = GraphAlgorithmService.BFS(graph, node,visited:[]);
         timer.Stop();
+        
         //Algorithm ends
-        logger.LogInformation("BFS Algorithm executed in : {Elapsed} ms", timer.ElapsedMilliseconds);
+        logger.LogInformation("BFS Algorithm executed in : {Elapsed} ms", timer.Elapsed.TotalMilliseconds);
         var nodeDtos = visitedNodes.Adapt<IReadOnlyList<NodeDto>>();
-        return new BFSResult(request.GraphId,nodeDtos,timer.ElapsedMilliseconds);
+        return new BFSResult(request.GraphId,nodeDtos,timer.Elapsed.TotalMilliseconds);
     }
 }
 
