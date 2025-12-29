@@ -1,14 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Dialog } from '@angular/cdk/dialog';
 import { NodeAddComponent } from './node-add/node-add.component';
 import { NodeEditComponent } from './node-edit/node-edit.component';
-import { NodeDeleteComponent } from './node-delete/node-delete.component';
 import { GraphStateService } from '../../core/services/graph.service';
 import { AlgorithmsStateService } from '../../core/services/algorithms-state.service';
 import { AlgorithmDefinition } from '../../core/utils/algorithm-definition';
 import { AlgorithmsService } from '../../services/algorithms.service';
 import { ToastService } from '../../core/utils/toast-service.service';
+import { GraphrenderService } from '../../core/services/graphrender.service';
+import { AlgorithmResultAdapterService } from '../../core/services/algorithm-result-adapter.service';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-graph-view',
@@ -37,11 +38,6 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
 
    ngOnInit() {
       // Subscribe to graph changes
-    this.graphState.currentGraph$.subscribe(graph => {
-      this.currentGraph = graph;
-      this.nodes = graph?.nodes ?? [];
-      this.edges = graph?.edges ?? [];
-    });
     this.algorithmState.selectedAlgorithm$
       .pipe(takeUntil(this.destroy$))
       .subscribe(algo => {
@@ -186,6 +182,27 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
         });
         break;
       }
+      case 'coloring':{
+        if(nodeIds.length!==0) return;
+        this.graphStateService.currentGraph$
+        .pipe(take(1))
+        .subscribe(graph => {
+          if (!graph) return;
+
+          console.log('Coloring is head to start')
+          this.algorithmService
+            .runWelshPowellColoring(graph.id)
+            .subscribe(res => {
+              console.log("algorithm service api is called")
+              console.log("Result of WelshPowell:",res);
+              this.renderer.renderColoring(res.result.nodeWithColors);
+              this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              console.log("rendering is done")
+
+            });
+          });
+        break;
+      }
       default:
         console.log("_default")
       break
@@ -213,13 +230,13 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
     return { x: this.getNodeX(index), y: this.getNodeY(index) };
   }
 
-    
+
     openAddNode(node:GraphNode){
-    const dialogRef = this.dialog.open(NodeAddComponent, { 
-      disableClose: true, 
+    const dialogRef = this.dialog.open(NodeAddComponent, {
+      disableClose: true,
       panelClass: 'graph-creation-panel'
     });
-    
+
     dialogRef.closed.subscribe((node) => {
       // Node başarıyla eklendi, UI güncellenecek
       console.log('Node ekleme tamamlandı:', node);
@@ -236,6 +253,6 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
     });
   }
 
- 
-  
+
+
 }

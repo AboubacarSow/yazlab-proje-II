@@ -136,9 +136,13 @@ public class Graph
         foreach (var node in _nodes)
         {
             int degree = node.Connections;
-            double normalized = Order > 1 ? (double)degree / (Order - 1) : 0;
-
-            node.SetCentrality(degree, normalized);
+            decimal normalized = Order > 1 ? (decimal)degree / (Order - 1) : 0m;
+            var normalizedRounded = Math.Round(
+                normalized,
+                3,
+                MidpointRounding.AwayFromZero
+            );
+            node.SetCentrality(degree, normalizedRounded);
         }
         return true;
     }

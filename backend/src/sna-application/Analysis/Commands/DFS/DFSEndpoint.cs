@@ -1,4 +1,4 @@
-namespace sna_application.Analysis.DFS;
+namespace sna_application.Analysis.Commands.DFS;
 
 public record DFSRequest(DFSCommand Command);
 public record DFSResponse(DFSResult Result);

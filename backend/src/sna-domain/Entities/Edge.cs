@@ -27,8 +27,9 @@ public class Edge
         double connection = Math.Pow(_nodeA.Connections - _nodeB.Connections, 2);
 
         double sum_properties = activity + interaction + connection;
-
-        Weight = 1.0 / (1.0 + Math.Sqrt(sum_properties));
+        var _weight = 1.0 / (1.0 + Math.Sqrt(sum_properties));
+        var roundedWeight= Math.Round(_weight,3,MidpointRounding.AwayFromZero);
+        Weight=roundedWeight;
     }
     private Edge() { }
     private Edge(Guid graphId,Node a, Node b)

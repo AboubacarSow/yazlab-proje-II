@@ -12,6 +12,7 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
                     .WithMany(g=> g.Nodes)
                     .HasForeignKey(g => g.GraphId)
                     .OnDelete(DeleteBehavior.Cascade);
-            
+            builder.Property(n => n.NormalizedDegreeCentrality)
+            .HasPrecision(4,3);
         }
 }

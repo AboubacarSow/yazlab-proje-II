@@ -1,19 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
-import { NodeAddComponent } from '../graph-view/node-add/node-add.component';
-import { NodeEditComponent } from '../graph-view/node-edit/node-edit.component';
-import { NodeDeleteComponent } from '../graph-view/node-delete/node-delete.component';
-import { NodeSelectComponent } from '../graph-view/node-select/node-select.component';
-import { NodeListComponent } from '../graph-view/node-list/node-list.component';
-import { EdgeAddComponent } from '../graph-view/edge-add/edge-add.component';
-import { EdgeSelectComponent } from '../graph-view/edge-select/edge-select.component';
-import { EdgeDeleteComponent } from '../graph-view/edge-delete/edge-delete.component';
-import { EdgeListComponent } from '../graph-view/edge-list/edge-list.component';
+import { EditGraphCommand, EditGraphResponse, Graph, Guid } from '../../models/graph.model';
+import { GraphsService } from '../../services/graphs.service';
+import { ToastService } from '../../core/utils/toast-service.service';
+import { EditGraphComponent } from '../modals/graphs/edit-graph/edit-graph.component';
+import { GraphSummaryComponent } from '../modals/graphs/graph-summary/graph-summary.component';
+import { AlgorithmCategory, AlgorithmDefinition, AlgorithmResultSummary, ALGORITHMS } from '../../core/utils/algorithm-definition';
+import { AlgorithmsStateService } from '../../core/services/algorithms-state.service';
+import { GraphrenderService } from '../../core/services/graphrender.service';
+import { AlgorithmsService } from '../../services/algorithms.service';
+import { filter, map, Observable, switchMap, take } from 'rxjs';
 import { GraphStateService } from '../../core/services/graph.service';
-import { GraphNode } from '../../models/node.model';
-import { Edge } from '../../models/edge.model';
 
 @Component({
   selector: 'app-sidebar',
@@ -27,38 +26,43 @@ export class SidebarComponent {
   isGraphlarimExpanded = false;
   isNodeExpanded = false;
   isEdgeExpanded = false;
-  isTraversalsExpanded = false;
-  isBFSExpanded = false;
-  isDFSExpanded = false;
-  isMetricsExpanded = false;
-  isComponentsExpanded = false;
-  
+
   // Graph dropdown state
   showGraphDropdown = false;
   dropdownPosition = { top: '0px', left: '0px' };
   private hideTimeout: any;
-  
-  // Traversals dropdown state
-  showTraversalsDropdown = false;
-  traversalsDropdownPosition = { top: '0px', left: '0px' };
-  private traversalsHideTimeout: any;
+
+  graphTitle$!: Observable<string>;
+  graphId$!:Observable<Guid>;
+  private dialog = inject(Dialog);
 
   // Components dropdown state
   showComponentsDropdown = false;
   componentsDropdownPosition = { top: '0px', left: '0px' };
   private componentsHideTimeout: any;
 
-  // Graph selection
-  selectedGraph: string = '';
-  graphs: string[] = ['Graph 1', 'Graph 2', 'Graph 3'];
-  
-  // Algorithms list
-  algorithms = [
-    { id: 'bfs', name: 'BFS', icon: '🔍' },
-    { id: 'dfs', name: 'DFS', icon: '🎯' },
-    { id: 'dijkstra', name: 'Dijkstra', icon: '🛤️' },
-    { id: 'astar', name: 'A*', icon: '⭐' }
-  ];
+  //End of the section
+
+  constructor(private graphStateService: GraphStateService,
+    private graphApiService: GraphsService,
+    private toast : ToastService,
+    private renderer : GraphrenderService,
+    private algorithmState: AlgorithmsStateService,
+    private algorithmService : AlgorithmsService){
+    }
+
+
+
+  ngOnInit(): void {
+    this.graphTitle$ = this.graphStateService.currentGraph$.pipe(
+    map(graph => graph?.title ?? 'Default'));
+
+    this.graphId$ = this.graphStateService.currentGraph$.pipe(
+    map(graph => graph?.id?? 'undefined'))
+
+  }
+
+
 
   toggleSection(section: string) {
     switch(section) {
@@ -71,150 +75,83 @@ export class SidebarComponent {
       case 'edge':
         this.isEdgeExpanded = !this.isEdgeExpanded;
         break;
-      case 'traversals':
-        this.isTraversalsExpanded = !this.isTraversalsExpanded;
-        break;
-      case 'bfs':
-        this.isBFSExpanded = !this.isBFSExpanded;
-        break;
-      case 'dfs':
-        this.isDFSExpanded = !this.isDFSExpanded;
-        break;
-      case 'metrics':
-        this.isMetricsExpanded = !this.isMetricsExpanded;
-        break;
-      case 'components':
-        this.isComponentsExpanded = !this.isComponentsExpanded;
-        break;
+
     }
   }
 
-  constructor(private dialog: Dialog, private graphState: GraphStateService) {}
 
-  // Actions
-  onAction(action: string) {
-    switch(action) {
-      case 'node-add':
-        {
-          this.graphState.loadCurrentGraphFromStorage();
-          const cg = this.graphState.getCurrentGraph();
-          if (!cg) {
-            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
-            return;
-          }
-          this.dialog.open(NodeListComponent, { 
-            disableClose: true, 
-            panelClass: 'node-list-panel',
-            data: { mode: 'add' }
-          });
-        }
-        break;
-      case 'node-edit':
-        {
-          this.graphState.loadCurrentGraphFromStorage();
-          const cg = this.graphState.getCurrentGraph();
-          if (!cg) {
-            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
-            return;
-          }
-          this.dialog.open(NodeListComponent, { 
-            disableClose: true, 
-            panelClass: 'node-list-panel',
-            data: { mode: 'edit' }
-          });
-        }
-        break;
-      case 'node-delete':
-        {
-          this.graphState.loadCurrentGraphFromStorage();
-          const cg = this.graphState.getCurrentGraph();
-          if (!cg) {
-            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
-            return;
-          }
-          this.dialog.open(NodeListComponent, { 
-            disableClose: true, 
-            panelClass: 'node-list-panel',
-            data: { mode: 'delete' }
-          });
-        }
-        break;
-      case 'edge-add':
-        {
-          this.graphState.loadCurrentGraphFromStorage();
-          const cg = this.graphState.getCurrentGraph();
-          if (!cg) {
-            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
-            return;
-          }
-          this.dialog.open(EdgeListComponent, { 
-            disableClose: true, 
-            panelClass: 'edge-list-panel',
-            data: { mode: 'add' }
-          });
-        }
-        break;
-      case 'edge-delete':
-        {
-          this.graphState.loadCurrentGraphFromStorage();
-          const cg = this.graphState.getCurrentGraph();
-          if (!cg) {
-            alert('Lütfen önce bir graph oluşturun veya içe aktarın.');
-            return;
-          }
-          this.dialog.open(EdgeListComponent, { 
-            disableClose: true, 
-            panelClass: 'edge-list-panel',
-            data: { mode: 'delete' }
-          });
-        }
-        break;
-      default:
-        console.log('Action:', action);
-        break;
+
+  // Modals Actions
+  openSummary(){
+    this.graphStateService.getGraphSummary().subscribe({
+    next: summary => {
+      this.dialog.open(GraphSummaryComponent, {
+        data: summary,
+        panelClass: 'graph-summary-panel',
+        disableClose: true
+      });
+    },
+    error: () => {
+      this.toast.error('Unable to load graph summary')
     }
+  });
   }
 
-  private openNodeSelectThenEdit() {
-    const ref = this.dialog.open(NodeSelectComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { mode: 'edit' } });
-    ref.closed.subscribe(value => {
-      const node = value as GraphNode | null;
-      if (!node) return;
-      const current = this.graphState.getCurrentGraph();
-      if (!current) return;
-      this.dialog.open(NodeEditComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { node, graphId: current.id } });
-    });
+  openEditGraph() {
+  this.graphStateService.getCurrentGraph$().pipe(
+    take(1),
+    filter((g): g is Graph => !!g && !!g.id)
+    ).subscribe({
+    next: (currentGraph) => {
+      const command: EditGraphCommand = {
+        id: currentGraph.id,
+        title: currentGraph.title,
+        description: currentGraph.description ?? ''
+      };
+
+      const dialogRef = this.dialog.open(EditGraphComponent, {
+        data: command,
+        panelClass: 'edit-graph-panel',
+        disableClose: true
+      });
+      dialogRef.closed.subscribe(response=>{
+        if(response){
+          this.toast.success( `Graph ${(response as EditGraphResponse).title}  successfully updated`);
+          return;
+        }
+      })
+    },
+    error: () => this.toast.error('Unable to load Graph')
+  });
   }
 
-  private openNodeSelectThenDelete() {
-    const ref = this.dialog.open(NodeSelectComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { mode: 'delete' } });
-    ref.closed.subscribe(value => {
-      const node = value as GraphNode | null;
-      if (!node) return;
-      const current = this.graphState.getCurrentGraph();
-      if (!current) return;
-      this.dialog.open(NodeDeleteComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { node, graphId: current.id } });
-    });
-  }
 
-  private openEdgeSelectThenDelete() {
-    this.graphState.loadCurrentGraphFromStorage();
-    const ref = this.dialog.open(EdgeSelectComponent, { disableClose: true, panelClass: 'graph-creation-panel', data: { mode: 'delete' } });
-    ref.closed.subscribe(value => {
-      const edge = value as Edge | null;
-      if (!edge) return;
-      const current = this.graphState.getCurrentGraph();
-      if (!current) return;
-      this.dialog.open(EdgeDeleteComponent, { disableClose: true, panelClass: 'edge-delete-panel', data: { edge, graphId: current.id } });
+  export() {
+    this.graphStateService.currentGraph$.pipe(
+      take(1),
+      filter((g): g is Graph => !!g),
+      switchMap(graph =>
+        this.graphApiService.exportGraph(graph.id)
+      )
+    ).subscribe({
+      next: response => {
+        const blob = new Blob(
+          [JSON.stringify(response.graph, null, 2)],
+          { type: 'application/json' }
+        );
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${response.graph.title}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+      error: () => this.toast.error('Unable to export graph')
     });
-  }
-  
-  selectGraph(graph: string) {
-    this.selectedGraph = graph;
-    this.showGraphDropdown = false;
-    console.log('Selected graph:', graph);
-  }
-  
+}
+
+
   showDropdown(event: MouseEvent) {
     if (this.hideTimeout) {
       clearTimeout(this.hideTimeout);
@@ -227,74 +164,77 @@ export class SidebarComponent {
     };
     this.showGraphDropdown = true;
   }
-  
+
   hideDropdown() {
     this.hideTimeout = setTimeout(() => {
       this.showGraphDropdown = false;
     }, 200);
   }
-  
+
   keepDropdownOpen() {
     if (this.hideTimeout) {
       clearTimeout(this.hideTimeout);
     }
   }
-  
-  // Traversals Dropdown Methods
-  showTraversalsDropdownMenu(event: MouseEvent) {
-    if (this.traversalsHideTimeout) {
-      clearTimeout(this.traversalsHideTimeout);
+
+
+
+  //Algoritms Section Functions
+  getAlgorithmsByCategory(category: AlgorithmCategory) {
+      return this.algorithms.filter(a => a.category === category);
+  }
+  selectAlgorithm(algo: AlgorithmDefinition) {
+    this.selectedAlgorithm = algo;
+    console.log(this.selectedAlgorithm)
+    if(this.selectedAlgorithm.key==='coloring'){
+        this.runcoloring();
+        return;
     }
-    const target = event.currentTarget as HTMLElement;
-    const rect = target.getBoundingClientRect();
-    this.traversalsDropdownPosition = {
-      top: `${rect.top}px`,
-      left: `${rect.right + 8}px`
-    };
-    this.showTraversalsDropdown = true;
-  }
-  
-  hideTraversalsDropdown() {
-    this.traversalsHideTimeout = setTimeout(() => {
-      this.showTraversalsDropdown = false;
-    }, 200);
-  }
-  
-  keepTraversalsDropdownOpen() {
-    if (this.traversalsHideTimeout) {
-      clearTimeout(this.traversalsHideTimeout);
+    if(this.selectedAlgorithm.key==='degree-centrality'){
+      this.runDegreeCentrality();
+      return;
     }
-  }
-  
-  selectAlgorithm(algorithm: any) {
-    console.log('Selected algorithm:', algorithm);
-    this.showTraversalsDropdown = false;
-    this.onAction(`algorithm-${algorithm.id}`);
+    this.algorithmState.setSelectedAlgorithm(algo);
   }
 
-  // Components Dropdown Methods
-  showComponentsDropdownMenu(event: MouseEvent) {
-    if (this.componentsHideTimeout) {
-      clearTimeout(this.componentsHideTimeout);
-    }
-    const target = event.currentTarget as HTMLElement;
-    const rect = target.getBoundingClientRect();
-    this.componentsDropdownPosition = {
-      top: `${rect.top}px`,
-      left: `${rect.right + 8}px`
-    };
-    this.showComponentsDropdown = true;
+  runcoloring(){
+    this.graphStateService.currentGraph$
+        .pipe(take(1))
+        .subscribe(graph => {
+          if (!graph) return;
+
+          console.log('Coloring is head to start')
+          this.algorithmService
+            .runWelshPowellColoring(graph.id)
+            .subscribe(res => {
+              console.log("algorithm service api is called")
+              console.log("Result of WelshPowell:",res);
+              this.renderer.renderColoring(res.result.nodeWithColors);
+              this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              console.log("rendering is done")
+
+            });
+          });
   }
-  
-  hideComponentsDropdown() {
-    this.componentsHideTimeout = setTimeout(() => {
-      this.showComponentsDropdown = false;
-    }, 200);
+
+  runDegreeCentrality(){
+    this.graphStateService.currentGraph$
+        .pipe(take(1))
+        .subscribe(graph => {
+          if (!graph) return;
+
+          console.log('Coloring is head to start')
+          this.algorithmService
+            .runDegreeCentrality(graph.id)
+            .subscribe(res => {
+              console.log("algorithm service api is called")
+              console.log("Result of WelshPowell:",res);
+              this.renderer.renderDegreeCentrality(res.result.nodeDegrees,res.result.maxDegree);
+              this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              console.log("rendering is done")
+
+            });
+          });
   }
-  
-  keepComponentsDropdownOpen() {
-    if (this.componentsHideTimeout) {
-      clearTimeout(this.componentsHideTimeout);
-    }
-  }
+  //End of the section
 }

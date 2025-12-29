@@ -1,5 +1,5 @@
 
-namespace sna_application.Analysis.BFS;
+namespace sna_application.Analysis.Commands.BFS;
 
 public record BFSRequest(BFSCommand Command);
 public record BFSResponse(BFSResult Result);

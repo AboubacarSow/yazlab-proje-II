@@ -1,4 +1,4 @@
-namespace sna_application.Analysis.ConnectedComponents;
+namespace sna_application.Analysis.Queries.ConnectedComponents;
 
 public record ConnectedComponentsResponse(ConnectedComponentsResult Result);
 public class ConnectedComponentsEndpoint : ICarterModule

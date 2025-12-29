@@ -1,2 +1,3 @@
 namespace sna_application.Analysis.Dtos;
-public record NodeDegreeDto(int Id, string Tag, int Degree);
+public record NodeDegreeDto(int Id, string Tag, int Degree, decimal? NormalizeDegree);
+

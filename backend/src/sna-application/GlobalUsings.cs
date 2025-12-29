@@ -13,3 +13,4 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Logging;
 global using sna_domain.Services;
 global using System.Diagnostics;
+global using sna_domain.Entities;

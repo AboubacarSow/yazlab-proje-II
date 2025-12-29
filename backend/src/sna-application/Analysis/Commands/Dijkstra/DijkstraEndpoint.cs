@@ -1,4 +1,4 @@
-namespace sna_application.Analysis.Dijkstra;
+namespace sna_application.Analysis.Commands.Dijkstra;
 
 public record DijkstraRequest(DijkstraCommand Command);
 public record DijkstraResponse(DijkstraResult Result);

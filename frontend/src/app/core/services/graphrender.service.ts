@@ -7,12 +7,6 @@ import * as d3 from 'd3';
 })
 export class GraphrenderService {
 
-
-
-
-
-
-
   private width = 0;
   private height = 0;
 
@@ -26,6 +20,10 @@ export class GraphrenderService {
   private simulation!: d3.Simulation<GraphNode, GraphLink>;
 
   private tooltip!: d3.Selection<HTMLDivElement, unknown, any, any>;
+  private readonly defaultNodeColor = '#2f757dff';
+  private readonly nodeHighlightColor = '#e71ce7ff'
+  private readonly defaultNodeRadius = 20;
+  private readonly scaleNodeRadius = 30;
 
   //Algorithm Visualization & Animation
   private traversalTimer: any;
@@ -35,6 +33,15 @@ export class GraphrenderService {
   private traversalActive = false;
   selectionEnabled: boolean=false;
   private selectionMax = 0;
+  private colorScale = d3.scaleOrdinal<number, string>()
+  .range(d3.schemeTableau10);
+  private degreeColorScale = d3.scaleLinear<string>()
+        .range(['#e0f3ff', '#6b0857ff']);
+
+  private degreeRadiusScale = d3.scaleLinear<number, number>();
+  private readonly minNodeRadius = this.defaultNodeRadius;
+  private readonly maxNodeRadius = 35;
+
   // Ends
 
 
@@ -83,15 +90,15 @@ export class GraphrenderService {
     this.links = this.containerG.selectAll<SVGLineElement, GraphLink>('line')
       .data(links, d => d.id ?? `${d.source}-${d.target}`)
       .join('line')
-      .attr('stroke', '#384f52ff')
+      .attr('stroke', '#2d3132ff')
       .attr('stroke-width', 2);
 
     // --- NODES ---
     this.nodes = this.containerG.selectAll<SVGCircleElement, GraphNode>('circle')
       .data(nodes, d => d.id)
       .join('circle')
-      .attr('r', 20)
-      .attr('fill', d => d.color ?? '#2cc9daff')
+      .attr('r', this.defaultNodeRadius)
+      .attr('fill', d => d.color ?? this.defaultNodeColor)
       .attr('stroke', '#fff')
       .attr('stroke-width', 2)
       .call(this.createDrag())
@@ -99,8 +106,8 @@ export class GraphrenderService {
         d3.select(event.currentTarget)
           .transition()
           .duration(200)
-          .attr('r', 28)
-          .attr('fill', '#1f2e5bff');
+          .attr('r', 30)
+          .attr('fill', '#a18116ff');
 
         this.highlightLinks(d.id);
         this.tooltip
@@ -109,11 +116,11 @@ export class GraphrenderService {
           <div class="tooltip-title">${d.label}</div>
           <div class="tooltip-row">
             <span class="tooltip-key">Activity</span>
-            <span class="tooltip-value text-primary">${(d as GraphNode).domain.activity ?? '-'}</span>
+            <span class="tooltip-value text-info">${(d as GraphNode).domain.activity ?? '-'}</span>
           </div>
           <div class="tooltip-row">
             <span class="tooltip-key">Interaction</span>
-            <span class="tooltip-value text-primary">${(d as GraphNode).domain.interaction ?? '-'}</span>
+            <span class="tooltip-value text-info">${(d as GraphNode).domain.interaction ?? '-'}</span>
           </div>`);
       })
       .on('mousemove', (event) => {
@@ -126,8 +133,8 @@ export class GraphrenderService {
         d3.select(event.currentTarget)
           .transition()
           .duration(200)
-          .attr('r', 20)
-          .attr('fill', d.color ?? '#2cc9daff');
+          .attr('r', this.defaultNodeRadius)
+          .attr('fill', d.color ?? this.defaultNodeColor);
 
           this.tooltip.style('opacity', 0);
           this.resetStyles();
@@ -199,7 +206,7 @@ export class GraphrenderService {
     this.nodes
       .transition()
       .duration(300)
-      .attr('fill', '#69b3a2')
+      .attr('fill', this.defaultNodeColor)
       .attr('r', 20);
   }
 
@@ -248,8 +255,8 @@ export class GraphrenderService {
       .raise()
       .transition()
       .duration(300)
-      .attr('fill', '#291ce7ff')
-      .attr('r', 28);
+      .attr('fill', this.nodeHighlightColor)
+      .attr('r', this.scaleNodeRadius);
   }
   private highlightEdge(a: string, b: string) {
     this.links
@@ -318,6 +325,62 @@ export class GraphrenderService {
   onSelectionChange(cb: (ids: string[]) => void) {
     this.selectionCallback = cb;
   }
+
+  //WelshPowell
+  renderColoring(nodeWithColors: Record<number, number>): void {
+    // Coloring cancels traversal visuals
+    this.traversalActive = false;
+    if (this.traversalTimer) {
+      clearTimeout(this.traversalTimer);
+      this.traversalTimer = null;
+    }
+
+    this.nodes
+      .interrupt() // stop ongoing transitions
+      .transition()
+      .duration(400)
+      .attr('fill', d => {
+        const colorIndex = nodeWithColors[Number(d.id)];
+        return colorIndex !== undefined
+          ? this.colorScale(colorIndex)
+          : this.defaultNodeColor;
+      })
+      .attr('r', 20);
+
+    // Reset links to neutral state
+    this.links
+      .transition()
+      .duration(300)
+      .attr('stroke', '#ccc')
+      .attr('stroke-width', 1);
+  }
+
+  renderDegreeCentrality(nodeDegrees: Record<string, number>, maxDegree: number): void {
+    this.simulation.stop();
+    this.reset();
+
+    this.degreeColorScale.domain([0, maxDegree]);
+    this.degreeRadiusScale.domain([0, maxDegree])
+    .range([this.minNodeRadius, this.maxNodeRadius]);
+
+    this.nodes
+      .transition()
+      .duration(500)
+      .attr('r', d => {
+          const degree = nodeDegrees[d.id];
+          return degree !== undefined
+            ? this.degreeRadiusScale(degree)
+            : this.defaultNodeRadius;
+      })
+      .attr('fill', d => {
+        const degree = nodeDegrees[d.id];
+        return degree !== undefined
+          ? this.degreeColorScale(degree)
+          : this.defaultNodeColor;
+      });
+  }
+
+
 
 
 

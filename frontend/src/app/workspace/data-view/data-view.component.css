@@ -9,6 +9,12 @@
   display: flex;
   gap: 1rem;
   margin-bottom: 1.5rem;
+  justify-content: space-between;
+}
+.data-buttons{
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .format-btn {
@@ -114,3 +120,79 @@
 .data-content::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.top-five{
+  color:#555;
+  font-size:larger;
+
+}
+
+.data-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.data-card h4 {
+  margin-bottom: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* ===== Top Five Table ===== */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 0.9rem;
+}
+
+thead {
+  background-color: #1e1e2f;
+}
+
+thead th {
+  color: #353434;
+  text-align: left;
+  padding: 10px;
+  font-weight: 600;
+  border-bottom: 2px solid #2a2a40;
+}
+
+tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: #f2f4f8;
+}
+
+tbody td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Rank column */
+tbody td:first-child {
+  font-weight: 600;
+  color: #6b7280;
+}
+
+/* Degree emphasis */
+tbody td:nth-child(3) {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+/* Normalized value */
+tbody td:nth-child(4) {
+  font-family: monospace;
+  color: #374151;
+}
+

@@ -1,4 +1,4 @@
-namespace sna_application.Analysis.Dijkstra;
+namespace sna_application.Analysis.Commands.Dijkstra;
 
 public record DijkstraResult(Guid Id, IReadOnlyList<NodeDto> Nodes, double ExecutionTime);
 public record DijkstraCommand(Guid GraphId, int StartNodeId, int TargetNodeId) : IRequest<DijkstraResult>;
