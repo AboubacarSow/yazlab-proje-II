@@ -1,39 +1,53 @@
 <div class="data-view">
   <div class="data-controls">
-    <button 
-      [class.active]="dataFormat === 'json'" 
-      (click)="switchFormat('json')"
-      class="format-btn">
-      JSON
-    </button>
-    <button 
-      [class.active]="dataFormat === 'csv'" 
-      (click)="switchFormat('csv')"
-      class="format-btn">
-      CSV
-    </button>
-    <button 
-      [class.active]="dataFormat === 'table'" 
-      (click)="switchFormat('table')"
-      class="format-btn">
-      Table
-    </button>
+    <div class="data-buttons">
+      <button
+        [class.active]="dataFormat === 'json'"
+        (click)="switchFormat('json')"
+        class="format-btn">
+        JSON
+      </button>
+      <button
+        [class.active]="dataFormat === 'csv'"
+        (click)="switchFormat('csv')"
+        class="format-btn">
+        CSV
+      </button>
+      <button
+        [class.active]="dataFormat === 'table'"
+        (click)="switchFormat('table')"
+        class="format-btn">
+        Table
+      </button>
+
+    </div>
+    <div >
+
+      <button
+        [class.active]="dataFormat === 'top-five'"
+        (click)="switchFormat('top-five')"
+        class="format-btn top-five">
+         <i class="fa-solid fa-circle-nodes me-2"></i>Top Five Node
+      </button>
+    </div>
+
+
   </div>
-  
+
   <div class="data-content">
     <!-- JSON View -->
     <div *ngIf="dataFormat === 'json'" class="json-view">
       <pre>{{ sampleData | json }}</pre>
     </div>
-    
+
     <!-- CSV View -->
     <div *ngIf="dataFormat === 'csv'" class="csv-view">
-      <textarea 
-        [(ngModel)]="csvData" 
-        class="csv-textarea" 
+      <textarea
+        [(ngModel)]="csvData"
+        class="csv-textarea"
         placeholder="CSV data here..."></textarea>
     </div>
-    
+
     <!-- Table View -->
     <div *ngIf="dataFormat === 'table'" class="table-view">
       <h3>Nodes</h3>
@@ -51,7 +65,7 @@
           </tr>
         </tbody>
       </table>
-      
+
       <h3>Edges</h3>
       <table>
         <thead>
@@ -67,6 +81,33 @@
           </tr>
         </tbody>
       </table>
+    </div>
+     <!-- Table View -->
+    <div *ngIf="dataFormat === 'top-five'" class="data-card">
+      <table
+        *ngIf="dataFormat === 'top-five'"
+        class="table table-sm table-striped mt-3">
+
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Node</th>
+            <th>Degree</th>
+            <th>Normalized</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let node of topFiveNodeInDegree?.nodes; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ node.tag }}</td>
+            <td>{{ node.degree }}</td>
+            <td>{{ node.normalizeDegree | number:'1.3-3' }}</td>
+          </tr>
+        </tbody>
+
+      </table>
+
     </div>
   </div>
 </div>

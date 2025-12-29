@@ -1,6 +1,6 @@
 using sna_application.Analysis.Dtos;
 
-namespace sna_application.Analysis.ConnectedComponents;
+namespace sna_application.Analysis.Queries.ConnectedComponents;
 
 public record ConnectedComponentsResult(Guid GraphId, IReadOnlyList<ComponentDto> Components, double ExecutionTime);
 

@@ -12,7 +12,7 @@ public class Node : BaseEntity, IEquatable<Node>
     //Characteristic
     public double Activity { get; set; }
     public int Interaction { get; set; }
-    public double? NormalizedDegreeCentrality { get; private set; }
+    public decimal? NormalizedDegreeCentrality { get; private set; }
     public int DegreeCentrality { get; private set; }
     public int Connections { get; private set; }
 
@@ -47,7 +47,7 @@ public class Node : BaseEntity, IEquatable<Node>
             .Where(e => e.NodeAId == Id || e.NodeBId == Id)
             .Select(e => e.NodeAId == Id ? e.NodeB : e.NodeA);
     }
-    internal void SetCentrality(int degree, double normalized)
+    internal void SetCentrality(int degree, decimal normalized)
     {
         //Need to handle edge cases when degree < 0 and normalize is not inside of [0,1]
         if (degree < 0)

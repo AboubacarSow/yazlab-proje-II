@@ -1,6 +1,6 @@
 
 
-namespace sna_application.Analysis.BFS;
+namespace sna_application.Analysis.Commands.BFS;
 
 
 public record BFSResult(

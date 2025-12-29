@@ -34,7 +34,7 @@ public class EdgeConfiguration : IEntityTypeConfiguration<Edge>
                .HasForeignKey(e => e.GraphId)
                .OnDelete(DeleteBehavior.NoAction);
 
-
+        builder.Property(e=>e.Weight).HasPrecision(4,3);
     }
 
 }

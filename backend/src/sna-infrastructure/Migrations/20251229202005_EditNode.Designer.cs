@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using sna_infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using sna_infrastructure.Persistence;
 namespace sna_infrastructure.Migrations
 {
     [DbContext(typeof(GraphVDbContext))]
-    partial class GraphVDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251229202005_EditNode")]
+    partial class EditNode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,8 +62,7 @@ namespace sna_infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<double>("Weight")
-                        .HasPrecision(4, 3)
-                        .HasColumnType("float(4)");
+                        .HasColumnType("float");
 
                     b.HasKey("GraphId", "NodeAId", "NodeBId");
 
@@ -161,8 +163,8 @@ namespace sna_infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal?>("NormalizedDegreeCentrality")
-                        .HasPrecision(4, 3)
-                        .HasColumnType("decimal(4,3)");
+                        .HasPrecision(3)
+                        .HasColumnType("decimal(3,2)");
 
                     b.Property<string>("Tag")
                         .IsRequired()

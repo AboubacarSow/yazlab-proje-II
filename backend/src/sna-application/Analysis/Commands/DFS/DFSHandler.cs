@@ -1,5 +1,5 @@
 
-namespace sna_application.Analysis.DFS;
+namespace sna_application.Analysis.Commands.DFS;
 
 public record DFSResult(Guid Id, IReadOnlyList<NodeDto> Nodes, double ExecutionTime);
 public record DFSCommand(Guid GraphId, int StartNodeId) : IRequest<DFSResult>;

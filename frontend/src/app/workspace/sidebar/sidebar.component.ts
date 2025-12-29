@@ -11,6 +11,8 @@ import { EditGraphComponent } from '../modals/graphs/edit-graph/edit-graph.compo
 import { GraphSummaryComponent } from '../modals/graphs/graph-summary/graph-summary.component';
 import { AlgorithmCategory, AlgorithmDefinition, AlgorithmResultSummary, ALGORITHMS } from '../../core/utils/algorithm-definition';
 import { AlgorithmsStateService } from '../../core/services/algorithms-state.service';
+import { GraphrenderService } from '../../core/services/graphrender.service';
+import { AlgorithmsService } from '../../services/algorithms.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -45,8 +47,12 @@ export class SidebarComponent implements OnInit{
 
   //End of the section
 
-  constructor(private graphStateService: GraphStateService,private graphApiService: GraphsService,
-    private toast : ToastService, private algorithmState: AlgorithmsStateService){
+  constructor(private graphStateService: GraphStateService,
+    private graphApiService: GraphsService,
+    private toast : ToastService,
+    private renderer : GraphrenderService,
+    private algorithmState: AlgorithmsStateService,
+    private algorithmService : AlgorithmsService){
     }
 
 
@@ -181,8 +187,55 @@ export class SidebarComponent implements OnInit{
   selectAlgorithm(algo: AlgorithmDefinition) {
     this.selectedAlgorithm = algo;
     console.log(this.selectedAlgorithm)
+    if(this.selectedAlgorithm.key==='coloring'){
+        this.runcoloring();
+        return;
+    }
+    if(this.selectedAlgorithm.key==='degree-centrality'){
+      this.runDegreeCentrality();
+      return;
+    }
     this.algorithmState.setSelectedAlgorithm(algo);
   }
 
+  runcoloring(){
+    this.graphStateService.currentGraph$
+        .pipe(take(1))
+        .subscribe(graph => {
+          if (!graph) return;
+
+          console.log('Coloring is head to start')
+          this.algorithmService
+            .runWelshPowellColoring(graph.id)
+            .subscribe(res => {
+              console.log("algorithm service api is called")
+              console.log("Result of WelshPowell:",res);
+              this.renderer.renderColoring(res.result.nodeWithColors);
+              this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              console.log("rendering is done")
+
+            });
+          });
+  }
+
+  runDegreeCentrality(){
+    this.graphStateService.currentGraph$
+        .pipe(take(1))
+        .subscribe(graph => {
+          if (!graph) return;
+
+          console.log('Coloring is head to start')
+          this.algorithmService
+            .runDegreeCentrality(graph.id)
+            .subscribe(res => {
+              console.log("algorithm service api is called")
+              console.log("Result of WelshPowell:",res);
+              this.renderer.renderDegreeCentrality(res.result.nodeDegrees,res.result.maxDegree);
+              this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              console.log("rendering is done")
+
+            });
+          });
+  }
   //End of the section
 }

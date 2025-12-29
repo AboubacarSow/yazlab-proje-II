@@ -1,6 +1,6 @@
 
 
-namespace sna_application.Analysis.AStar;
+namespace sna_application.Analysis.Commands.AStar;
 
 public record AStarResult(Guid Id, IReadOnlyList<NodeDto> Nodes, double ExecutionTime);
 public record AStarCommand(Guid GraphId, int StartNodeId, int TargetNodeId) : IRequest<AStarResult>;
