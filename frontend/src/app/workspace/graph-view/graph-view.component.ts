@@ -1,8 +1,9 @@
-import { AlgorithmResultAdapterService } from './../../core/services/algorithm-result-adapter.service';
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { combineLatest, Subject, take, takeUntil } from 'rxjs';
-import { GraphrenderService } from '../../core/services/graphrender.service';
+import { Dialog } from '@angular/cdk/dialog';
+import { NodeAddComponent } from './node-add/node-add.component';
+import { NodeEditComponent } from './node-edit/node-edit.component';
+import { NodeDeleteComponent } from './node-delete/node-delete.component';
 import { GraphStateService } from '../../core/services/graph.service';
 import { AlgorithmsStateService } from '../../core/services/algorithms-state.service';
 import { AlgorithmDefinition } from '../../core/utils/algorithm-definition';
@@ -11,6 +12,7 @@ import { ToastService } from '../../core/utils/toast-service.service';
 
 @Component({
   selector: 'app-graph-view',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './graph-view.component.html',
   styleUrl: './graph-view.component.css'
@@ -34,22 +36,38 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
 
 
   ngOnInit() {
-    this.algorithmState.selectedAlgorithm$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(algo => {
-        if (!algo) return;
-        this.prepareVisualization(algo);
-      });
+    // Subscribe to graph changes
+    this.graphState.currentGraph$.subscribe(graph => {
+      this.currentGraph = graph;
+      this.nodes = graph?.nodes ?? [];
+      this.edges = graph?.edges ?? [];
+    });
   }
-  prepareVisualization(algo: AlgorithmDefinition) {
-    this.renderer.reset();
-    this.currentAlgorithm = algo;
 
-   // this.renderer.setMod(this.currentAlgorithm.key);
+  // Simple circular layout for nodes
+  getNodeX(index: number): number {
+    const radius = 200;
+    const centerX = 400;
+    const angle = (index / Math.max(this.nodes.length, 1)) * 2 * Math.PI;
+    return centerX + radius * Math.cos(angle);
+  }
 
-   // this.renderer.setMod(algo.key);
+  getNodeY(index: number): number {
+    const radius = 200;
+    const centerY = 300;
+    const angle = (index / Math.max(this.nodes.length, 1)) * 2 * Math.PI;
+    return centerY + radius * Math.sin(angle);
+  }
 
+  getNodePosition(nodeId: number): { x: number; y: number } | null {
+    const index = this.nodes.findIndex(n => n.id === nodeId);
+    if (index === -1) return null;
+    return { x: this.getNodeX(index), y: this.getNodeY(index) };
+  }
 
+  onZoomChange(level: number) {
+    this.zoomLevel = level;
+  }
 
     switch (this.currentAlgorithm.key){
       case 'bfs': {
@@ -100,31 +118,25 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
         console.log('Invalid key algorthim')
       break
     }
-
-    this.renderer.onSelectionChange(ids => {
-      this.onNodesSelected(ids);
-      console.log("selected nodes:",ids);
+    
+    const dialogRef = this.dialog.open(NodeAddComponent, { 
+      disableClose: true, 
+      panelClass: 'graph-creation-panel'
+    });
+    
+    dialogRef.closed.subscribe((node) => {
+      // Node başarıyla eklendi, UI güncellenecek
+      console.log('Node ekleme tamamlandı:', node);
     });
   }
 
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  ngAfterViewInit(): void {
-    this.renderer.init(this.containerRef.nativeElement);
-
-    combineLatest([
-      this.graphStateService.graphNodes$,
-      this.graphStateService.graphLinks$
-    ])
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(([nodes, links]) => {
-      console.log('NODES', nodes);
-      console.log('LINKS', links);
-      this.renderer.setData(nodes, links);
+  openEditNode(node: GraphNode) {
+    const current = this.graphState.getCurrentGraph();
+    if (!current) return;
+    this.dialog.open(NodeEditComponent, {
+      disableClose: true,
+      panelClass: 'graph-creation-panel',
+      data: { node, graphId: current.id }
     });
   }
 
@@ -183,6 +195,4 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
       break
     }
   }
-
-
 }

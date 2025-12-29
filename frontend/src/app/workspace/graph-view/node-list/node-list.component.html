@@ -1,0 +1,190 @@
+<div class="node-list-modal">
+  <div class="modal-header">
+    <h2>{{ mode === 'add' ? 'Node Ekle' : mode === 'edit' ? 'Node Düzenle' : 'Node Sil' }}</h2>
+    <button class="close-btn" (click)="close()" type="button">✕</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Error Message -->
+  <div class="error" *ngIf="error && !showAddForm && !editingNodeId">{{ error }}</div>
+
+  <!-- ADD MODE: Add Node Form Card -->
+  <div *ngIf="mode === 'add'">
+    <div class="card add-form-card" *ngIf="showAddForm">
+    <div class="card-header">
+      <h3>Yeni Node Ekle</h3>
+      <button class="close-form-btn" (click)="toggleAddForm()" type="button">✕</button>
+    </div>
+    <form [formGroup]="addForm" (ngSubmit)="addNode()">
+      <div class="form-row">
+        <label>Tag</label>
+        <input type="text" formControlName="tag" placeholder="Node adı girin" />
+        <div class="error" *ngIf="addForm.controls['tag'].invalid && addForm.controls['tag'].touched">
+          <span *ngIf="addForm.controls['tag'].errors?.['required']">Zorunlu alan</span>
+          <span *ngIf="addForm.controls['tag'].errors?.['minlength']">En az 2 karakter olmalı</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Activity</label>
+        <input type="number" formControlName="activity" placeholder="0-1 arası" min="0" max="1" step="0.1" />
+        <div class="error" *ngIf="addForm.controls['activity'].invalid && addForm.controls['activity'].touched">
+          <span *ngIf="addForm.controls['activity'].errors?.['required']">Zorunlu alan</span>
+          <span *ngIf="addForm.controls['activity'].errors?.['min'] || addForm.controls['activity'].errors?.['max']">0 ile 1 arasında olmalı</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Interaction</label>
+        <input type="number" formControlName="interaction" placeholder="1+" min="1" />
+        <div class="error" *ngIf="addForm.controls['interaction'].invalid && addForm.controls['interaction'].touched">
+          <span *ngIf="addForm.controls['interaction'].errors?.['required']">Zorunlu alan</span>
+          <span *ngIf="addForm.controls['interaction'].errors?.['min']">1 veya üstü olmalı</span>
+        </div>
+      </div>
+
+      <div class="error" *ngIf="error && showAddForm">{{ error }}</div>
+
+      <div class="form-actions">
+        <button type="button" (click)="close()" [disabled]="loading">İptal</button>
+        <button type="submit" [disabled]="loading">{{ loading ? 'Ekleniyor...' : 'Ekle' }}</button>
+      </div>
+    </form>
+    </div>
+  </div>
+
+  <!-- EDIT MODE: Nodes List with Edit Buttons -->
+  <div *ngIf="mode === 'edit'" class="nodes-section">
+    <h3 class="section-title">Düzenlenecek Node'lar ({{ nodes.length }})</h3>
+    
+    <div *ngIf="nodes.length === 0" class="empty-state">
+      <p>Henüz node eklenmemiş</p>
+      <small>Önce node ekleyin</small>
+    </div>
+
+    <div class="nodes-grid" *ngIf="nodes.length > 0">
+      <div class="card node-card" *ngFor="let node of nodes">
+        <!-- Edit Mode -->
+        <div *ngIf="editingNodeId === node.id" class="edit-mode">
+          <div class="card-header">
+            <h4>Node Düzenle</h4>
+            <button class="close-form-btn" (click)="cancelEdit()" type="button">✕</button>
+          </div>
+          <form [formGroup]="editForm" (ngSubmit)="saveEdit()">
+            <div class="form-row">
+              <label>Tag</label>
+              <input type="text" formControlName="tag" />
+              <div class="error" *ngIf="editForm.controls['tag'].invalid && editForm.controls['tag'].touched">
+                <span *ngIf="editForm.controls['tag'].errors?.['required']">Zorunlu alan</span>
+                <span *ngIf="editForm.controls['tag'].errors?.['minlength']">En az 2 karakter olmalı</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <label>Activity</label>
+              <input type="number" formControlName="activity" min="0" max="1" step="0.1" />
+              <div class="error" *ngIf="editForm.controls['activity'].invalid && editForm.controls['activity'].touched">
+                <span *ngIf="editForm.controls['activity'].errors?.['required']">Zorunlu alan</span>
+                <span *ngIf="editForm.controls['activity'].errors?.['min'] || editForm.controls['activity'].errors?.['max']">0 ile 1 arasında olmalı</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <label>Interaction</label>
+              <input type="number" formControlName="interaction" min="1" />
+              <div class="error" *ngIf="editForm.controls['interaction'].invalid && editForm.controls['interaction'].touched">
+                <span *ngIf="editForm.controls['interaction'].errors?.['required']">Zorunlu alan</span>
+                <span *ngIf="editForm.controls['interaction'].errors?.['min']">1 veya üstü olmalı</span>
+              </div>
+            </div>
+            <div class="error" *ngIf="error && editingNodeId === node.id">{{ error }}</div>
+            <div class="form-actions">
+              <button type="button" (click)="cancelEdit()" [disabled]="loading">İptal</button>
+              <button type="submit" [disabled]="loading">{{ loading ? 'Kaydediliyor...' : 'Kaydet' }}</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- View Mode -->
+        <div *ngIf="editingNodeId !== node.id" class="node-content">
+          <div class="node-info">
+            <div class="node-header">
+              <span class="node-tag">{{ node.tag }}</span>
+              <span class="node-id">ID: {{ node.id }}</span>
+            </div>
+            <div class="node-details">
+              <div class="detail-item">
+                <span class="detail-label">Activity</span>
+                <span class="detail-value">{{ node.activity }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Interaction</span>
+                <span class="detail-value">{{ node.interaction }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="node-actions">
+            <button 
+              *ngIf="mode === 'edit'"
+              class="btn-edit" 
+              (click)="startEdit(node)" 
+              [disabled]="loading || deletingNodeId === node.id"
+              type="button">
+              Düzenle
+            </button>
+            <button 
+              *ngIf="mode === 'delete'"
+              class="btn-delete" 
+              (click)="deleteNode(node.id)" 
+              [disabled]="loading || deletingNodeId === node.id"
+              type="button">
+              {{ deletingNodeId === node.id ? 'Siliniyor...' : 'Sil' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE MODE: Nodes List with Delete Buttons -->
+  <div *ngIf="mode === 'delete'" class="nodes-section">
+    <h3 class="section-title">Silinecek Node'lar ({{ nodes.length }})</h3>
+    
+    <div *ngIf="nodes.length === 0" class="empty-state">
+      <p>Henüz node eklenmemiş</p>
+      <small>Silinecek node yok</small>
+    </div>
+
+    <div class="nodes-grid" *ngIf="nodes.length > 0">
+      <div class="card node-card" *ngFor="let node of nodes">
+        <div class="node-content">
+          <div class="node-info">
+            <div class="node-header">
+              <span class="node-tag">{{ node.tag }}</span>
+              <span class="node-id">ID: {{ node.id }}</span>
+            </div>
+            <div class="node-details">
+              <div class="detail-item">
+                <span class="detail-label">Activity</span>
+                <span class="detail-value">{{ node.activity }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Interaction</span>
+                <span class="detail-value">{{ node.interaction }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="node-actions">
+            <button 
+              class="btn-delete" 
+              (click)="deleteNode(node.id)" 
+              [disabled]="loading || deletingNodeId === node.id"
+              type="button">
+              {{ deletingNodeId === node.id ? 'Siliniyor...' : 'Sil' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
