@@ -41,7 +41,10 @@ export class GraphrenderService {
   private degreeRadiusScale = d3.scaleLinear<number, number>();
   private readonly minNodeRadius = this.defaultNodeRadius;
   private readonly maxNodeRadius = 35;
-
+  private componentColorScale = d3
+  .scaleOrdinal<number, string>()
+  .unknown('#bcb72cff')
+  .range(d3.schemePaired.concat(d3.schemeSet3));
   // Ends
 
 
@@ -80,10 +83,6 @@ export class GraphrenderService {
     this.simulation.on('tick', () => this.ticked());
     this.enableZoom()
   }
-
-
-
-
 
   setData(nodes: GraphNode[], links: GraphLink[]): void {
     // --- LINKS ---
@@ -379,6 +378,57 @@ export class GraphrenderService {
           : this.defaultNodeColor;
       });
   }
+
+ renderConnectedComponents(nodeToComponent: Record<string, number>): void {
+  this.simulation.stop();
+  this.reset();
+
+  this.nodes
+    .transition()
+    .duration(600)
+    .attr('fill', d => {
+      const componentId = nodeToComponent[d.id];
+      return componentId !== undefined
+        ? this.componentColorScale(componentId)
+        : this.defaultNodeColor;
+    })
+    .attr('stroke', d => {
+      const componentId = nodeToComponent[d.id];
+      return componentId !== undefined
+        ? d3.color(this.componentColorScale(componentId))!
+            .darker(0.9)
+            .toString()
+        : '#09097eff';
+    })
+    .attr('stroke-width', 3)
+    .attr('r', 22);
+
+  this.links
+    .transition()
+    .duration(600)
+    .attr('stroke', '#09097eff')
+    .attr('stroke-opacity', 0.25)
+    .attr('stroke-width', 1.5);
+
+    this.simulation
+    .force(
+      'component-x',
+      d3.forceX<GraphNode>(d => {
+        const c = nodeToComponent[d.id] ?? 0;
+        return (c % 4) * (this.width / 4) + this.width / 8;
+      }).strength(0.25)
+    )
+    .force(
+      'component-y',
+      d3.forceY<GraphNode>(d => {
+        const c = nodeToComponent[d.id] ?? 0;
+        return Math.floor(c / 4) * (this.height / 3) + this.height / 6;
+      }).strength(0.25)
+    )
+    .alpha(1)
+    .restart();
+}
+
 
 
 

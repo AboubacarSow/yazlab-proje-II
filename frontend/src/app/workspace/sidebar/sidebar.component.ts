@@ -13,6 +13,7 @@ import { AlgorithmCategory, AlgorithmDefinition, AlgorithmResultSummary, ALGORIT
 import { AlgorithmsStateService } from '../../core/services/algorithms-state.service';
 import { GraphrenderService } from '../../core/services/graphrender.service';
 import { AlgorithmsService } from '../../services/algorithms.service';
+import { buildComponentColorMap } from '../../core/utils/mapperHelper';
 
 @Component({
   selector: 'app-sidebar',
@@ -186,13 +187,17 @@ export class SidebarComponent implements OnInit{
   }
   selectAlgorithm(algo: AlgorithmDefinition) {
     this.selectedAlgorithm = algo;
-    console.log(this.selectedAlgorithm)
+    console.log('selected algo:',this.selectedAlgorithm)
     if(this.selectedAlgorithm.key==='coloring'){
         this.runcoloring();
         return;
     }
     if(this.selectedAlgorithm.key==='degree-centrality'){
       this.runDegreeCentrality();
+      return;
+    }
+    if(this.selectedAlgorithm.key==='connected-components'){
+      this.runDetectionComponent()
       return;
     }
     this.algorithmState.setSelectedAlgorithm(algo);
@@ -224,13 +229,31 @@ export class SidebarComponent implements OnInit{
         .subscribe(graph => {
           if (!graph) return;
 
-          console.log('Coloring is head to start')
           this.algorithmService
             .runDegreeCentrality(graph.id)
             .subscribe(res => {
               console.log("algorithm service api is called")
-              console.log("Result of WelshPowell:",res);
+              console.log("Result of Degree Centrality:",res);
               this.renderer.renderDegreeCentrality(res.result.nodeDegrees,res.result.maxDegree);
+              this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              console.log("rendering is done")
+
+            });
+          });
+  }
+
+  runDetectionComponent(){
+     this.graphStateService.currentGraph$
+        .pipe(take(1))
+        .subscribe(graph => {
+          if (!graph) return;
+
+          console.log('Detection of connected components is head to start')
+          this.algorithmService
+            .getConnectedComponents(graph.id)
+            .subscribe(res => {
+              console.log("Result of Detection:",res);
+              this.renderer.renderConnectedComponents(buildComponentColorMap(res.result.components));
               this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
               console.log("rendering is done")
 
