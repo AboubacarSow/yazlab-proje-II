@@ -1,16 +1,19 @@
-import { AlgorithmResultAdapterService } from './../../core/services/algorithm-result-adapter.service';
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { combineLatest, Subject, take, takeUntil } from 'rxjs';
-import { GraphrenderService } from '../../core/services/graphrender.service';
+import { NodeAddComponent } from './node-add/node-add.component';
+import { NodeEditComponent } from './node-edit/node-edit.component';
 import { GraphStateService } from '../../core/services/graph.service';
 import { AlgorithmsStateService } from '../../core/services/algorithms-state.service';
 import { AlgorithmDefinition } from '../../core/utils/algorithm-definition';
 import { AlgorithmsService } from '../../services/algorithms.service';
 import { ToastService } from '../../core/utils/toast-service.service';
+import { GraphrenderService } from '../../core/services/graphrender.service';
+import { AlgorithmResultAdapterService } from '../../core/services/algorithm-result-adapter.service';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-graph-view',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './graph-view.component.html',
   styleUrl: './graph-view.component.css'
@@ -33,7 +36,8 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
               private toast : ToastService){}
 
 
-  ngOnInit() {
+   ngOnInit() {
+      // Subscribe to graph changes
     this.algorithmState.selectedAlgorithm$
       .pipe(takeUntil(this.destroy$))
       .subscribe(algo => {
@@ -183,6 +187,51 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
       break
     }
   }
+
+  // Simple circular layout for nodes
+  getNodeX(index: number): number {
+    const radius = 200;
+    const centerX = 400;
+    const angle = (index / Math.max(this.nodes.length, 1)) * 2 * Math.PI;
+    return centerX + radius * Math.cos(angle);
+  }
+
+  getNodeY(index: number): number {
+    const radius = 200;
+    const centerY = 300;
+    const angle = (index / Math.max(this.nodes.length, 1)) * 2 * Math.PI;
+    return centerY + radius * Math.sin(angle);
+  }
+
+  getNodePosition(nodeId: number): { x: number; y: number } | null {
+    const index = this.nodes.findIndex(n => n.id === nodeId);
+    if (index === -1) return null;
+    return { x: this.getNodeX(index), y: this.getNodeY(index) };
+  }
+
+
+    openAddNode(node:GraphNode){
+    const dialogRef = this.dialog.open(NodeAddComponent, {
+      disableClose: true,
+      panelClass: 'graph-creation-panel'
+    });
+
+    dialogRef.closed.subscribe((node) => {
+      // Node başarıyla eklendi, UI güncellenecek
+      console.log('Node ekleme tamamlandı:', node);
+    });
+  }
+
+  openEditNode(node: GraphNode) {
+    const current = this.graphState.getCurrentGraph();
+    if (!current) return;
+    this.dialog.open(NodeEditComponent, {
+      disableClose: true,
+      panelClass: 'graph-creation-panel',
+      data: { node, graphId: current.id }
+    });
+  }
+
 
 
 }
