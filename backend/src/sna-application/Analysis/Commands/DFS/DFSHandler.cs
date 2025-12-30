@@ -17,7 +17,7 @@ internal class DFSHandler(IGraphRepository graphRepository, ILogger<DFSHandler> 
 
         var timer = Stopwatch.StartNew();
         logger.LogInformation("DFS Algorithm executed in : {Elapsed} ms", timer.Elapsed.TotalMilliseconds);
-        var visitedNodes = GraphAlgorithmService.DFS(graph, node, visited: []);
+        var visitedNodes = GraphAlgorithms.DFS(graph, node, visited: []);
         timer.Stop();
         var nodeDtos = visitedNodes.Adapt<IReadOnlyList<NodeDto>>();
         return new DFSResult(request.GraphId, nodeDtos, timer.Elapsed.TotalMilliseconds);

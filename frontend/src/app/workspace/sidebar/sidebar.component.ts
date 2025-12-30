@@ -37,6 +37,14 @@ export class SidebarComponent {
   graphId$!:Observable<Guid>;
   private dialog = inject(Dialog);
 
+  //Algoritms Section Variables
+  categories = AlgorithmCategory;
+  algorithms = ALGORITHMS;
+  selectedAlgorithm? : AlgorithmDefinition;
+  @Output() algorithmSelected = new EventEmitter<{
+      key: string;
+      params?: any;
+    }>();
   // Components dropdown state
   showComponentsDropdown = false;
   componentsDropdownPosition = { top: '0px', left: '0px' };
@@ -199,7 +207,13 @@ export class SidebarComponent {
       this.runDetectionComponent()
       return;
     }
+    if(this.selectedAlgorithm.key === 'community-detection'){
+      this.runCommuntityDetection()
+      return;
+    }
+    this.algorithmSelected.emit({key:this.selectedAlgorithm.key})
     this.algorithmState.setSelectedAlgorithm(algo);
+
   }
 
   runcoloring(){
@@ -254,6 +268,25 @@ export class SidebarComponent {
               console.log("Result of Detection:",res);
               this.renderer.renderConnectedComponents(buildComponentColorMap(res.result.components));
               this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              console.log("rendering is done")
+
+            });
+          });
+  }
+  runCommuntityDetection(){
+    this.graphStateService.currentGraph$
+        .pipe(take(1))
+        .subscribe(graph => {
+          if (!graph) return;
+
+          console.log('Detection of community is head to start')
+          this.algorithmService
+            .runCommunityDetection(graph.id)
+            .subscribe(res => {
+              console.log("Result of Detection:",res);
+              console.log('community count:',res.communityCount)
+              this.renderer.renderCommunities(res.nodeToCommunity);
+              this.toast.runtime(`Detected ${res.communityCount} communities in ${res.executionTime} ms`)
               console.log("rendering is done")
 
             });

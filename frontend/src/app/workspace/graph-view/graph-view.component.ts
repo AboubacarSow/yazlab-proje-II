@@ -7,6 +7,7 @@ import { AlgorithmsStateService } from '../../core/services/algorithms-state.ser
 import { AlgorithmDefinition } from '../../core/utils/algorithm-definition';
 import { AlgorithmsService } from '../../services/algorithms.service';
 import { ToastService } from '../../core/utils/toast-service.service';
+import { CommunityLegendItem } from '../../core/utils/algorithm-result';
 import { GraphrenderService } from '../../core/services/graphrender.service';
 import { AlgorithmResultAdapterService } from '../../core/services/algorithm-result-adapter.service';
 import { combineLatest, Subject, take, takeUntil } from 'rxjs';
@@ -25,6 +26,7 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
   containerRef!: ElementRef<HTMLDivElement>;
 
   currentAlgorithm? : AlgorithmDefinition
+  communityLegends?: CommunityLegendItem[]
 
   private destroy$ = new Subject<void>();
 
@@ -175,6 +177,52 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
               console.log("Result of dfs:",res);
               const traversal = this.adapter.buildTraversalResult(res.result);
               this.renderer.renderTraversal(traversal);
+              this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              console.log("rendering is done")
+
+            });
+        });
+        break;
+      }
+      case 'astar': {
+        if (nodeIds.length !== 2) return;
+        this.graphStateService.currentGraph$
+        .pipe(take(1))
+        .subscribe(graph => {
+          if (!graph) return;
+
+          const startNodeId = Number(nodeIds[0]);
+          const targetNodeId= Number(nodeIds[1])
+          console.log('selected source Id:',startNodeId);
+          console.log('selected target Id:',targetNodeId);
+          this.algorithmService
+            .runAStarPathFinding(graph.id, startNodeId,targetNodeId)
+            .subscribe(res => {
+              const pathTraversal= this.adapter.buildTraversalResult(res.result);
+              this.renderer.renderShortestPathResult(pathTraversal.edgesTraversed,pathTraversal.visitOrder)
+              this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              console.log("rendering is done")
+
+            });
+        });
+        break;
+      }
+      case 'dijkstra': {
+        if (nodeIds.length !== 2) return;
+        this.graphStateService.currentGraph$
+        .pipe(take(1))
+        .subscribe(graph => {
+          if (!graph) return;
+
+          const startNodeId = Number(nodeIds[0]);
+          const targetNodeId= Number(nodeIds[1])
+          console.log('selected source Id:',startNodeId);
+          console.log('selected target Id:',targetNodeId);
+          this.algorithmService
+            .runDijkstraPathFinding(graph.id, startNodeId,targetNodeId)
+            .subscribe(res => {
+              const pathTraversal= this.adapter.buildTraversalResult(res.result);
+              this.renderer.renderShortestPathResult(pathTraversal.edgesTraversed,pathTraversal.visitOrder)
               this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
               console.log("rendering is done")
 

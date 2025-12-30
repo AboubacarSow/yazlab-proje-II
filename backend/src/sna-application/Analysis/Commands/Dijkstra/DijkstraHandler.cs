@@ -17,7 +17,7 @@ internal class DijkstraHandler(IGraphRepository graphRepository, ILogger<Dijkstr
             
         var timer = new Stopwatch();
         timer.Start();
-        var path = GraphAlgorithmService.Dijkstra(graph, startNode, targetNode);
+        var path = GraphAlgorithms.Dijkstra(graph, startNode, targetNode);
         timer.Stop();
         logger.LogInformation("Dijkstra Algorithm executed in : {Elapsed} ms", timer.Elapsed.TotalMilliseconds);
         var nodeDtos = path.Adapt<IReadOnlyList<NodeDto>>();

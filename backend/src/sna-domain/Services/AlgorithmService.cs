@@ -8,7 +8,7 @@ public record TraversalResult(
     IReadOnlyList<Edge> Edges
 );
 
-public class GraphAlgorithmService
+public class GraphAlgorithms
 {
     public static IReadOnlyList<Node> BFS(Graph graph, Node start, HashSet<Node> visited)
     {
@@ -231,5 +231,103 @@ public class GraphAlgorithmService
         return 0;
     }
 
-  
+    public static IReadOnlyDictionary<Node, int> LabelPropagation(Graph graph)
+    {
+        var labels = graph.Nodes.ToDictionary(n => n, n => n.Id);
+
+        bool changed;
+        do
+        {
+            changed = false;
+
+            foreach (var node in graph.Nodes)
+            {
+                var neighborLabels = node.GetNeighbors(graph)
+                    .GroupBy(n => labels[n])
+                    .OrderByDescending(g => g.Count())
+                    .ThenBy(g => g.Key)
+                    .FirstOrDefault();
+
+                if (neighborLabels == null) continue;
+                var newLabel = neighborLabels.Key;
+                if (labels[node] != newLabel)
+                {
+                    labels[node] = newLabel;
+                    changed = true;
+                }
+            }
+
+        } while (changed);
+
+        return labels;
+    }
+
+    public static IReadOnlyDictionary<Node, int> LabelPropagation_(Graph graph)
+    {
+        // 1. Initialize: Every node gets a unique label (usually its own ID)
+        var labels = graph.Nodes.ToDictionary(n => n, n => n.Id);
+        var nodesList = graph.Nodes.ToList();
+        var rnd = new Random();
+        bool changed = true;
+
+        while (changed)
+        {
+            changed = false;
+            
+            // CRITICAL FIX 1: Shuffle processing order every iteration
+            // (Using a standard Fisher-Yates shuffle extension or similar)
+            nodesList.Shuffle(rnd); 
+
+            foreach (var node in nodesList)
+            {
+                // Get neighbor labels
+                var neighborLabels = node.GetNeighbors(graph)
+                                        .Select(n => labels[n])
+                                        .ToList();
+
+                if (neighborLabels.Count == 0) continue;
+
+                // Group by label frequency
+                var groups = neighborLabels.GroupBy(l => l)
+                                        .Select(g => new { Label = g.Key, Count = g.Count() })
+                                        .ToList();
+
+                int maxCount = groups.Max(g => g.Count);
+                
+                // Get all labels that have the max frequency (Candidates)
+                var candidates = groups.Where(g => g.Count == maxCount)
+                                    .Select(g => g.Label)
+                                    .ToList();
+
+                // CRITICAL FIX 2: Break ties randomly
+                int newLabel = candidates[rnd.Next(candidates.Count)];
+
+                if (labels[node] != newLabel)
+                {
+                    labels[node] = newLabel;
+                    changed = true;
+                }
+            }
+        }
+
+        return labels;
+    }
+
+ 
+}
+
+public static class ListExtensions
+{
+    public static void Shuffle<T>(this IList<T> list, Random rnd)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rnd.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
 }

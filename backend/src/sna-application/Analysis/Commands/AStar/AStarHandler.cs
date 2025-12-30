@@ -18,10 +18,10 @@ internal class AStarHandler(IGraphRepository graphRepository, ILogger<AStarHandl
             ?? throw new NotFoundException($"Node: {request.TargetNodeId}", graph.Title);
         var timer = new Stopwatch();
         timer.Start();
-        var path = GraphAlgorithmService.AStar(graph, startNode, targetNode);
+        var path = GraphAlgorithms.AStar(graph, startNode, targetNode);
         timer.Stop();
-        logger.LogInformation("AStar Algorithm executed in : {Elapsed} ms", timer.ElapsedMilliseconds);
+        logger.LogInformation("AStar Algorithm executed in : {Elapsed} ms", timer.Elapsed.TotalMilliseconds);
         var nodeDtos = path.Adapt<IReadOnlyList<NodeDto>>();
-        return new AStarResult(request.GraphId, nodeDtos, timer.ElapsedMilliseconds);
+        return new AStarResult(request.GraphId, nodeDtos, timer.Elapsed.TotalMilliseconds);
     }
 }
