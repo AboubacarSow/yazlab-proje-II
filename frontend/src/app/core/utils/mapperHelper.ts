@@ -1,6 +1,7 @@
 import { Node } from './../../models/node.model';
 import { Edge } from "../../models/edge.model";
 import { GraphLink, GraphNode } from "../../models/graph.model";
+import { ComponentDto } from '../../models/algorith.model';
 
 export function mapToGraphVisualization(
   nodes: Node[],
@@ -29,6 +30,19 @@ export function mapToGraphVisualization(
   }));
 
   return { nodes: vizNodes, links: vizLinks };
+}
+
+
+export function buildComponentColorMap(components: ComponentDto[]): Record<string, number> {
+  const map: Record<string, number> = {};
+
+  for (const component of components) {
+    for (const node of component.nodes) {
+      map[node.id] = component.id;
+    }
+  }
+
+  return map;
 }
 
 

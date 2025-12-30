@@ -182,27 +182,6 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
         });
         break;
       }
-      case 'coloring':{
-        if(nodeIds.length!==0) return;
-        this.graphStateService.currentGraph$
-        .pipe(take(1))
-        .subscribe(graph => {
-          if (!graph) return;
-
-          console.log('Coloring is head to start')
-          this.algorithmService
-            .runWelshPowellColoring(graph.id)
-            .subscribe(res => {
-              console.log("algorithm service api is called")
-              console.log("Result of WelshPowell:",res);
-              this.renderer.renderColoring(res.result.nodeWithColors);
-              this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
-              console.log("rendering is done")
-
-            });
-          });
-        break;
-      }
       default:
         console.log("_default")
       break
