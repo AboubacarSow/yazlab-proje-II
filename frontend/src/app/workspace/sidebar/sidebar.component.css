@@ -69,7 +69,7 @@
 }
 
 .dropdown-item.add-new {
-  color: #4a90e2;
+  color: #020617;
   font-weight: 600;
 }
 
@@ -198,9 +198,9 @@
 }
 
 .action-btn:hover {
-  background-color: #4a90e2;
+  background-color: #020617;
   color: #fff;
-  border-color: #4a90e2;
+  border-color: #020617;
 }
 
 /* Scrollbar Styling */
@@ -244,7 +244,7 @@
 .section-title {
   font-size: 13px;
   font-weight: 600;
-  color: #4a90e2;
+  color: #041250;
   text-transform: uppercase;
   box-shadow: 0 3px rgba(59, 130, 246, 0.15);
   letter-spacing: 0.04em;
@@ -283,14 +283,14 @@
 }
 
 .action-btnf:hover {
-  background: #6394dd;
+  background: #020617;
   color:#e3f2fd
 }
 
 /* Active algorithm */
 .action-btnf.active {
   background: rgba(59, 130, 246, 0.15);
-  color: #3b82f6;
+  color: #041250;
 }
 
 

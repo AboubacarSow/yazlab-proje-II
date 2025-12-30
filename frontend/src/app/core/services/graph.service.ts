@@ -103,7 +103,7 @@ export class GraphStateService {
   getCurrentGraph$(): Observable<Graph | null> {
     return this.currentGraph$;
   }
- getCurrentGraphNodes(): Observable<Node[] | []> {
+  getCurrentGraphNodes(): Observable<Node[] | []> {
     return this.currentGraph$.pipe(
       map(g => g?.nodes ?? [])
     );
@@ -152,7 +152,7 @@ export class GraphStateService {
     );
   }
 
- updateGraphMetaData(command: EditGraphCommand): Observable<EditGraphResponse> {
+  updateGraphMetaData(command: EditGraphCommand): Observable<EditGraphResponse> {
     return this.currentGraph$.pipe(
       take(1),
       switchMap(currentGraph => {
@@ -176,6 +176,12 @@ export class GraphStateService {
         );
       })
     );
+  }
+
+  resetGraph(graphId:Guid){
+    this.graphsApi.clearGraph(graphId).subscribe(graph=>{
+      this.setCurrentGraph(graph);
+    })
   }
 
 }

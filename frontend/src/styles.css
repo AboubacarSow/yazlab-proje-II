@@ -216,3 +216,39 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .graph-tooltip .tooltip-value {
   font-weight: 500;
 }
+
+/*  JSON VIEW*/
+.json-view {
+  max-height: 450px;
+  overflow: auto;
+  background: #020617;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.json-pre {
+  margin: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #e5e7eb;
+  white-space: pre;
+}
+
+/* syntax colors */
+.json-key {
+  color: #60a5fa;
+}
+
+.json-string {
+  color: #34d399;
+}
+
+.json-number {
+  color: #fbbf24;
+}
+
+.json-boolean {
+  color: #f472b6;
+}
+

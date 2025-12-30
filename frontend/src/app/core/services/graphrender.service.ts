@@ -21,7 +21,7 @@ export class GraphrenderService {
 
   private tooltip!: d3.Selection<HTMLDivElement, unknown, any, any>;
   private readonly defaultNodeColor = '#2f757dff';
-  private readonly nodeHighlightColor = '#e71ce7ff'
+  private readonly nodeHighlightColor = '#071245ff'
   private readonly defaultNodeRadius = 20;
   private readonly scaleNodeRadius = 30;
 

@@ -6,36 +6,37 @@ import { TopFiveNodeInDegreeResult } from '../../models/algorith.model';
 import { GraphStateService } from '../../core/services/graph.service';
 import { take } from 'rxjs';
 import { ToastService } from '../../core/utils/toast-service.service';
+import { Graph } from '../../models/graph.model';
+import { PrettyJsonPipe } from "../../pipes/pretty-json.pipe";
+import { PrettyCsvPipe } from "../../pipes/pretty-csv.pipe";
 
 @Component({
   selector: 'app-data-view',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PrettyJsonPipe, PrettyCsvPipe],
   templateUrl: './data-view.component.html',
   styleUrl: './data-view.component.css'
 })
 export class DataViewComponent {
   dataFormat:'top-five'| 'json' | 'csv' | 'table'  = 'json';
 
-  sampleData = {
-    nodes: [
-      { id: 1, label: 'Node 1' },
-      { id: 2, label: 'Node 2' },
-      { id: 3, label: 'Node 3' }
-    ],
-    edges: [
-      { source: 1, target: 2 },
-      { source: 2, target: 3 }
-    ]
-  };
+
   topFiveNodeInDegree? : TopFiveNodeInDegreeResult
-  csvData = '';
+  graph?: Graph
+  graphCsv:any;
+  nodesCsv:any
+  edgesCsv:any
   constructor(private algorithmService: AlgorithmsService,
             private graphStateService: GraphStateService,
-            private toastService : ToastService){}
+            private toastService : ToastService){
+            this.getcurrentGraph()
+            }
 
   switchFormat(format: 'json' | 'csv' | 'table' | 'top-five') {
     this.dataFormat = format;
+    if(this.dataFormat==='json' || this.dataFormat==='table' || this.dataFormat==='csv'){
+      this.getcurrentGraph()
+    }
     if(this.dataFormat==='top-five'){
       this.getTopFiveNode()
       return;
@@ -56,6 +57,33 @@ export class DataViewComponent {
                 });
               });
   }
+  getcurrentGraph(){
+    this.graphStateService.currentGraph$.pipe((take(1)))
+      .subscribe(
+      graph=>{
+        this.graph=graph!
+        this.graphCsv = [{
+          id: graph?.id,
+          title: graph?.title,
+          description: graph?.description,
+          nodeCount: graph?.nodes.length,
+          edgeCount: graph?.edges.length
+        }];
+        this.nodesCsv= this.graph?.nodes.map(n => ({
+            id: n.id,
+            tag: n.tag,
+            activity: n.activity,
+            interaction: n.interaction,
+          }));
 
+        this.edgesCsv=this.graph?.edges.map(e => ({
+          from: e.nodeAId,
+          to: e.nodeBId,
+          weight:e.weight
+        }));
+
+      }
+    )
+  }
 
 }
