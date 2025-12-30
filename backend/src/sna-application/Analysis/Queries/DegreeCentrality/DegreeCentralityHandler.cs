@@ -16,7 +16,7 @@ internal class DegreeCentralityHandler(IGraphRepository graphRepository, ILogger
             ?? throw new NotFoundException($"Graph with Id {request.GraphId} not found");
         var timer = new Stopwatch();
         timer.Start();
-        var degreeList = GraphAlgorithmService.KDegreeCentrality(graph, null);
+        var degreeList = GraphAlgorithms.KDegreeCentrality(graph, null);
         timer.Stop();
         logger.LogInformation("DegreeCentrality Alogrithm executed in:{Elapsed} ms",timer.Elapsed.TotalMilliseconds);
         var nodeDegrees= degreeList.ToDictionary(

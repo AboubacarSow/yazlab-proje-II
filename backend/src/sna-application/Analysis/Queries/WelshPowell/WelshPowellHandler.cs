@@ -16,7 +16,7 @@ internal class WelshPowellHandler(IGraphRepository graphRepository, ILogger<Wels
 
         var timer = new Stopwatch();
         timer.Start();
-        var coloringDictionnary = GraphAlgorithmService.WelshPowell(graph);
+        var coloringDictionnary = GraphAlgorithms.WelshPowell(graph);
         timer.Stop();
         logger.LogInformation("WelshPowell Algorith got executed in :{Elapsed} ms", timer.Elapsed.TotalMilliseconds);
         

@@ -19,7 +19,7 @@ internal class BFSHandler(IGraphRepository graphRepository, ILogger<BFSHandler> 
         var timer = new Stopwatch();
         //Algorithm starts
         timer.Start();
-        var visitedNodes = GraphAlgorithmService.BFS(graph, node,visited:[]);
+        var visitedNodes = GraphAlgorithms.BFS(graph, node,visited:[]);
         timer.Stop();
         
         //Algorithm ends

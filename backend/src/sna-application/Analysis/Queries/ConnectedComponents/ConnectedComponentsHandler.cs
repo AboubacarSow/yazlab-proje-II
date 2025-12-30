@@ -18,7 +18,7 @@ internal class ConnectedComponentsHandler(
 
         var timer = new Stopwatch();
         timer.Start();
-        var components = GraphAlgorithmService.GetConnectedComponents(graph);
+        var components = GraphAlgorithms.GetConnectedComponents(graph);
         timer.Stop();
         logger.LogInformation("Detection of Connected Components Algorithm executed in:{Elapsed} ms",timer.Elapsed.TotalMilliseconds);
         var componentsDto = components

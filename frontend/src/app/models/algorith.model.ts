@@ -72,3 +72,21 @@ export interface ConnectedComponentResult{
 export interface ConnectedComponentResponse{
   result : ConnectedComponentResult
 }
+
+
+export interface AStarPathFindingResponse{
+  result:TraversalResult
+}
+
+export interface DijsktraPathFindingResponse{
+  result:TraversalResult
+}
+
+
+export interface CommunityDetectionResult{
+  graphId: Guid,
+  nodeToCommunity:Record<number, number>,
+  communityCount:number,
+  executionTime:number
+}
+

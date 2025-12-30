@@ -43,8 +43,19 @@ export class GraphrenderService {
   private readonly maxNodeRadius = 35;
   private componentColorScale = d3
   .scaleOrdinal<number, string>()
-  .unknown('#bcb72cff')
+  .unknown('#bc2c9dff')
   .range(d3.schemePaired.concat(d3.schemeSet3));
+
+  private exploredEdgeColor = '#4085a8ff';   // light gray-blue
+  private pathNodeColor = '#fba185ff';       // strong orange
+  private pathEdgeColor = '#D84315';
+
+  private communityColorScale = d3.scaleOrdinal<string, string>()
+  .range(
+    d3.schemeTableau10
+      .concat(d3.schemeSet3)
+      .concat(d3.schemePaired)
+  );
   // Ends
 
 
@@ -353,6 +364,7 @@ export class GraphrenderService {
       .attr('stroke', '#ccc')
       .attr('stroke-width', 1);
   }
+  //Degree Centrality
 
   renderDegreeCentrality(nodeDegrees: Record<string, number>, maxDegree: number): void {
     this.simulation.stop();
@@ -379,59 +391,175 @@ export class GraphrenderService {
       });
   }
 
- renderConnectedComponents(nodeToComponent: Record<string, number>): void {
-  this.simulation.stop();
-  this.reset();
 
-  this.nodes
-    .transition()
-    .duration(600)
-    .attr('fill', d => {
-      const componentId = nodeToComponent[d.id];
-      return componentId !== undefined
-        ? this.componentColorScale(componentId)
-        : this.defaultNodeColor;
-    })
-    .attr('stroke', d => {
-      const componentId = nodeToComponent[d.id];
-      return componentId !== undefined
-        ? d3.color(this.componentColorScale(componentId))!
-            .darker(0.9)
-            .toString()
-        : '#09097eff';
-    })
-    .attr('stroke-width', 3)
-    .attr('r', 22);
+  //Path Finding
 
-  this.links
-    .transition()
-    .duration(600)
-    .attr('stroke', '#09097eff')
-    .attr('stroke-opacity', 0.25)
-    .attr('stroke-width', 1.5);
+  renderShortestPathResult(
+    exploredEdges: [number, number][],
+    path: number[]
+  ): void {
+    this.simulation.stop();
+    this.reset();
 
-    this.simulation
-    .force(
-      'component-x',
-      d3.forceX<GraphNode>(d => {
-        const c = nodeToComponent[d.id] ?? 0;
-        return (c % 4) * (this.width / 4) + this.width / 8;
-      }).strength(0.25)
-    )
-    .force(
-      'component-y',
-      d3.forceY<GraphNode>(d => {
-        const c = nodeToComponent[d.id] ?? 0;
-        return Math.floor(c / 4) * (this.height / 3) + this.height / 6;
-      }).strength(0.25)
-    )
-    .alpha(1)
-    .restart();
+    this.renderPathExploration(exploredEdges);
+    this.renderShortestPath(path);
+  }
+
+  private renderShortestPath(path: number[]): void {
+    this.simulation.stop();
+    this.reset();
+    this.traversalActive = true;
+
+    let step = 0;
+
+    const animate = () => {
+      if (!this.traversalActive) return;
+      if (step >= path.length) return;
+
+      const nodeId = String(path[step]);
+
+      this.nodes
+      .filter(d => d.id === nodeId)
+      .attr('fill', this.pathNodeColor)
+      .attr('r', 10);
+
+      if (step > 0) {
+        const prev = String(path[step - 1]);
+
+        this.links
+        .filter(d =>
+          (d.source === prev && d.target === nodeId) ||
+          (d.source === nodeId && d.target === prev)
+        )
+        .attr('stroke', this.pathEdgeColor)
+        .attr('stroke-width', 3);
+      }
+
+      step++;
+      this.traversalTimer = setTimeout(
+        animate,
+        this.traversalSpeed
+      );
+    };
+
+    animate();
+  }
+
+  private renderPathExploration(exploredEdges: [number, number][]): void {
+    exploredEdges.forEach(([a, b]) => {
+      this.links
+      .filter(d =>
+        (d.source === String(a) && d.target === String(b)) ||
+        (d.source === String(b) && d.target === String(a))
+      )
+      .attr('stroke', this.exploredEdgeColor)
+      .attr('stroke-width', 1)
+      .attr('stroke-dasharray', '3,3');
+    });
+  }
+
+  //Detection Connected Components
+
+  renderConnectedComponents(nodeToComponent: Record<string, number>): void {
+    this.simulation.stop();
+    this.reset();
+
+    this.nodes
+      .transition()
+      .duration(600)
+      .attr('fill', d => {
+        const componentId = nodeToComponent[d.id];
+        return componentId !== undefined
+          ? this.componentColorScale(componentId)
+          : this.defaultNodeColor;
+      })
+      .attr('stroke', d => {
+        const componentId = nodeToComponent[d.id];
+        return componentId !== undefined
+          ? d3.color(this.componentColorScale(componentId))!
+              .darker(0.9)
+              .toString()
+          : '#09097eff';
+      })
+      .attr('stroke-width', 3)
+      .attr('r', 22);
+
+    this.links
+      .transition()
+      .duration(600)
+      .attr('stroke', '#09097eff')
+      .attr('stroke-opacity', 0.25)
+      .attr('stroke-width', 1.5);
+
+      this.simulation
+      .force(
+        'component-x',
+        d3.forceX<GraphNode>(d => {
+          const c = nodeToComponent[d.id] ?? 0;
+          return (c % 4) * (this.width / 4) + this.width / 8;
+        }).strength(0.25)
+      )
+      .force(
+        'component-y',
+        d3.forceY<GraphNode>(d => {
+          const c = nodeToComponent[d.id] ?? 0;
+          return Math.floor(c / 4) * (this.height / 3) + this.height / 6;
+        }).strength(0.25)
+      )
+      .alpha(1)
+      .restart();
+  }
+
+  //Communtity Detection
+  renderCommunities(nodeToCommunity: Record<string, number>): void {
+      this.simulation.stop();
+      this.reset();
+
+      // Normalize community IDs → strings
+      const communities = Array.from(
+        new Set(Object.values(nodeToCommunity))
+      );
+
+      const communityKey = new Map<number, string>();
+      communities.forEach((id, index) => {
+        communityKey.set(id, `community-${index}`);
+      });
+
+      this.nodes
+        .transition()
+        .duration(600)
+        .attr('fill', d => {
+          const communityId = nodeToCommunity[d.id];
+          if (communityId === undefined) {
+            return this.defaultNodeColor;
+          }
+
+          return this.communityColorScale(
+            communityKey.get(communityId)!
+          );
+        })
+        .attr('r', d => {
+          const communityId = nodeToCommunity[d.id];
+          return communityId !== undefined
+            ? this.defaultNodeRadius + 6
+            : this.defaultNodeRadius;
+        }).on("mouseenter", null);
+
+      // Optional: soften inter-community edges
+      this.links
+        .transition()
+        .duration(600)
+        .attr('stroke', d => {
+          const a = nodeToCommunity[(d.source as GraphNode).id];
+          const b = nodeToCommunity[(d.target as GraphNode).id];
+          return a === b ? '#555' : '#ddd';
+        })
+        .attr('stroke-width', d => {
+          const a = nodeToCommunity[(d.source as GraphNode).id];
+          const b = nodeToCommunity[(d.target as GraphNode).id];
+          return a === b ? 2.5 : 1;
+        });
+    }
+
 }
 
-
-
-
-
-
-}

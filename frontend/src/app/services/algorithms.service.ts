@@ -1,4 +1,4 @@
-import { ConnectedComponentResponse, TopFiveNodeInDegreeResponse } from './../models/algorith.model';
+import { AStarPathFindingResponse, CommunityDetectionResult, ConnectedComponentResponse, DijsktraPathFindingResponse, TopFiveNodeInDegreeResponse } from './../models/algorith.model';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Guid } from '../models/graph.model';
@@ -19,6 +19,9 @@ export class AlgorithmsService {
   private readonly TOP_FIVE =(graphId : Guid)=> `${this.BASE_URL}/top-five-node/graphId=${graphId}`
   private readonly COLORING =(graphId : Guid)=> `${this.BASE_URL}/coloring/graphId=${graphId}`
   private readonly COMPONENTS_DETECTION =(graphId: Guid) => `${this.BASE_URL}/connected-components/graphId=${graphId}`
+  private readonly COMMUNITY_DETECTION =(graphId: Guid) => `${this.BASE_URL}/community-detection/graphId=${graphId}`
+  private readonly ASTAR_PATH=(graphId:Guid)=>`${this.BASE_URL}/astar/graphId=${graphId}`
+  private readonly DIKSTRA_PATH=(graphId:Guid)=>`${this.BASE_URL}/dijkstra/graphId=${graphId}`
 
   constructor(private http : HttpClient) { }
 
@@ -55,6 +58,27 @@ export class AlgorithmsService {
   getConnectedComponents(graphId:Guid): Observable<ConnectedComponentResponse>{
     return this.http.get<ConnectedComponentResponse>(this.COMPONENTS_DETECTION(graphId));
   }
+  runAStarPathFinding(graphId: Guid,startNodeId:number,targetNodeId:number): Observable<AStarPathFindingResponse>{
+    const command ={
+      graphId:graphId,
+      startNodeId:startNodeId,
+      targetNodeId:targetNodeId
+    }
+    return this.http.post<AStarPathFindingResponse>(this.ASTAR_PATH(graphId),{command})
+  }
+  runDijkstraPathFinding(graphId: Guid,startNodeId:number,targetNodeId:number): Observable<DijsktraPathFindingResponse>{
+    const command ={
+      graphId:graphId,
+      startNodeId:startNodeId,
+      targetNodeId:targetNodeId
+    }
+    return this.http.post<DijsktraPathFindingResponse>(this.DIKSTRA_PATH(graphId),{command})
+  }
+
+  runCommunityDetection(graphId:Guid):Observable<CommunityDetectionResult>{
+    return this.http.get<CommunityDetectionResult>(this.COMMUNITY_DETECTION(graphId))
+  }
+
 
 
 

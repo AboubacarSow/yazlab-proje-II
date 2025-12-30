@@ -18,7 +18,7 @@ internal class TopFiveNodeInDegreeHandler(IGraphRepository graphRepository, ILog
             ?? throw new NotFoundException($"Graph with Id {request.GraphId} not found");
         var timer = new Stopwatch();
         timer.Start();
-        var degreeList = GraphAlgorithmService.KDegreeCentrality(graph, 5);
+        var degreeList = GraphAlgorithms.KDegreeCentrality(graph, 5);
         timer.Stop();
         logger.LogInformation("Alogrithm executed in:{Elapsed} ms",timer.Elapsed.TotalMilliseconds);
         var nodeDtos = degreeList.Select
