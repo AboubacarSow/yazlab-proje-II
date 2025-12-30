@@ -19,6 +19,7 @@ export class GraphsService {
   private readonly POST_GRAPH = this.BASE_URL
   private readonly GET_GRAPH = (graphId: Guid) => `${this.BASE_URL}/${graphId}`
   private readonly DEL_GRAPH = (graphId: Guid) => `${this.BASE_URL}/${graphId}`
+  private readonly CLEAR_GRAPH = (graphId: Guid) => `${this.BASE_URL}/clear/${graphId}`
   private readonly IMPORT_GRAPH = this.BASE_URL + '/import'
   private readonly GET_SUMMARY = (graphId:Guid) => `${this.BASE_URL}/${graphId}/summary`
   private readonly EXPORT_GRAPH = (graphId:Guid) => `${this.BASE_URL}/${graphId}/export`
@@ -73,6 +74,10 @@ export class GraphsService {
       graph : graph
     }
     return this.http.put<EditGraphResponse>(this.PUT_GRAPH(graphId),payload)
+  }
+
+  clearGraph(graphId:Guid):Observable<Graph>{
+    return this.http.delete<Graph>(this.CLEAR_GRAPH(graphId))
   }
 
 

@@ -107,31 +107,31 @@ export class SidebarComponent {
   }
 
   openEditGraph() {
-  this.graphStateService.getCurrentGraph$().pipe(
-    take(1),
-    filter((g): g is Graph => !!g && !!g.id)
-    ).subscribe({
-    next: (currentGraph) => {
-      const command: EditGraphCommand = {
-        id: currentGraph.id,
-        title: currentGraph.title,
-        description: currentGraph.description ?? ''
-      };
+    this.graphStateService.getCurrentGraph$().pipe(
+      take(1),
+      filter((g): g is Graph => !!g && !!g.id)
+      ).subscribe({
+      next: (currentGraph) => {
+        const command: EditGraphCommand = {
+          id: currentGraph.id,
+          title: currentGraph.title,
+          description: currentGraph.description ?? ''
+        };
 
-      const dialogRef = this.dialog.open(EditGraphComponent, {
-        data: command,
-        panelClass: 'edit-graph-panel',
-        disableClose: true
-      });
-      dialogRef.closed.subscribe(response=>{
-        if(response){
-          this.toast.success( `Graph ${(response as EditGraphResponse).title}  successfully updated`);
-          return;
-        }
-      })
-    },
-    error: () => this.toast.error('Unable to load Graph')
-  });
+        const dialogRef = this.dialog.open(EditGraphComponent, {
+          data: command,
+          panelClass: 'edit-graph-panel',
+          disableClose: true
+        });
+        dialogRef.closed.subscribe(response=>{
+          if(response){
+            this.toast.success( `Graph ${(response as EditGraphResponse).title}  successfully updated`);
+            return;
+          }
+        })
+      },
+      error: () => this.toast.error('Unable to load Graph')
+    });
   }
 
 
@@ -158,8 +158,16 @@ export class SidebarComponent {
       },
       error: () => this.toast.error('Unable to export graph')
     });
-}
+  }
 
+  clearGraphFields() {
+    this.graphStateService.currentGraph$.pipe(take(1))
+    .subscribe(graph=>{
+      this.graphStateService.resetGraph(graph?.id!)
+      console.log("graph reset")
+      this.toast.info(`Graph ${graph?.title} has been successfully cleared`)
+    })
+  }
 
   showDropdown(event: MouseEvent) {
     if (this.hideTimeout) {
