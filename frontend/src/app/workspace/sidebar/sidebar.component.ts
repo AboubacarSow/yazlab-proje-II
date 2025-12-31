@@ -1,8 +1,6 @@
-import { GraphStateService } from './../../core/services/graph.service';
-import { Component, Input, OnInit, Output, inject, EventEmitter } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { map, Observable, take, filter, switchMap } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { EditGraphCommand, EditGraphResponse, Graph, Guid } from '../../models/graph.model';
 import { GraphsService } from '../../services/graphs.service';
@@ -15,6 +13,8 @@ import { GraphrenderService } from '../../core/services/graphrender.service';
 import { AlgorithmsService } from '../../services/algorithms.service';
 import { buildComponentColorMap } from '../../core/utils/mapperHelper';
 import { AddNodeComponent } from '../modals/nodes/add-node/add-node.component';
+import { filter, map, Observable, switchMap, take } from 'rxjs';
+import { GraphStateService } from '../../core/services/graph.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -27,6 +27,7 @@ export class SidebarComponent implements OnInit{
 
 
   // Expandable sections state
+  isGraphlarimExpanded = false;
   isNodeExpanded = false;
   isEdgeExpanded = false;
 
@@ -47,6 +48,10 @@ export class SidebarComponent implements OnInit{
       key: string;
       params?: any;
     }>();
+  // Components dropdown state
+  showComponentsDropdown = false;
+  componentsDropdownPosition = { top: '0px', left: '0px' };
+  private componentsHideTimeout: any;
 
   //End of the section
 
@@ -73,6 +78,9 @@ export class SidebarComponent implements OnInit{
 
   toggleSection(section: string) {
     switch(section) {
+      case 'graphlarim':
+        this.isGraphlarimExpanded = !this.isGraphlarimExpanded;
+        break;
       case 'node':
         this.isNodeExpanded = !this.isNodeExpanded;
         break;
