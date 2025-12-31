@@ -14,6 +14,7 @@ import { AlgorithmsStateService } from '../../core/services/algorithms-state.ser
 import { GraphrenderService } from '../../core/services/graphrender.service';
 import { AlgorithmsService } from '../../services/algorithms.service';
 import { buildComponentColorMap } from '../../core/utils/mapperHelper';
+import { AddNodeComponent } from '../modals/nodes/add-node/add-node.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -24,9 +25,7 @@ import { buildComponentColorMap } from '../../core/utils/mapperHelper';
 })
 export class SidebarComponent implements OnInit{
 
-  onAction(arg0: string) {
-  throw new Error('Method not implemented.');
-  }
+
   // Expandable sections state
   isNodeExpanded = false;
   isEdgeExpanded = false;
@@ -86,7 +85,7 @@ export class SidebarComponent implements OnInit{
 
 
 
-  // Modals Actions
+  // Modals Graph Actions
   openSummary(){
     this.graphStateService.getGraphSummary().subscribe({
     next: summary => {
@@ -189,7 +188,7 @@ export class SidebarComponent implements OnInit{
       clearTimeout(this.hideTimeout);
     }
   }
-
+  //End Modal Actions Graphs
 
 
   //Algoritms Section Functions
@@ -297,4 +296,18 @@ export class SidebarComponent implements OnInit{
           });
   }
   //End of the section
+
+
+  // Node's Action
+  onAction(action: string) {
+    switch (action) {
+      case 'node-add':{
+        this.dialog.open(AddNodeComponent,
+            { disableClose: true,
+              data:{mode:'add'},
+              panelClass:'add-node-panel'
+            } )
+      }
+    }
+  }
 }

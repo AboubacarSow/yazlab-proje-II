@@ -1,6 +1,10 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { GraphLink, GraphNode } from '../../models/graph.model';
 import * as d3 from 'd3';
+import { Dialog } from '@angular/cdk/dialog';
+import { AddNodeComponent } from '../../workspace/modals/nodes/add-node/add-node.component';
+import { GraphStateService } from './graph.service';
+import { take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +25,7 @@ export class GraphrenderService {
 
   private tooltip!: d3.Selection<HTMLDivElement, unknown, any, any>;
   private readonly defaultNodeColor = '#2f757dff';
-  private readonly nodeHighlightColor = '#071245ff'
+  private readonly nodeHighlightColor = '#450722ff'
   private readonly defaultNodeRadius = 20;
   private readonly scaleNodeRadius = 30;
 
@@ -58,8 +62,10 @@ export class GraphrenderService {
   );
   // Ends
 
+  //Modal select node for edit
+  private dialog = inject(Dialog)
 
-  constructor() { }
+  constructor(private graphStateService: GraphStateService) { }
 
   init(container: HTMLElement): void {
     this.width = container.clientWidth;
@@ -116,8 +122,8 @@ export class GraphrenderService {
         d3.select(event.currentTarget)
           .transition()
           .duration(200)
-          .attr('r', 30)
-          .attr('fill', '#a18116ff');
+          .attr('r', 32)
+          .attr('fill', '#a14e16ff');
 
         this.highlightLinks(d.id);
         this.tooltip
@@ -150,7 +156,24 @@ export class GraphrenderService {
           this.resetStyles();
         })
         .on('click', (_, d) => {
-          if (!this.selectionEnabled) return;
+          if (!this.selectionEnabled){
+            const id= Number(d.id);
+            this.graphStateService.getNodeById$(id)
+                .pipe(take(1))
+                .subscribe(editnode => {
+                  if (!editnode) return;
+
+                  this.dialog.open(AddNodeComponent, {
+                    disableClose: true,
+                    panelClass: 'add-node-panel',
+                    data: {
+                      mode: 'edit',
+                      node:editnode
+                    }
+                  });
+                });
+            return;
+          }
           if (this.selectedNodes.has(d.id)) return;
           if (this.selectedNodes.size >= this.selectionMax) return;
 

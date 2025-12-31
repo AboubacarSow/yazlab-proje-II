@@ -78,7 +78,12 @@ export class GraphStateService {
     this.currentGraphSubject.next(graph);
     localStorage.setItem('currentGraph', JSON.stringify(graph));
   }
-
+  getNodeById$(id: number): Observable<Node | undefined> {
+    return this.getCurrentGraphNodes().pipe(
+      take(1),
+      map(nodes => nodes.find(n => n.id === id))
+    );
+  }
   loadCurrentGraphFromStorage() {
     const raw = localStorage.getItem('currentGraph');
     console.log('📦 localStorage raw:', raw);

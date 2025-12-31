@@ -5,7 +5,7 @@ namespace sna_application.Graphs.Commands.AddNodeToGraph;
 
 public record AddNodeToGraphRequest (AddNodeToGraphCommand Node);
 
-public record AddNodeToGraphResponse(NodeDto nodeDto);
+public record AddNodeToGraphResponse(NodeDto Node);
 public class AddNodeToGraphEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)

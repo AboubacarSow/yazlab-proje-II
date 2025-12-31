@@ -1,0 +1,83 @@
+<!-- Backdrop -->
+<div class="modal-backdrop"></div>
+
+<!-- Modal -->
+<div class="modal">
+  <div class="modal-header">
+    <h2 class="text-center">{{mode==='add' ?'Add Node' : 'Edit Node'}}</h2>
+  </div>
+  <form class="modal-body" [formGroup]="formNode"
+  (ngSubmit)="save()">
+    <!-- Tag -->
+    <div class="form-group">
+      <label for="tag">Node Tag</label>
+      <input
+        id="tag"
+        type="text"
+        placeholder="e.g. User A"
+        formControlName="tag"
+        required
+      />
+      <span class="text-danger"
+        *ngIf="formNode.get('tag')?.touched && formNode.get('tag')?.invalid">
+        Tag is required
+      </span>
+    </div>
+
+    <!-- Activity -->
+    <div class="form-group">
+      <label for="activity">
+        Activity <span class="hint">(0 – 1)</span>
+      </label>
+      <input
+        formControlName="activity"
+        id="activity"
+        type="number"
+        min="0"
+        max="1"
+        step="0.01"
+        placeholder="0.75"
+        required
+      />
+       <span class="text-danger"
+        *ngIf="formNode.get('activity')?.touched && formNode.get('activity')?.invalid">
+        Activity is required
+      </span>
+    </div>
+
+    <!-- Interaction -->
+    <div class="form-group">
+      <label for="interaction">Interaction</label>
+      <input
+        id="interaction"
+        formControlName="interaction"
+        type="number"
+        min="1"
+        placeholder="12"
+        required
+      />
+       <span class="text-danger"
+        *ngIf="formNode.get('interaction')?.touched && formNode.get('interaction')?.invalid">
+        Interaction is required
+      </span>
+    </div>
+  <!-- Backend error -->
+    <div *ngIf="errors" class="text-danger">
+      {{ errors }}
+    </div>
+     <div class="modal-footer">
+      <button class="btn secondary" (click)="cancel()" [disabled]="loading">
+        Cancel
+      </button>
+      <button class="btn btn-danger" (click)="delete(node?.id!)" [disabled]="loading" *ngIf="mode==='edit'">
+        Delete
+      </button>
+      <button type="submit" class="btn primary" [disabled]="loading">
+        <i class="fa-solid fa-plus me-2"></i>
+        <span *ngIf="!loading">{{ mode === 'add' ? 'Add Node' : 'Save Changes' }}</span>
+        <span *ngIf="loading">Saving...</span>
+      </button>
+    </div>
+  </form>
+
+</div>

@@ -151,7 +151,7 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
               console.log("Result of bfs:",res);
               const traversal = this.adapter.buildTraversalResult(res.result);
               this.renderer.renderTraversal(traversal);
-              this.toast.info(`Algorithm execution took ${res.result.executionTime} ms `)
+              this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
             });
         });
 

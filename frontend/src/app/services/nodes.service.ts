@@ -8,7 +8,7 @@ import { Guid } from '../models/graph.model';
 @Injectable({
   providedIn: 'root'
 })
-export class NodesService {
+export class NodeApiService {
   private readonly BASE_URL = environment.apiUrl + 'graphs';
 
 
@@ -19,33 +19,32 @@ export class NodesService {
 
 
     // Node operations
-    addNodeToGraph(nodeDto: AddNodeDto): Observable<{ nodeDto: Node }> {
+    addNodeToGraph(nodeDto: AddNodeDto): Observable<{ node: Node }> {
       // Backend expects AddNodeToGraphRequest { Node: AddNodeToGraphCommand }
-      return this.http.post<{ nodeDto: Node }>(
+      return this.http.post<{ node: Node }>(
         this.POST_NODE(nodeDto.graphId),
         { node: nodeDto }
       );
     }
 
-    editNodeInGraph(graphId: Guid, nodeDto: EditNodeDto): Observable<{ nodeDto: Node }> {
+    editNodeInGraph(graphId: Guid, nodeDto: EditNodeDto): Observable<{ node: Node }> {
       // Backend expects EditNodeInGraphRequest { Vertex: EditNodeInGraphCommand }
-      const payload = {
-        vertex: {
+
+      const  vertex = {
           id: nodeDto.nodeId,
           graphId: graphId,
           tag: nodeDto.tag,
           activity: nodeDto.activity,
           interaction: nodeDto.interaction
-        }
-      };
-      return this.http.put<{ nodeDto: Node }>(
+        };
+      return this.http.put<{ node: Node }>(
         this.PUT_NODE(graphId, nodeDto.nodeId),
-        payload
+        {vertex}
       );
     }
 
     deleteNodeFromGraph(graphId: Guid, nodeId: number): Observable<void> {
       // Backend maps POST for delete: api/graphs/{graphId}/nodes/{id}
-      return this.http.post<void>(this.DEL_NODE(graphId, nodeId), {});
+      return this.http.delete<void>(this.DEL_NODE(graphId, nodeId), {});
     }
 }
