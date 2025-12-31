@@ -97,12 +97,9 @@ export class NodesService {
   deleteNode(nodeId: number): Observable<void> {
     return this.withCurrentGraph(graph =>
       this.nodesApi.deleteNodeFromGraph(graph.id, nodeId).pipe(
-        tap(() => {
-          const updatedGraph: Graph = {
-            ...graph,
-            nodes: (graph.nodes ?? []).filter(n => n.id !== nodeId)
-          };
-
+        tap(res => {
+          const updatedGraph = res.result
+          console.log('new graph:',updatedGraph)
           this.graphState.setCurrentGraph(updatedGraph);
         }),
         map(() => void 0)

@@ -121,6 +121,7 @@ export class AddNodeComponent {
       next:()=>{
           this.toast.info(`Node deleted successfully`)
           this.dialogRef.close();
+          window.location.reload()
       },
       error:()=>{
         console.log(`something goes wrong`)

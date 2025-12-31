@@ -6,7 +6,7 @@ public class EdgeConfiguration : IEntityTypeConfiguration<Edge>
     {
         builder.HasKey(e=> new {e.GraphId, e.NodeAId, e.NodeBId});
         
-        builder.HasIndex(e => new { e.GraphId, e.NodeAId, e.NodeBId })
+        builder.HasIndex(e => new { e.GraphId, e.NodeAId, e.NodeBId})
        .IsUnique();
 
 

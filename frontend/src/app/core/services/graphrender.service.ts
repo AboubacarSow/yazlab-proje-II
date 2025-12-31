@@ -105,92 +105,115 @@ export class GraphrenderService {
     // --- LINKS ---
     this.links = this.containerG.selectAll<SVGLineElement, GraphLink>('line')
       .data(links, d => d.id ?? `${d.source}-${d.target}`)
-      .join('line')
-      .attr('stroke', '#2d3132ff')
-      .attr('stroke-width', 2);
+      .join(
+        enter => enter
+          .append('line')
+          .attr('class', 'link')
+          .attr('stroke', '#484b4bff')
+          .attr('stroke-width', 2),
+        update => update,
+        exit => exit.remove()
+      );
 
     // --- NODES ---
-    this.nodes = this.containerG.selectAll<SVGCircleElement, GraphNode>('circle')
-      .data(nodes, d => d.id)
-      .join('circle')
-      .attr('r', this.defaultNodeRadius)
-      .attr('fill', d => d.color ?? this.defaultNodeColor)
-      .attr('stroke', '#fff')
-      .attr('stroke-width', 2)
-      .call(this.createDrag())
-      .on('mouseenter', (event, d) => {
-        d3.select(event.currentTarget)
-          .transition()
-          .duration(200)
-          .attr('r', 32)
-          .attr('fill', '#a14e16ff');
+    this.nodes = this.containerG
+            .selectAll<SVGCircleElement, GraphNode>('circle')
+            .data(nodes, d => d.id)
+            .join(
+              // ENTER
+              enter => enter
+                .append('circle')
+                .attr('r', this.defaultNodeRadius)
+                .attr('fill', d => d.color ?? this.defaultNodeColor)
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 2)
+                .call(this.createDrag())
+                .on('mouseenter', (event, d) => {
+                  d3.select(event.currentTarget)
+                    .transition()
+                    .duration(200)
+                    .attr('r', 32)
+                    .attr('fill', '#a14e16ff');
 
-        this.highlightLinks(d.id);
-        this.tooltip
-          .style('opacity', 1)
-          .html(`
-          <div class="tooltip-title">${d.label}</div>
-          <div class="tooltip-row">
-            <span class="tooltip-key">Activity</span>
-            <span class="tooltip-value text-info">${(d as GraphNode).domain.activity ?? '-'}</span>
-          </div>
-          <div class="tooltip-row">
-            <span class="tooltip-key">Interaction</span>
-            <span class="tooltip-value text-info">${(d as GraphNode).domain.interaction ?? '-'}</span>
-          </div>`);
-      })
-      .on('mousemove', (event) => {
-        this.tooltip
-          .style('left', event.offsetX + 15 + 'px')
-          .style('top', event.offsetY + 15 + 'px');
-      })
-      .on('mouseleave', (event, d) => {
-        if (this.traversalActive) return;
-        d3.select(event.currentTarget)
-          .transition()
-          .duration(200)
-          .attr('r', this.defaultNodeRadius)
-          .attr('fill', d.color ?? this.defaultNodeColor);
+                  this.highlightLinks(d.id);
+                  this.tooltip
+                    .style('opacity', 1)
+                    .html(`
+                      <div class="tooltip-title">${d.label}</div>
+                      <div class="tooltip-row">
+                        <span class="tooltip-key">Activity</span>
+                        <span class="tooltip-value text-info">${d.domain.activity ?? '-'}</span>
+                      </div>
+                      <div class="tooltip-row">
+                        <span class="tooltip-key">Interaction</span>
+                        <span class="tooltip-value text-info">${d.domain.interaction ?? '-'}</span>
+                      </div>
+                    `);
+                })
+                .on('mousemove', event => {
+                  this.tooltip
+                    .style('left', event.offsetX + 15 + 'px')
+                    .style('top', event.offsetY + 15 + 'px');
+                })
+                .on('mouseleave', (event, d) => {
+                  if (this.traversalActive) return;
 
-          this.tooltip.style('opacity', 0);
-          this.resetStyles();
-        })
-        .on('click', (_, d) => {
-          if (!this.selectionEnabled){
-            const id= Number(d.id);
-            this.graphStateService.getNodeById$(id)
-                .pipe(take(1))
-                .subscribe(editnode => {
-                  if (!editnode) return;
+                  d3.select(event.currentTarget)
+                    .transition()
+                    .duration(200)
+                    .attr('r', this.defaultNodeRadius)
+                    .attr('fill', d.color ?? this.defaultNodeColor);
 
-                  this.dialog.open(AddNodeComponent, {
-                    disableClose: true,
-                    panelClass: 'add-node-panel',
-                    data: {
-                      mode: 'edit',
-                      node:editnode
-                    }
-                  });
-                });
-            return;
-          }
-          if (this.selectedNodes.has(d.id)) return;
-          if (this.selectedNodes.size >= this.selectionMax) return;
+                  this.tooltip.style('opacity', 0);
+                  this.resetStyles();
+                })
+                .on('click', (_, d) => {
+                  if (!this.selectionEnabled) {
+                    const id = Number(d.id);
+                    this.graphStateService.getNodeById$(id)
+                      .pipe(take(1))
+                      .subscribe(editnode => {
+                        if (!editnode) return;
 
-          this.selectedNodes.add(d.id);
-          this.highlightNode(d.id);
+                        this.dialog.open(AddNodeComponent, {
+                          disableClose: true,
+                          panelClass: 'add-node-panel',
+                          data: { mode: 'edit', node: editnode }
+                        });
+                      });
+                    return;
+                  }
 
-          this.selectionCallback?.([...this.selectedNodes]);
-        });
+                  if (this.selectedNodes.has(d.id)) return;
+                  if (this.selectedNodes.size >= this.selectionMax) return;
+
+                  this.selectedNodes.add(d.id);
+                  this.highlightNode(d.id);
+                  this.selectionCallback?.([...this.selectedNodes]);
+                }),
+
+              // UPDATE
+              update => update
+                .attr('fill', d => d.color ?? this.defaultNodeColor),
+
+              // EXIT
+              exit => exit.remove()
+            );
 
     // --- LABELS ---
     this.labels = this.containerG.selectAll<SVGTextElement, GraphNode>('text')
       .data(nodes, d => d.id)
-      .join('text')
-      .text(d => d.label)
-      .attr('font-size', 12)
-      .attr('dx', 22)
-      .attr('dy', 5);
+      .join(
+      enter => enter
+        .append('text')
+        .attr('class', 'label')
+        .attr('font-size', 12)
+        .attr('dx', 22)
+        .attr('dy', 5)
+        .text(d => d.label),
+      update => update.text(d => d.label),
+      exit => exit.remove()
+  );
 
     // Restart simulation
     this.simulation.nodes(nodes);

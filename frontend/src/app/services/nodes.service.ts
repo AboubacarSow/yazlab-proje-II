@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { AddNodeDto, EditNodeDto, Node } from '../models/node.model';
+import { AddNodeDto, DeleteNodeRespose, EditNodeDto, Node } from '../models/node.model';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Guid } from '../models/graph.model';
+import { Graph, Guid } from '../models/graph.model';
 
 @Injectable({
   providedIn: 'root'
@@ -43,8 +43,7 @@ export class NodeApiService {
       );
     }
 
-    deleteNodeFromGraph(graphId: Guid, nodeId: number): Observable<void> {
-      // Backend maps POST for delete: api/graphs/{graphId}/nodes/{id}
-      return this.http.delete<void>(this.DEL_NODE(graphId, nodeId), {});
+    deleteNodeFromGraph(graphId: Guid, nodeId: number): Observable<DeleteNodeRespose> {
+      return this.http.delete<DeleteNodeRespose>(this.DEL_NODE(graphId, nodeId));
     }
 }
