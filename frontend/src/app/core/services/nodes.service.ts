@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GraphStateService } from './graph.service';
-import { NodesService as NodesApiService } from '../../services/nodes.service';
+import { NodeApiService as NodesApiService } from '../../services/nodes.service';
 import { AddNodeDto, EditNodeDto, Node } from '../../models/node.model';
 import { Graph } from '../../models/graph.model';
 import { filter, map, Observable, switchMap, take, tap } from 'rxjs';
@@ -42,7 +42,7 @@ export class NodesService {
 
     return this.nodesApi.addNodeToGraph(payload).pipe(
       tap(res => {
-        const node = res.nodeDto
+        const node = res.node
         if (!node) return;
         const updatedGraph: Graph = {
           ...graph,
@@ -50,16 +50,10 @@ export class NodesService {
         };
         this.graphState.setCurrentGraph(updatedGraph);
       }),
-        map(res =>
-          (res as any)?.nodeDto as Node )
+        map(res => res.node as Node )
       );
     });
   }
-
-
-  /**
-   * Edit node in current graph
-   */
 
   editNode(
       nodeId: number,
@@ -77,8 +71,8 @@ export class NodesService {
       return this.withCurrentGraph(graph =>
         this.nodesApi.editNodeInGraph(graph.id, payload).pipe(
           tap(res => {
-            const node =(res as any)?.nodeDto as Node
-
+            const node =(res as any)?.node as Node
+            console.log(node)
             if (!node) return;
             const updatedGraph: Graph = {
               ...graph,
@@ -86,13 +80,13 @@ export class NodesService {
                 n.id === node.id ? node : n
               )
             };
-
+            if(!updatedGraph){
+              console.log('updated graph:',updatedGraph)
+            }
+            console.log("new graph",updatedGraph);
             this.graphState.setCurrentGraph(updatedGraph);
           }),
-          map(res =>
-            (res as any)?.nodeDto as Node ??
-            (res as any)?.node as Node
-          )
+          map(res =>(res.node as Node))
         )
       );
     }
@@ -103,12 +97,9 @@ export class NodesService {
   deleteNode(nodeId: number): Observable<void> {
     return this.withCurrentGraph(graph =>
       this.nodesApi.deleteNodeFromGraph(graph.id, nodeId).pipe(
-        tap(() => {
-          const updatedGraph: Graph = {
-            ...graph,
-            nodes: (graph.nodes ?? []).filter(n => n.id !== nodeId)
-          };
-
+        tap(res => {
+          const updatedGraph = res.result
+          console.log('new graph:',updatedGraph)
           this.graphState.setCurrentGraph(updatedGraph);
         }),
         map(() => void 0)

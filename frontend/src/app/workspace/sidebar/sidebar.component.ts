@@ -12,6 +12,7 @@ import { AlgorithmsStateService } from '../../core/services/algorithms-state.ser
 import { GraphrenderService } from '../../core/services/graphrender.service';
 import { AlgorithmsService } from '../../services/algorithms.service';
 import { buildComponentColorMap } from '../../core/utils/mapperHelper';
+import { AddNodeComponent } from '../modals/nodes/add-node/add-node.component';
 import { filter, map, Observable, switchMap, take } from 'rxjs';
 import { GraphStateService } from '../../core/services/graph.service';
 
@@ -22,7 +23,9 @@ import { GraphStateService } from '../../core/services/graph.service';
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit{
+
+
   // Expandable sections state
   isGraphlarimExpanded = false;
   isNodeExpanded = false;
@@ -90,7 +93,7 @@ export class SidebarComponent {
 
 
 
-  // Modals Actions
+  // Modals Graph Actions
   openSummary(){
     this.graphStateService.getGraphSummary().subscribe({
     next: summary => {
@@ -193,7 +196,7 @@ export class SidebarComponent {
       clearTimeout(this.hideTimeout);
     }
   }
-
+  //End Modal Actions Graphs
 
 
   //Algoritms Section Functions
@@ -301,4 +304,18 @@ export class SidebarComponent {
           });
   }
   //End of the section
+
+
+  // Node's Action
+  onAction(action: string) {
+    switch (action) {
+      case 'node-add':{
+        this.dialog.open(AddNodeComponent,
+            { disableClose: true,
+              data:{mode:'add'},
+              panelClass:'add-node-panel'
+            } )
+      }
+    }
+  }
 }

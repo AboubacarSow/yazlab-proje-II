@@ -1,4 +1,4 @@
-import { Guid } from "./graph.model";
+import { Graph, Guid } from "./graph.model";
 
 export interface NodeImportDto {
   tag: string;
@@ -41,6 +41,10 @@ export interface NodeSnapshot {
   tag: string;
   activity: number;
   interaction: number;
+}
+
+export interface DeleteNodeRespose{
+  result: Graph
 }
 
 

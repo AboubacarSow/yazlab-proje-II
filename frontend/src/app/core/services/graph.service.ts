@@ -75,10 +75,16 @@ export class GraphStateService {
   /** SET CURRENT GRAPH */
   setCurrentGraph(graph: Graph) {
     console.log('✅ setCurrentGraph called:', graph);
-    this.currentGraphSubject.next(graph);
-    localStorage.setItem('currentGraph', JSON.stringify(graph));
+    const cloned: Graph={... graph};
+    this.currentGraphSubject.next(cloned);
+    localStorage.setItem('currentGraph', JSON.stringify(cloned));
   }
-
+  getNodeById$(id: number): Observable<Node | undefined> {
+    return this.getCurrentGraphNodes().pipe(
+      take(1),
+      map(nodes => nodes.find(n => n.id === id))
+    );
+  }
   loadCurrentGraphFromStorage() {
     const raw = localStorage.getItem('currentGraph');
     console.log('📦 localStorage raw:', raw);
@@ -105,13 +111,13 @@ export class GraphStateService {
   }
   getCurrentGraphNodes(): Observable<Node[] | []> {
     return this.currentGraph$.pipe(
-      map(g => g?.nodes ?? [])
+      map(g => g ? [...g?.nodes]: [])
     );
   }
 
   getCurrentGraphEdges(): Observable<Edge[]| []>{
     return this.currentGraph$.pipe(
-      map(g => g?.edges ?? [])
+      map(g =>g? [...g?.edges] : [])
     )
   }
 

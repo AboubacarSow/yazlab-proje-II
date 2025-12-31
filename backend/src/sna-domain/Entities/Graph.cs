@@ -82,11 +82,17 @@ public class Graph
         if (_nodes.Contains(node))
         {
             var nodeId= node.Id;
-            _nodes.Remove(node);
-            Edge edge = _edges.FirstOrDefault(e => e.NodeAId == nodeId ||  e.NodeBId == nodeId)!;
-           if(edge is not null){
-                _edges.Remove(edge);
+            var edges = _edges.Where(e => e.NodeAId == nodeId ||  e.NodeBId == nodeId)
+                            .ToList();
+            if (edges.Count > 0)
+            {
+                foreach(var edge in edges)
+                {
+                    _edges.Remove(edge);
+                }
             }
+            
+            _nodes.Remove(node);
 
             return true;
         }
