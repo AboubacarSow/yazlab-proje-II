@@ -869,7 +869,7 @@ sequenceDiagram
 
 Uygulama, kullanıcı dostu bir arayüz ile grafların oluşturulması, düzenlenmesi ve analiz edilmesi için kapsamlı özellikler sunmaktadır.
 
-> **Ekran Görüntüsü Yer Tutucuları**: Aşağıdaki başlıkların altına kendi ekran görüntülerinizi eklemek için `docs/screenshots/` klasörüne PNG/JPG koyup bağlantıyı güncelleyin.
+> 📸 **[Tüm Ekran Görüntülerini İncelemek İçin Tıklayın →](screenshots/README.md)**
 
 #### 5.1.1 Landing Page (Karşılama Sayfası)
 
@@ -880,7 +880,7 @@ Uygulama açıldığında kullanıcıları karşılayan ana sayfa:
 - Modern ve responsive tasarım
 
 Ekran Görüntüsü (yer tutucu):
-![Landing Page](docs/screenshots/landing-page.png)
+![Landing Page](screenshots/Landing-Layout)
 
 #### 5.1.2 Workspace Arayüzü
 
@@ -906,12 +906,12 @@ Workspace, uygulamanın ana çalışma alanıdır ve üç temel bölümden oluş
 - Düğüm ve kenar ekleme araçları
 
 Ekran Görüntüsü (yer tutucu):
-![Workspace Genel Görünüm](docs/screenshots/workspace-overview.png)
+![Workspace Genel Görünüm](screenshots/workspace-overview.png)
 
 Ek yer tutucular:
-- Graph View: ![Graph View](docs/screenshots/graph-view.png)
-- Data View (düğüm/kenar listeleri): ![Data View](docs/screenshots/data-view.png)
-- Algoritma sonuçları animasyonu: ![Algoritma Çalışma Sonucu](docs/screenshots/algorithm-run.png)
+- Graph View: ![Graph View](screenshots/Workspace-Layout)
+- Data View (düğüm/kenar listeleri): ![Data View](screenshots/Data-Layout)
+- Algoritma sonuçları animasyonu: ![Algoritma Çalışma Sonucu](screenshots/algorithm-run.png)
 
 ---
 

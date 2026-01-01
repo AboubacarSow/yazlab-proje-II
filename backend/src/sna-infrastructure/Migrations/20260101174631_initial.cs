@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace sna_infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -69,7 +69,7 @@ namespace sna_infrastructure.Migrations
                     Tag = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Activity = table.Column<double>(type: "float", nullable: false),
                     Interaction = table.Column<int>(type: "int", nullable: false),
-                    NormalizedDegreeCentrality = table.Column<double>(type: "float", nullable: true),
+                    NormalizedDegreeCentrality = table.Column<decimal>(type: "decimal(4,3)", precision: 4, scale: 3, nullable: true),
                     DegreeCentrality = table.Column<int>(type: "int", nullable: false),
                     Connections = table.Column<int>(type: "int", nullable: false)
                 },
@@ -91,7 +91,7 @@ namespace sna_infrastructure.Migrations
                     GraphId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     NodeAId = table.Column<int>(type: "int", nullable: false),
                     NodeBId = table.Column<int>(type: "int", nullable: false),
-                    Weight = table.Column<double>(type: "float", nullable: false)
+                    Weight = table.Column<double>(type: "float(4)", precision: 4, scale: 3, nullable: false)
                 },
                 constraints: table =>
                 {

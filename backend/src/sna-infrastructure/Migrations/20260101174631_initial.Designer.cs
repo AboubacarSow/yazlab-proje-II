@@ -12,8 +12,8 @@ using sna_infrastructure.Persistence;
 namespace sna_infrastructure.Migrations
 {
     [DbContext(typeof(GraphVDbContext))]
-    [Migration("20251225194535_Initial")]
-    partial class Initial
+    [Migration("20260101174631_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,7 +62,8 @@ namespace sna_infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<double>("Weight")
-                        .HasColumnType("float");
+                        .HasPrecision(4, 3)
+                        .HasColumnType("float(4)");
 
                     b.HasKey("GraphId", "NodeAId", "NodeBId");
 
@@ -162,8 +163,9 @@ namespace sna_infrastructure.Migrations
                     b.Property<int>("Interaction")
                         .HasColumnType("int");
 
-                    b.Property<double?>("NormalizedDegreeCentrality")
-                        .HasColumnType("float");
+                    b.Property<decimal?>("NormalizedDegreeCentrality")
+                        .HasPrecision(4, 3)
+                        .HasColumnType("decimal(4,3)");
 
                     b.Property<string>("Tag")
                         .IsRequired()
@@ -193,7 +195,7 @@ namespace sna_infrastructure.Migrations
                     b.HasOne("sna_domain.Entities.Node", "NodeB")
                         .WithMany()
                         .HasForeignKey("NodeBId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Graph");
