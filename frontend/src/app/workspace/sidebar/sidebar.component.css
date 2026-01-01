@@ -31,7 +31,7 @@
   z-index: 10000;
   overflow: hidden;
 }
-.graph-dropdown::before{
+.graph-dropdown::before {
   content: '';
   position: absolute;
   right: 100%;
@@ -116,7 +116,7 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
-  color: #393939;
+  color: #444;
   transition: background-color 0.2s;
   margin-bottom: 0.5rem;
 }
@@ -135,7 +135,6 @@
 .arrow {
   font-size: 0.8rem;
   color: #666;
-  text-align: right;
 }
 
 .section-content {
@@ -150,39 +149,6 @@
   border-radius: 4px;
   font-size: 0.9rem;
 }
-
-.graph-tag-btn {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #f8f9fa;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  box-shadow: 0 4px rgba(59, 130, 246, 0.15);
-  cursor: pointer;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  width: 100%;
-  padding: 10px 12px;
-}
-
-/* Left icon */
-.graph-tag-btn .left {
-  justify-self: start;
-}
-
-/* Centered title */
-.graph-tag-btn .center {
-  justify-self: center;
-  font-weight: 500;
-  white-space: wrap;
-}
-
-/* Right arrow */
-.graph-tag-btn .right {
-  justify-self: end;
-}
-
 
 .action-btn {
   display: block;

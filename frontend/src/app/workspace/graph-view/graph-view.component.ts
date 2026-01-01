@@ -2,8 +2,8 @@ import { Dialog } from '@angular/cdk/dialog';
 import { AlgorithmResultAdapterService } from './../../core/services/algorithm-result-adapter.service';
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { combineLatest, Subject, take, takeUntil } from 'rxjs';
-import { GraphrenderService } from '../../core/services/graphrender.service';
+import { NodeAddComponent } from './node-add/node-add.component';
+import { NodeEditComponent } from './node-edit/node-edit.component';
 import { GraphStateService } from '../../core/services/graph.service';
 import { AlgorithmsStateService } from '../../core/services/algorithms-state.service';
 import { AlgorithmDefinition } from '../../core/utils/algorithm-definition';
@@ -12,9 +12,13 @@ import { ToastService } from '../../core/utils/toast-service.service';
 import { CommunityLegendItem } from '../../core/utils/algorithm-result';
 import { EdgesService } from '../../core/services/edges.service';
 import { AddNodeComponent } from '../modals/add-node/add-node.component';
+import { GraphrenderService } from '../../core/services/graphrender.service';
+import { AlgorithmResultAdapterService } from '../../core/services/algorithm-result-adapter.service';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-graph-view',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './graph-view.component.html',
   styleUrl: './graph-view.component.css'
