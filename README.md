@@ -202,30 +202,124 @@ A* algoritması, **Peter Hart, Nils Nilsson** ve **Bertram Raphael** tarafından
 
 ---
 
-### 3.5 Bağlı Bileşen Analizi
+### 3.5 Bağlı Bileşen Analizi (Connected Components)
 
-Graf içerisindeki ayrık alt toplulukların tespit edilmesini sağlar.
+#### Çalışma Mantığı
 
----
+Bağlı Bileşen Analizi, bir graf içerisindeki **bağlı bileşenleri** (connected components) tespit etmek için kullanılan bir algoritmadır. Bağlı bileşen, birbirlerine yollarla bağlı olan düğümlerin kümesidir.
 
-### 3.6 Merkezilik (Degree Centrality)
+Algoritma, ziyaret edilmemiş her düğümü başlangıç noktası olarak seçer ve BFS veya DFS algoritması kullanarak o düğümden erişilebilecek tüm düğümleri bulur. Ziyaret edilen düğümler bir bileşene ait olarak işaretlenir ve işlem devam eder.
 
-Düğümlerin bağlantı sayılarına göre en etkili kullanıcılar belirlenir. En yüksek dereceye sahip ilk 5 düğüm tablo halinde sunulmuştur.
+Bu algoritma, sosyal ağlarda **topluluk tespiti**, ağ fragmentasyon analizi ve **izole edilmiş kullanıcı gruplarının** belirlenmesinde kullanılır.
 
----
+**Zaman Karmaşıklığı:** O(V + E)
 
-### 3.7 Welsh–Powell Graf Renklendirme
+V: Düğüm (vertex) sayısı
 
-Komşu düğümlerin farklı renkler almasını sağlayarak toplulukları görsel olarak ayırır.
+E: Kenar (edge) sayısı
+
+#### Akış Diyagramı
 
 ```mermaid
-flowchart LR
-A[Düğümleri Dereceye Göre Sırala] --> B[Renk Ata]
-B --> C[Komşuları Kontrol Et]
-C --> D{Çakışma Var mı?}
-D -->|Evet| B
-D -->|Hayır| E[Devam]
+flowchart TD
+    A[Başla] --> B[Tüm Düğümleri Ziyaret Edilmedi Olarak İşaretle]
+    B --> C{Ziyaret Edilmemiş Düğüm Var mı?}
+    C -->|Hayır| H[Bitiş - Tüm Bileşenler Bulundu]
+    C -->|Evet| D[İlk Ziyaret Edilmemiş Düğümü Seç]
+    D --> E[Yeni Bileşen Oluştur]
+    E --> F[BFS/DFS ile Bileşeni Keşfet]
+    F --> G[Erişilebilen Tüm Düğümleri Bileşene Ekle]
+    G --> C
 ```
+
+#### Literatür İncelemesi
+
+Bağlı bileşen analizi, graf teorisinin temel kavramlarından biri olup, **Königsberg Köprüleri Problemi** (1736) ile Euler tarafından başlatılan çalışmalara dayanır. Modern uygulamalar, **Hopcroft-Tarjan** algoritması (1973) ile hızlandırılmıştır. Sosyal ağ analizi, ağ güvenliği ve bilgisayar ağları alanlarında yaygın olarak kullanılmaktadır.
+
+---
+
+### 3.6 Merkezilik Analizi (Degree Centrality)
+
+#### Çalışma Mantığı
+
+Merkezilik Analizi, bir graf içindeki **düğümlerin önem derecesini** ölçmek için kullanılan bir yöntemdir. Derece merkeziliği (Degree Centrality), bir düğümün kaç tane başka düğüme doğrudan bağlı olduğunu belirtir.
+
+Bir düğümün derece merkeziliği, onun komşularının sayısı olarak hesaplanır:
+
+$$C_D(v) = \frac{\text{degree}(v)}{n-1}$$
+
+Burada:
+- `degree(v)`: Düğüm v'nin bağlı olduğu düğüm sayısı
+- `n`: Grafta bulunan toplam düğüm sayısı
+
+Sosyal ağlarda, yüksek derece merkeziliğine sahip düğümler **etkili kullanıcılar**, **ağ hub'ları** veya **etkileyiciler** olarak kabul edilir. Algoritma bu düğümleri tespit ederek ağın yapısı hakkında bilgi sağlar.
+
+**Zaman Karmaşıklığı:** O(V + E)
+
+V: Düğüm (vertex) sayısı
+
+E: Kenar (edge) sayısı
+
+#### Akış Diyagramı
+
+```mermaid
+flowchart TD
+    A[Başla] --> B[Tüm Düğümlerin Derecesini Hesapla]
+    B --> C[Her Düğüm için Merkezilik Değerini Ata]
+    C --> D[Düğümleri Merkezilik Değerine Göre Sırala]
+    D --> E[En Yüksek 5 Düğümü Seç]
+    E --> F[Sonuçları Döndür]
+    F --> G[Bitiş]
+```
+
+#### Literatür İncelemesi
+
+Merkezilik analizi, sosyal ağ analizi alanında temel bir konsepttir. **Freeman** (1979) tarafından formalize edilen "Centrality in Networks" çalışması, derece merkeziliğinin yanı sıra yakınlık merkeziliği (closeness centrality) ve ara merkeziliği (betweenness centrality) gibi çeşitli merkezilik ölçülerini tanıtmıştır. Günümüzde sosyal ağlar, epidemiyoloji ve kritik altyapı analizi alanlarında yaygın olarak kullanılmaktadır.
+
+---
+
+### 3.7 Welsh–Powell Graf Renklendirme (Graph Coloring)
+
+#### Çalışma Mantığı
+
+Welsh–Powell algoritması, bir grafı **minimum renk sayısı ile renklendirilebilmesini** amaç edinen açgözlü (greedy) bir algoritmadır. Amaç, komşu düğümlerin hiçbir zaman aynı renkle renklenmemesini sağlamaktır.
+
+Algoritmanın adımları:
+1. Düğümleri derecelerine göre **azalan sırada** sırala
+2. Sıralanmış ilk düğüne **ilk rengi** ata
+3. Kalan sıralanmamış düğümler arasında, bu düğüme komşu olmayan ilk düğümü bul
+4. Aynı rengi ata
+5. Başka renge ihtiyaç duyulana kadar işlemi tekrarla
+6. Tüm düğümler renklendirme yapılana kadar yeni renklerle devam et
+
+Bu algoritma, sosyal ağlarda **topluluk tespiti**, harita renklendirme, zaman çizelgeleme ve frekans atama problemlerinde kullanılır.
+
+**Zaman Karmaşıklığı:** O(V²)
+
+V: Düğüm (vertex) sayısı
+
+**Approximation Ratio:** İyi bir yaklaşım sağlar, ancak optimal çözüm garantisi vermez (NP-hard problem)
+
+#### Akış Diyagramı
+
+```mermaid
+flowchart TD
+    A[Başla] --> B[Düğümleri Derecelerine Göre Azalan Sırada Sırala]
+    B --> C[İlk Rengi Başlat]
+    C --> D{Renklendirmesi Gereken Düğüm Var mı?}
+    D -->|Hayır| I[Bitiş]
+    D -->|Evet| E[İlk Renklendirmemiş Düğümü Seç]
+    E --> F[Bu Düğüme Komşu Olmayan Tüm Düğümleri Bul]
+    F --> G[Bulunan Düğümlere Mevcut Rengi Ata]
+    G --> H[Sonraki Rengi Başlat]
+    H --> D
+```
+
+#### Literatür İncelemesi
+
+Welsh–Powell algoritması, **Donald J. Welsh** ve **Martin B. Powell** tarafından 1967 yılında geliştirilmiştir. Algoritma "An upper bound for the chromatic number of a graph" adlı çalışmada tanıtılmıştır. Graf renklendirme problemi NP-complete olmasına rağmen, Welsh–Powell açgözlü yaklaşımı pratik uygulamalarda hızlı ve etkili sonuçlar üretir. Günümüzde harita renklendirme, ders çizelgeleme, sürü optimizasyonu ve sosyal ağ analizi alanlarında yaygın olarak kullanılmaktadır.
+
+---
 
 ---
 
