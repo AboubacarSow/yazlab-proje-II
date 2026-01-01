@@ -879,8 +879,6 @@ Uygulama açıldığında kullanıcıları karşılayan ana sayfa:
 - Workspace'e geçiş seçenekleri
 - Modern ve responsive tasarım
 
-Ekran Görüntüsü (yer tutucu):
-![Landing Page](screenshots/Landing-Layout)
 
 #### 5.1.2 Workspace Arayüzü
 
