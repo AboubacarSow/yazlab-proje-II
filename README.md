@@ -1160,29 +1160,122 @@ Bu formül, benzer özelliklere sahip düğümler arasında **daha güçlü bağ
 
 ## 6. Sonuç ve Tartışma
 
-Bu projede, sosyal ağ analizine yönelik kapsamlı bir uygulama geliştirilmiştir. Graf algoritmaları başarıyla uygulanmış, görselleştirme ile desteklenmiştir.
+### 6.1 Projenin Başarıları
 
-### Başarılar
+Bu projede, sosyal ağ analizine yönelik **tam kapsamlı ve modern bir web uygulaması** başarıyla geliştirilmiştir.
 
-* OOP prensiplerine uygun mimari
-* Dinamik ağırlık hesaplama
-* Etkileşimli kullanıcı arayüzü
+#### Teknik Başarılar
 
-### Sınırlılıklar
+**Mimari Tasarım:**
+- ✅ Domain-Driven Design (DDD) prensipleri ile temiz mimari
+- ✅ CQRS Pattern ile komut-sorgu ayrımı
+- ✅ Standalone Components ile modern Angular mimarisi
+- ✅ RESTful API tasarımı
 
-* Büyük ölçekli graflarda performans sınırlamaları
+**Algoritma Implementasyonu:**
+- ✅ 7 farklı graf algoritması başarıyla gerçeklendi
+- ✅ Dinamik ağırlık hesaplama sistemi entegre edildi
+- ✅ Gerçek zamanlı performans ölçümü
 
-### Gelecek Çalışmalar
-
-* Daha büyük veri setleri için optimizasyon
-* Merkeziyet ölçütlerinin çeşitlendirilmesi
-* Web tabanlı sürüm geliştirilmesi
+**Görselleştirme:**
+- ✅ 3D Force-Directed Graph ile interaktif görselleştirme
+- ✅ Animasyonlu algoritma gösterimi
+- ✅ Zoom, pan, rotate özellikleri
 
 ---
 
-## 9. Kaynakça
+### 6.2 Sınırlamalar
 
-* [https://github.com/mermaid-js/mermaid](https://github.com/mermaid-js/mermaid)
-* [https://www.markdownguide.org/](https://www.markdownguide.org/)
-* Graf Teorisi ve Algoritmalar – Cormen et al.
+**Performans Sınırlamaları:**
+- Optimal: ≤ 100 düğüm, ≤ 500 kenar
+- Limit: 1,000 düğüm (performans düşüşü)
+- Büyük graflarda rendering yavaşlığı
+
+**Fonksiyonel Kısıtlar:**
+- Gerçek zamanlı çoklu kullanıcı desteği yok
+- Mobil cihaz optimizasyonu yapılmadı
+- Offline çalışma desteği yok
+
+---
+
+### 6.3 Gelecek Geliştirmeler
+
+#### Kısa Vadeli (1-3 Ay)
+- Büyük graf için lazy loading
+- Graf şablonları (complete, tree, random)
+- Düğüm/kenar arama ve filtreleme
+- Export formatları (PNG, SVG, PDF)
+
+#### Orta Vadeli (3-6 Ay)
+- Yeni algoritmalar (Bellman-Ford, Floyd-Warshall, Kruskal, PageRank)
+- Graf istatistikleri dashboard'u
+- Karşılaştırmalı analiz
+- Büyük veri desteği (>10,000 düğüm)
+
+#### Uzun Vadeli (6-12 Ay)
+- Makine öğrenmesi entegrasyonu
+- Gerçek zamanlı işbirliği (WebSocket)
+- Cloud-based storage
+- VR/AR graf görselleştirme
+
+---
+
+### 6.4 Sonuç
+
+Proje, sosyal ağ analizi alanında **eğitimsel bir araç** olarak başarıyla geliştirilmiştir. Temel graf algoritmaları gerçeklenmiş, modern mimari ile ölçeklenebilir yapı oluşturulmuş ve kullanıcı dostu arayüz sunulmuştur.
+
+**Öğrenilen Dersler:**
+- Graf algoritmaları teoriden pratiğe aktarılabilir
+- Clean architecture uzun vadede kazandırır
+- Görselleştirme kullanıcı deneyimini güçlendirir
+- Performans optimizasyonu erken düşünülmelidir
+
+---
+
+## 7. Kaynakça
+
+### Akademik Kaynaklar
+* **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2009). *Introduction to Algorithms* (3rd ed.). MIT Press.
+* **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.). Addison-Wesley.
+* **Newman, M. E. J.** (2018). *Networks* (2nd ed.). Oxford University Press.
+* **Diestel, R.** (2017). *Graph Theory* (5th ed.). Springer.
+
+### Algoritma Kaynakları
+* **Moore, E. F.** (1959). "The shortest path through a maze". *Proceedings of the International Symposium on the Theory of Switching*.
+* **Dijkstra, E. W.** (1959). "A note on two problems in connexion with graphs". *Numerische Mathematik*, 1(1), 269-271.
+* **Hart, P. E., Nilsson, N. J., & Raphael, B.** (1968). "A formal basis for the heuristic determination of minimum cost paths". *IEEE Transactions on Systems Science and Cybernetics*, 4(2), 100-107.
+* **Tarjan, R.** (1972). "Depth-first search and linear graph algorithms". *SIAM Journal on Computing*, 1(2), 146-160.
+* **Welsh, D. J. A., & Powell, M. B.** (1967). "An upper bound for the chromatic number of a graph". *Computer Journal*, 10(1), 85-86.
+
+### Teknoloji Dokümantasyonu
+* **Angular Documentation**: [https://angular.dev/](https://angular.dev/)
+* **.NET Documentation**: [https://learn.microsoft.com/en-us/dotnet/](https://learn.microsoft.com/en-us/dotnet/)
+* **D3.js Documentation**: [https://d3js.org/](https://d3js.org/)
+* **Force-Graph**: [https://github.com/vasturiano/force-graph](https://github.com/vasturiano/force-graph)
+* **PostgreSQL Documentation**: [https://www.postgresql.org/docs/](https://www.postgresql.org/docs/)
+
+### Araçlar ve Kütüphaneler
+* **Mermaid**: [https://github.com/mermaid-js/mermaid](https://github.com/mermaid-js/mermaid)
+* **Markdown Guide**: [https://www.markdownguide.org/](https://www.markdownguide.org/)
+* **RxJS**: [https://rxjs.dev/](https://rxjs.dev/)
+* **Entity Framework Core**: [https://learn.microsoft.com/en-us/ef/core/](https://learn.microsoft.com/en-us/ef/core/)
+
+---
+
+## 8. Ekler
+
+### 8.1 Proje GitHub Repository
+* **Repository URL**: [https://github.com/AboubacarSow/yazlab-proje-II](https://github.com/AboubacarSow/yazlab-proje-II)
+* **Lisans**: MIT License
+* **Son Güncelleme**: 02.01.2026
+
+### 8.2 İletişim
+Proje ile ilgili sorularınız için:
+- **Emre Yasin Yıldan**: 231307058
+- **Aboubacar Sow**: 221307117
+
+---
+
+**© 2026 - Kocaeli Üniversitesi | Yazılım Geliştirme Laboratuvarı-I**
+
 
