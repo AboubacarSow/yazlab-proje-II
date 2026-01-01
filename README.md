@@ -676,36 +676,35 @@ classDiagram
 ### 4.4 API Endpoint Yapısı
 
 ```mermaid
-graph LR
-    subgraph Graphs[/api/graphs]
-        G1[POST /]
-        G2[GET /{id}]
-        G3[PUT /{id}]
-        G4[DELETE /{id}]
-        G5[POST /import]
-        G6[GET /{id}/export]
-    end
+graph TB
+    API[REST API Endpoints]
     
-    subgraph Nodes[/api/nodes]
-        N1[POST /]
-        N2[PUT /{id}]
-        N3[DELETE /{id}]
-    end
+    API --> Graphs[📊 Graphs API]
+    API --> Nodes[🔵 Nodes API]
+    API --> Edges[🔗 Edges API]
+    API --> Algorithms[⚡ Algorithms API]
     
-    subgraph Edges[/api/edges]
-        E1[POST /]
-        E2[DELETE /]
-    end
+    Graphs --> G1["POST / - Graf Oluştur"]
+    Graphs --> G2["GET /{id} - Graf Getir"]
+    Graphs --> G3["PUT /{id} - Graf Güncelle"]
+    Graphs --> G4["DELETE /{id} - Graf Sil"]
+    Graphs --> G5["POST /import - Graf İçe Aktar"]
+    Graphs --> G6["GET /{id}/export - Graf Dışa Aktar"]
     
-    subgraph Algorithms[/api/algorithms]
-        A1[POST /bfs]
-        A2[POST /dfs]
-        A3[POST /dijkstra]
-        A4[POST /astar]
-        A5[GET /components]
-        A6[GET /centrality]
-        A7[GET /coloring]
-    end
+    Nodes --> N1["POST / - Düğüm Ekle"]
+    Nodes --> N2["PUT /{id} - Düğüm Güncelle"]
+    Nodes --> N3["DELETE /{id} - Düğüm Sil"]
+    
+    Edges --> E1["POST / - Kenar Ekle"]
+    Edges --> E2["DELETE / - Kenar Sil"]
+    
+    Algorithms --> A1["POST /bfs - BFS Algoritması"]
+    Algorithms --> A2["POST /dfs - DFS Algoritması"]
+    Algorithms --> A3["POST /dijkstra - Dijkstra"]
+    Algorithms --> A4["POST /astar - A* Algoritması"]
+    Algorithms --> A5["GET /components - Bağlı Bileşenler"]
+    Algorithms --> A6["GET /centrality - Merkezilik Analizi"]
+    Algorithms --> A7["GET /coloring - Graf Renklendirme"]
 ```
 
 ---
