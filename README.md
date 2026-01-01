@@ -345,7 +345,7 @@ graph TB
     end
     
     subgraph Database[Database]
-        DB[(PostgreSQL)]
+        DB[(MSSQL)]
     end
     
     UI --> Services
@@ -849,7 +849,7 @@ sequenceDiagram
 #### Backend
 - **.NET 8.0**: Modern, performanslı backend framework
 - **Entity Framework Core**: ORM ve veritabanı yönetimi
-- **PostgreSQL**: İlişkisel veritabanı
+- **MSSQL**: İlişkisel veritabanı
 - **MediatR**: CQRS pattern implementasyonu
 - **Serilog**: Yapılandırılmış loglama
 
@@ -1359,7 +1359,7 @@ Proje, sosyal ağ analizi alanında **eğitimsel bir araç** olarak başarıyla 
 * **.NET Documentation**: [https://learn.microsoft.com/en-us/dotnet/](https://learn.microsoft.com/en-us/dotnet/)
 * **D3.js Documentation**: [https://d3js.org/](https://d3js.org/)
 * **Force-Graph**: [https://github.com/vasturiano/force-graph](https://github.com/vasturiano/force-graph)
-* **PostgreSQL Documentation**: [https://www.postgresql.org/docs/](https://www.postgresql.org/docs/)
+* **MSSQL Documentation**: [https://learn.microsoft.com/en-us/sql/sql-server/](https://learn.microsoft.com/en-us/sql/sql-server/)
 
 ### Araçlar ve Kütüphaneler
 * **Mermaid**: [https://github.com/mermaid-js/mermaid](https://github.com/mermaid-js/mermaid)
