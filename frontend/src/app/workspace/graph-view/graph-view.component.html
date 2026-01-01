@@ -1,1 +1,22 @@
-<div #container class="graph-container"></div>
+<div class="graph-wrapper">
+  <div #container class="graph-container"></div>
+
+  <div class="graph-toolbar">
+    <button *ngIf="!edgeCreationActive" class="add-edge"
+      [class.active]="edgeCreationActive"
+      (click)="toggleEdgeMode()">
+      ➕ Add Edge
+    </button>
+
+    <button
+      (click)="disableEdgeCreation()"
+      [disabled]="!edgeCreationActive">
+      ✖ Cancel
+    </button>
+  </div>
+  <button (click)="openAddNode()" class="graph-node"><i class="fa-solid fa-plus me-2"></i> Add Node
+  </button>
+
+    <button (click)="rerendergraph()"class="graph-rerender"><i class="fa-solid fa-arrows-rotate"></i></button>
+</div>
+

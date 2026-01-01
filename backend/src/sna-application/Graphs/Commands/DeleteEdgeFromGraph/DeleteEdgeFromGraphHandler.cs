@@ -2,7 +2,7 @@
 namespace sna_application.Graphs.Commands.DeleteEdgeFromGraph;
 
 
-public record DeleteEdgeFromGraphCommand(Guid GraphId, int NodeAId,int NodeBId):IRequest<bool>;
+public record DeleteEdgeFromGraphCommand(Guid GraphId, int NodeAId,int NodeBId):IRequest<GraphDto>;
 
 internal class DeleteEdgeFromGraphValidator: AbstractValidator<DeleteEdgeFromGraphCommand>
 {
@@ -17,14 +17,23 @@ internal class DeleteEdgeFromGraphValidator: AbstractValidator<DeleteEdgeFromGra
 }
 
 internal class DeleteEdgeFromGraphHandler(IGraphRepository graphRepository,
-IUnitOfWork unitOfWork) : IRequestHandler<DeleteEdgeFromGraphCommand, bool>
+IUnitOfWork unitOfWork) : IRequestHandler<DeleteEdgeFromGraphCommand, GraphDto>
 {
-    public async Task<bool> Handle(DeleteEdgeFromGraphCommand request, CancellationToken cancellationToken)
+    public async Task<GraphDto> Handle(DeleteEdgeFromGraphCommand request, CancellationToken cancellationToken)
     {
          var graph = await graphRepository.GetGraphByIdAsync(request.GraphId,true) ??
         throw new NotFoundException($"Graph with Id: {request.GraphId} not found");
-        var edge = graph.GetEdgeFromGraph(request.NodeAId, request.NodeBId);
+        var edge = graph.GetEdgeFromGraph(request.NodeAId, request.NodeBId)?? 
+        throw new NotFoundException($"Edge between {request.NodeAId} and {request.NodeBId} not found");
         graph.DisConnectNodes(edge);
-        return await unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        var entity = await graphRepository.GetGraphByIdAsync(request.GraphId,false) ??
+        throw new NotFoundException($"Graph with Id:{request.GraphId} not found");
+        var graphDto = new GraphDto(entity.Id, entity.Title, entity.Description!, entity.Order, entity.Size)
+        {
+            Nodes= entity.Nodes.ToList().Adapt<List<NodeDto>>(),
+            Edges = entity.Edges.ToList().Adapt<List<EdgeDto>>()
+        };
+        return graphDto;
     }
 }

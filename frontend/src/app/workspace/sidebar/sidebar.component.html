@@ -42,40 +42,7 @@
     </div>
   </div>
 
-  <!-- Data Operation Section -->
-  <div class="sidebar-section">
-    <div class="section-title">Data Operations</div>
-
-    <!-- Node -->
-    <button class="section-header sub-header" (click)="toggleSection('node')">
-      <span>Node</span>
-      <span class="arrow">
-         <i class="fa-solid"
-         [class.fa-chevron-right]="!isNodeExpanded"
-         [class.fa-chevron-down]="isNodeExpanded">
-          </i>
-      </span>
-    </button>
-    <div class="section-content" *ngIf="isNodeExpanded">
-      <button class="action-btn" (click)="onAction('node-add')">Add Node</button>
-    </div>
-
-    <!-- Edge -->
-    <button class="section-header sub-header" (click)="toggleSection('edge')">
-      <span>Edge</span>
-      <span class="arrow">
-         <i class="fa-solid"
-            [class.fa-chevron-right]="!isEdgeExpanded"
-            [class.fa-chevron-down]="isEdgeExpanded">
-          </i>
-      </span>
-    </button>
-    <div class="section-content" *ngIf="isEdgeExpanded">
-      <button class="action-btn" (click)="onAction('edge-add')">Ekle</button>
-      <button class="action-btn" (click)="onAction('edge-delete')">Sil</button>
-    </div>
-  </div>
-
+  <hr/>
   <!-- Algorithms Section -->
   <div class="sidebar-section">
     <div class="section-title">Algorithms</div>

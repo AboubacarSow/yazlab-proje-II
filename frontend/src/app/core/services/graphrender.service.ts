@@ -2,9 +2,11 @@ import { inject, Injectable } from '@angular/core';
 import { GraphLink, GraphNode } from '../../models/graph.model';
 import * as d3 from 'd3';
 import { Dialog } from '@angular/cdk/dialog';
-import { AddNodeComponent } from '../../workspace/modals/nodes/add-node/add-node.component';
+import { AddNodeComponent } from '../../workspace/modals/add-node/add-node.component';
 import { GraphStateService } from './graph.service';
 import { take } from 'rxjs';
+import { EdgesService } from './edges.service';
+import { ToastService } from '../utils/toast-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -65,7 +67,15 @@ export class GraphrenderService {
   //Modal select node for edit
   private dialog = inject(Dialog)
 
-  constructor(private graphStateService: GraphStateService) { }
+  //Edge operations
+  private edgeMode = false;
+  private edgeSourceNodeId: number | null = null;
+  edgeDeleted?: (sourceId: number, targetId: number) => void;
+  edgeCreated? :(sourceId: number, targetId:number) => void;
+
+  constructor(private graphStateService: GraphStateService,
+              private toast: ToastService
+  ) { }
 
   init(container: HTMLElement): void {
     this.width = container.clientWidth;
@@ -110,7 +120,34 @@ export class GraphrenderService {
           .append('line')
           .attr('class', 'link')
           .attr('stroke', '#484b4bff')
-          .attr('stroke-width', 2),
+          .attr('stroke-width', 2)
+          .on('mouseenter', (event) => {
+            this.tooltip
+              .style('opacity', 1)
+              .html('Hold <b>Alt</b> + Click to delete edge');
+          })
+          .on('mousemove', (event) => {
+            this.tooltip
+              .style('left', event.offsetX + 12 + 'px')
+              .style('top', event.offsetY + 12 + 'px');
+
+            // Optional visual cue when Alt is pressed
+            d3.select(event.currentTarget)
+              .attr('stroke', event.altKey ? '#e53935' : '#484b4bff')
+              .attr('stroke-width', event.altKey ? 4 : 2);
+          })
+          .on('mouseleave', (event) => {
+                this.tooltip.style('opacity', 0);
+                d3.select(event.currentTarget)
+                  .attr('stroke', '#484b4bff')
+                  .attr('stroke-width', 2);
+          })
+          .on('click', (event, d) => {
+            if (!event.altKey) return;
+
+            event.stopPropagation();
+            this.emitDeleteEdge(d);
+          }),
         update => update,
         exit => exit.remove()
       );
@@ -120,7 +157,6 @@ export class GraphrenderService {
             .selectAll<SVGCircleElement, GraphNode>('circle')
             .data(nodes, d => d.id)
             .join(
-              // ENTER
               enter => enter
                 .append('circle')
                 .attr('r', this.defaultNodeRadius)
@@ -133,7 +169,7 @@ export class GraphrenderService {
                     .transition()
                     .duration(200)
                     .attr('r', 32)
-                    .attr('fill', '#a14e16ff');
+                    .attr('fill', '#74190dff');
 
                   this.highlightLinks(d.id);
                   this.tooltip
@@ -168,6 +204,11 @@ export class GraphrenderService {
                   this.resetStyles();
                 })
                 .on('click', (_, d) => {
+                  if (this.edgeMode) {
+                    this.handleEdgeClick(d);
+                    return;
+                  }
+
                   if (!this.selectionEnabled) {
                     const id = Number(d.id);
                     this.graphStateService.getNodeById$(id)
@@ -268,7 +309,7 @@ export class GraphrenderService {
 
   private enableZoom(): void {
     const zoom = d3.zoom<SVGSVGElement, unknown>()
-      .scaleExtent([0.1, 4]) // min / max zoom
+      .scaleExtent([0.1, 5]) // min / max zoom
       .on('zoom', (event) => {
         this.containerG.attr('transform', event.transform);
       });
@@ -605,7 +646,71 @@ export class GraphrenderService {
           const b = nodeToCommunity[(d.target as GraphNode).id];
           return a === b ? 2.5 : 1;
         });
+  }
+
+  //Edge Operations
+
+  enterEdgeMode() {
+    this.edgeMode = true;
+    this.containerG.classed('edge-mode', true);
+  }
+
+  exitEdgeMode() {
+    this.edgeMode = false;
+    console.log(`value of edgeMode in existMode:${this.edgeMode}`)
+    this.resetStyles();
+    this.containerG.classed('edge-mode', false);
+  }
+
+  private handleEdgeClick(node: GraphNode) {
+    if (this.edgeSourceNodeId === null) {
+      // First click → source
+      this.edgeSourceNodeId = Number(node.id);
+      this.highlightNodeSource(node.id);
+      return;
     }
+
+    // Second click → target
+    const sourceId = this.edgeSourceNodeId;
+    const targetId = Number(node.id);
+    this.highlightNode(node.id);
+
+    if (sourceId === targetId) {
+      console.log(`No serf-loop allowed`)
+      this.toast.error(`Self-loop detected`)
+      return;
+    }
+
+    this.edgeCreated?.(sourceId,targetId);
+    this.exitEdgeMode();
+  }
+
+  private highlightNodeSource(nodeId: string){
+      this.nodes
+      .filter(d => d.id === nodeId)
+      .interrupt() // IMPORTANT
+      .raise()
+      .transition()
+      .duration(300)
+      .attr('fill', '#e5c140ff')
+      .attr('r', 38);
+  }
+
+
+  private emitDeleteEdge(edge: GraphLink) {
+    const sourceId =
+      typeof edge.source === 'object'
+        ? Number(edge.source.id)
+        : Number(edge.source);
+
+    const targetId =
+      typeof edge.target === 'object'
+        ? Number(edge.target.id)
+        : Number(edge.target);
+
+    this.edgeDeleted?.(sourceId, targetId);
+  }
+
 
 }
 

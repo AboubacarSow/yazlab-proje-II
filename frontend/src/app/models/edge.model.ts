@@ -1,3 +1,5 @@
+import { Graph, Guid } from "./graph.model";
+
 export interface Edge {
   weight: number;
   nodeAId: number;
@@ -8,7 +10,7 @@ export interface EdgeImportDto {
   nodeTagB: string;
 }
 export interface AddEdgeDto {
-  graphId: import('./graph.model').Guid;
+  graphId: Guid;
   nodeAId: number;
   nodeBId: number;
 }
@@ -23,3 +25,11 @@ export interface EdgeSnapshot {
   nodeBId: number;
   weight?: number;
 }
+export interface AddEdgeResponse{
+  isSuccess: boolean,
+  edge:Edge
+}
+export interface DeleteEdgeResponse{
+  graph:Graph
+}
+
