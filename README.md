@@ -229,139 +229,544 @@ D -->|Hayır| E[Devam]
 
 ---
 
-## 4. Sistem Tasarımı
+## 4. Sistem Tasarımı ve Mimari
 
-### 4.1 Sınıf Diyagramı
+### 4.1 Genel Mimari Yapı
 
-  +int id
-  +double aktiflik
-  +double etkilesim
-  +Node from
-  +Node to
-  +double weight
-  +List<Node> nodes
-  +List<Edge> edges
-  +run()
-  +colorGraph()
+Proje, modern web uygulaması mimarisine uygun olarak **Backend** ve **Frontend** olmak üzere iki ana katmandan oluşmaktadır.
+
+```mermaid
+graph TB
+    subgraph Frontend[Frontend - Angular]
+        UI[User Interface Components]
+        Services[Services Layer]
+        Models[Models & DTOs]
+    end
+    
+    subgraph Backend[Backend - .NET Core]
+        API[API Layer]
+        Application[Application Layer]
+        Domain[Domain Layer]
+        Infrastructure[Infrastructure Layer]
+    end
+    
+    subgraph Database[Database]
+        DB[(PostgreSQL)]
+    end
+    
+    UI --> Services
+    Services --> Models
+    Services -->|HTTP/REST| API
+    API --> Application
+    Application --> Domain
+    Application --> Infrastructure
+    Infrastructure --> DB
+```
+
+---
+
+### 4.2 Backend Sınıf Yapısı (Domain-Driven Design)
+
+Backend katmanı, **Domain-Driven Design (DDD)** prensipleri ile tasarlanmıştır.
+
+#### 4.2.1 Domain Layer - Varlıklar (Entities)
+
 ```mermaid
 classDiagram
-%% --- Entities ---
-class Node {
-  +int Id
-  +string Name
-  +double Aktiflik
-  +double Etkilesim
-  +int Baglanti
-  +List~Edge~ Edges
-}
-class Edge {
-  +int Id
-  +int SourceNodeId
-  +int TargetNodeId
-  +double Weight
-  +Node SourceNode
-  +Node TargetNode
-}
-class Graph {
-  +int Id
-  +string Name
-  +List~Node~ Nodes
-  +List~Edge~ Edges
-}
-
-%% --- DTOs ---
-class NodeCreateDto {
-  +string Name
-  +double Aktiflik
-  +double Etkilesim
-  +int Baglanti
-}
-class NodeDto {
-  +int Id
-  +string Name
-  +double Aktiflik
-  +double Etkilesim
-  +int Baglanti
-}
-class EdgeCreateDto {
-  +int SourceNodeId
-  +int TargetNodeId
-}
-class EdgeDto {
-  +int Id
-  +int SourceNodeId
-  +int TargetNodeId
-  +double Weight
-}
-
-%% --- Repositories ---
-class INodeRepository {
-  +Task~List~<Node>> GetAllAsync()
-  +Task<Node> GetByIdAsync(int id)
-  +Task AddAsync(Node node)
-  +Task UpdateAsync(Node node)
-  +Task DeleteAsync(int id)
-}
-class IEdgeRepository
-class IGraphRepository
-
-%% --- Services ---
-class INodeService {
-  +Task~List~<NodeDto>> GetAllAsync()
-  +Task<NodeDto> GetByIdAsync(int id)
-  +Task<NodeDto> AddAsync(NodeCreateDto dto)
-  +Task UpdateAsync(int id, NodeCreateDto dto)
-  +Task DeleteAsync(int id)
-}
-class IEdgeService
-class IGraphService
-
-%% --- Algorithms ---
-class IGraphAlgorithms {
-  +List~int~ BFS(int startNodeId)
-  +List~int~ DFS(int startNodeId)
-  +List~int~ Dijkstra(int sourceId, int targetId)
-  +List~int~ AStar(int sourceId, int targetId)
-  +List~List~<int>> ConnectedComponents()
-  +List<CentralityResult> DegreeCentralityTop5()
-  +List<ColoringResult> WelshPowell()
-}
-class CentralityResult {
-  +int NodeId
-  +int Degree
-}
-class ColoringResult {
-  +int NodeId
-  +int Color
-}
-
-%% --- Controllers ---
-class NodesController
-class EdgesController
-class AlgorithmsController
-class ImportExportController
-
-%% --- Relationships ---
-Graph "1" -- "many" Node
-Graph "1" -- "many" Edge
-Node "1" -- "many" Edge : OutEdges
-Edge "1" -- "1" Node : SourceNode
-Edge "1" -- "1" Node : TargetNode
-
-NodesController ..> INodeService
-EdgesController ..> IEdgeService
-AlgorithmsController ..> IGraphAlgorithms
-ImportExportController ..> IGraphService
-
-INodeService ..> INodeRepository
-IEdgeService ..> IEdgeRepository
-IGraphService ..> IGraphRepository
-
-NodeDto <.. Node
-EdgeDto <.. Edge
-NodeCreateDto <.. Node
-EdgeCreateDto <.. Edge
+    class BaseEntity {
+        <<abstract>>
+        +Guid Id
+        +DateTime CreatedAt
+        +DateTime? UpdatedAt
+    }
+    
+    class Node {
+        +int Id
+        +Guid GraphId
+        +string Tag
+        +double Activity
+        +double Interaction
+        +Graph Graph
+        +ICollection~Edge~ OutgoingEdges
+        +ICollection~Edge~ IncomingEdges
+    }
+    
+    class Edge {
+        +int NodeAId
+        +int NodeBId
+        +double Weight
+        +Node NodeA
+        +Node NodeB
+    }
+    
+    class Graph {
+        +Guid Id
+        +string Title
+        +string Description
+        +ICollection~Node~ Nodes
+        +ICollection~Edge~ Edges
+        +int NodeCount()
+        +int EdgeCount()
+    }
+    
+    class Message {
+        +Guid Id
+        +string SenderName
+        +string ReceiverName
+        +string Content
+        +DateTime SentAt
+    }
+    
+    BaseEntity <|-- Graph
+    Graph "1" *-- "many" Node : contains
+    Graph "1" *-- "many" Edge : contains
+    Node "1" -- "many" Edge : source
+    Node "1" -- "many" Edge : target
 ```
+
+**Açıklama:**
+- **BaseEntity**: Tüm entity'lerin ortak özelliklerini içerir (Id, CreatedAt, UpdatedAt)
+- **Graph**: Ana graf yapısı, düğümleri ve kenarları barındırır
+- **Node**: Graf içindeki düğümleri temsil eder (kullanıcılar)
+- **Edge**: Düğümler arası bağlantıları temsil eder
+- **Message**: Kullanıcılar arası mesajlaşma bilgisi
+
+---
+
+#### 4.2.2 Application Layer - CQRS Pattern
+
+```mermaid
+classDiagram
+    class ICommand {
+        <<interface>>
+    }
+    
+    class IQuery~TResponse~ {
+        <<interface>>
+    }
+    
+    class CreateGraphCommand {
+        +string Title
+        +string Description
+    }
+    
+    class AddNodeCommand {
+        +Guid GraphId
+        +string Tag
+        +double Activity
+        +double Interaction
+    }
+    
+    class AddEdgeCommand {
+        +Guid GraphId
+        +int NodeAId
+        +int NodeBId
+    }
+    
+    class GetGraphByIdQuery {
+        +Guid GraphId
+    }
+    
+    class RunBFSQuery {
+        +Guid GraphId
+        +int StartNodeId
+    }
+    
+    class RunDijkstraQuery {
+        +Guid GraphId
+        +int SourceId
+        +int TargetId
+    }
+    
+    ICommand <|.. CreateGraphCommand
+    ICommand <|.. AddNodeCommand
+    ICommand <|.. AddEdgeCommand
+    IQuery <|.. GetGraphByIdQuery
+    IQuery <|.. RunBFSQuery
+    IQuery <|.. RunDijkstraQuery
+```
+
+**Açıklama:**
+- **Commands**: Veri değiştirme işlemleri (Create, Update, Delete)
+- **Queries**: Veri okuma işlemleri (Get, Search, Algorithm Results)
+- **CQRS Pattern**: Komut ve sorgu sorumluluklarının ayrılması
+
+---
+
+#### 4.2.3 Domain Services - Algoritma Servisleri
+
+```mermaid
+classDiagram
+    class AlgorithmService {
+        +BFSResult RunBFS(Guid graphId, int startNodeId)
+        +DFSResult RunDFS(Guid graphId, int startNodeId)
+        +PathResult RunDijkstra(Guid graphId, int source, int target)
+        +PathResult RunAStar(Guid graphId, int source, int target)
+        +ComponentsResult FindConnectedComponents(Guid graphId)
+        +CentralityResult CalculateDegreeCentrality(Guid graphId)
+        +ColoringResult RunWelshPowell(Guid graphId)
+        -double CalculateEdgeWeight(Node a, Node b)
+        -double CalculateHeuristic(Node current, Node target)
+    }
+    
+    class BFSResult {
+        +List~int~ VisitOrder
+        +Dictionary~int,int~ ParentMap
+        +double ExecutionTime
+    }
+    
+    class PathResult {
+        +List~int~ Path
+        +List~EdgeSnapshot~ EdgesTraversed
+        +double TotalCost
+        +double ExecutionTime
+    }
+    
+    class ComponentsResult {
+        +List~List~int~~ Components
+        +int ComponentCount
+        +double ExecutionTime
+    }
+    
+    class CentralityResult {
+        +Dictionary~int,int~ NodeDegrees
+        +int MaxDegree
+        +double ExecutionTime
+    }
+    
+    class ColoringResult {
+        +Dictionary~int,int~ NodeColors
+        +int ChromaticNumber
+        +double ExecutionTime
+    }
+    
+    AlgorithmService --> BFSResult
+    AlgorithmService --> PathResult
+    AlgorithmService --> ComponentsResult
+    AlgorithmService --> CentralityResult
+    AlgorithmService --> ColoringResult
+```
+
+**Açıklama:**
+- **AlgorithmService**: Tüm graf algoritmalarının iş mantığını içerir
+- **Result Classes**: Her algoritmanın sonucunu yapılandırılmış şekilde döner
+- **Dynamic Weight Calculation**: Düğüm özellikleri kullanılarak kenar ağırlıkları dinamik hesaplanır
+
+---
+
+### 4.3 Frontend Sınıf Yapısı (Angular)
+
+#### 4.3.1 Angular Modül Yapısı
+
+```mermaid
+graph TB
+    subgraph Core[Core Module]
+        Services[Services]
+        Utils[Utils & Helpers]
+        Validators[Validators]
+    end
+    
+    subgraph Features[Feature Modules]
+        Workspace[Workspace Module]
+        UserInterface[User Interface Module]
+        Landing[Landing Module]
+        Auth[Authentication Module]
+    end
+    
+    subgraph Shared[Shared Resources]
+        Models[Models & Interfaces]
+        Pipes[Pipes]
+        Components[Shared Components]
+    end
+    
+    App[App Module] --> Core
+    App --> Features
+    App --> Shared
+    
+    Workspace --> GraphView[Graph View]
+    Workspace --> DataView[Data View]
+    Workspace --> Sidebar[Sidebar]
+    Workspace --> Header[Header]
+```
+
+---
+
+#### 4.3.2 Frontend Services Katmanı
+
+```mermaid
+classDiagram
+    class GraphStateService {
+        -BehaviorSubject~Graph~ currentGraph$
+        +getCurrentGraph() Graph
+        +setCurrentGraph(graph: Graph)
+        +createGraph(title: string)
+        +loadGraph(graphId: Guid)
+        +exportGraph()
+        +importGraph(file: File)
+    }
+    
+    class NodesService {
+        -HttpClient http
+        +addNode(tag, activity, interaction)
+        +editNode(nodeId, tag, activity, interaction)
+        +deleteNode(nodeId)
+        +getNodes(graphId)
+    }
+    
+    class EdgesService {
+        -HttpClient http
+        +addEdge(sourceId, targetId)
+        +deleteEdge(sourceId, targetId)
+        +getEdges(graphId)
+    }
+    
+    class AlgorithmsService {
+        -HttpClient http
+        +runBFS(graphId, startNodeId)
+        +runDFS(graphId, startNodeId)
+        +runDijkstra(graphId, sourceId, targetId)
+        +runAStar(graphId, sourceId, targetId)
+        +getConnectedComponents(graphId)
+        +runDegreeCentrality(graphId)
+        +runWelshPowellColoring(graphId)
+    }
+    
+    class GraphRenderService {
+        -D3 simulation
+        -ForceGraph3D renderer
+        +init(container: HTMLElement)
+        +setData(nodes, links)
+        +renderTraversal(result)
+        +renderShortestPath(path)
+        +renderColoring(colors)
+        +enableNodeSelection(options)
+        +enterEdgeMode()
+    }
+    
+    GraphStateService --> NodesService
+    GraphStateService --> EdgesService
+    GraphRenderService --> GraphStateService
+    AlgorithmsService --> GraphRenderService
+```
+
+**Açıklama:**
+- **GraphStateService**: Graf durumunu yönetir (State Management)
+- **NodesService/EdgesService**: CRUD operasyonları için HTTP istekleri
+- **AlgorithmsService**: Algoritma API çağrıları
+- **GraphRenderService**: D3.js ve Force Graph ile görselleştirme
+
+---
+
+#### 4.3.3 Frontend Components Yapısı
+
+```mermaid
+classDiagram
+    class WorkspaceComponent {
+        +currentView: string
+        +switchView(view: string)
+    }
+    
+    class GraphViewComponent {
+        -renderer: GraphRenderService
+        -algorithmState: AlgorithmsStateService
+        +ngAfterViewInit()
+        +onNodesSelected(nodeIds)
+        +enableEdgeCreation()
+        +createEdge(source, target)
+    }
+    
+    class NodeAddComponent {
+        +form: FormGroup
+        +create()
+        +cancel()
+    }
+    
+    class NodeEditComponent {
+        +data: NodeEditData
+        +form: FormGroup
+        +save()
+    }
+    
+    class NodeListComponent {
+        +nodes: Node[]
+        +currentGraph: Graph
+        +startEdit(node)
+        +deleteNode(nodeId)
+    }
+    
+    class EdgeListComponent {
+        +edges: Edge[]
+        +getAvailableNodesForA()
+        +getAvailableNodesForB()
+        +createEdge()
+        +deleteEdge(sourceId, targetId)
+    }
+    
+    class SidebarComponent {
+        +algorithms: AlgorithmDefinition[]
+        +selectAlgorithm(algo)
+        +runBFS()
+        +runDijkstra()
+        +runColoring()
+    }
+    
+    WorkspaceComponent *-- GraphViewComponent
+    WorkspaceComponent *-- SidebarComponent
+    GraphViewComponent ..> NodeAddComponent
+    GraphViewComponent ..> NodeEditComponent
+    SidebarComponent --> GraphViewComponent
+```
+
+**Açıklama:**
+- **Standalone Components**: Angular 15+ standalone component mimarisi
+- **Dialog System**: CDK Dialog ile modal yönetimi
+- **Reactive Forms**: Form validasyonu ve veri bağlama
+- **RxJS Observables**: Asenkron veri akışı yönetimi
+
+---
+
+#### 4.3.4 Models ve Interfaces
+
+```mermaid
+classDiagram
+    class Graph {
+        +Guid id
+        +string title
+        +string description
+        +Node[] nodes
+        +Edge[] edges
+    }
+    
+    class Node {
+        +int id
+        +Guid graphId
+        +string tag
+        +double activity
+        +double interaction
+    }
+    
+    class Edge {
+        +int nodeAId
+        +int nodeBId
+        +double weight
+    }
+    
+    class AlgorithmDefinition {
+        +string key
+        +string label
+        +AlgorithmCategory category
+        +boolean requiresStartNode
+        +boolean requiresEndNode
+        +boolean animated
+    }
+    
+    class AlgorithmResult {
+        +number[] visitOrder
+        +EdgeSnapshot[] edgesTraversed
+        +number executionTime
+    }
+    
+    Graph "1" *-- "many" Node
+    Graph "1" *-- "many" Edge
+    AlgorithmDefinition --> AlgorithmResult
+```
+
+---
+
+### 4.4 API Endpoint Yapısı
+
+```mermaid
+graph LR
+    subgraph Graphs[/api/graphs]
+        G1[POST /]
+        G2[GET /{id}]
+        G3[PUT /{id}]
+        G4[DELETE /{id}]
+        G5[POST /import]
+        G6[GET /{id}/export]
+    end
+    
+    subgraph Nodes[/api/nodes]
+        N1[POST /]
+        N2[PUT /{id}]
+        N3[DELETE /{id}]
+    end
+    
+    subgraph Edges[/api/edges]
+        E1[POST /]
+        E2[DELETE /]
+    end
+    
+    subgraph Algorithms[/api/algorithms]
+        A1[POST /bfs]
+        A2[POST /dfs]
+        A3[POST /dijkstra]
+        A4[POST /astar]
+        A5[GET /components]
+        A6[GET /centrality]
+        A7[GET /coloring]
+    end
+```
+
+---
+
+### 4.5 Veri Akışı Diyagramı
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant UI as Angular UI
+    participant Service as Service Layer
+    participant API as REST API
+    participant App as Application Layer
+    participant Domain as Domain Service
+    participant DB as Database
+    
+    User->>UI: Graf Oluştur
+    UI->>Service: createGraph(title)
+    Service->>API: POST /api/graphs
+    API->>App: CreateGraphCommand
+    App->>Domain: Create Graph Entity
+    Domain->>DB: INSERT
+    DB-->>Domain: Graph Created
+    Domain-->>App: Graph Response
+    App-->>API: GraphDto
+    API-->>Service: HTTP 200
+    Service-->>UI: Observable<Graph>
+    UI-->>User: Graf Oluşturuldu
+    
+    User->>UI: Algoritma Çalıştır (BFS)
+    UI->>Service: runBFS(graphId, startNode)
+    Service->>API: POST /api/algorithms/bfs
+    API->>App: RunBFSQuery
+    App->>Domain: AlgorithmService.RunBFS()
+    Domain->>Domain: BFS Execution
+    Domain-->>App: BFSResult
+    App-->>API: BFSResultDto
+    API-->>Service: HTTP 200
+    Service-->>UI: Observable<Result>
+    UI->>UI: Render Visualization
+    UI-->>User: Sonuç Gösterildi
+```
+
+---
+
+### 4.6 Teknoloji Stack'i
+
+#### Backend
+- **.NET 8.0**: Modern, performanslı backend framework
+- **Entity Framework Core**: ORM ve veritabanı yönetimi
+- **PostgreSQL**: İlişkisel veritabanı
+- **MediatR**: CQRS pattern implementasyonu
+- **Serilog**: Yapılandırılmış loglama
+
+#### Frontend
+- **Angular 19**: Modern web framework
+- **TypeScript**: Tip güvenli programlama
+- **RxJS**: Reactive programming
+- **D3.js**: Veri görselleştirme
+- **Force-Graph**: 3D graf görselleştirme
+- **Tailwind CSS**: Utility-first CSS framework
 
 ---
 
