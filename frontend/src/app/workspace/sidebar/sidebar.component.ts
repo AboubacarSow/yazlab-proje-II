@@ -43,10 +43,6 @@ export class SidebarComponent implements OnInit{
       key: string;
       params?: any;
     }>();
-  // Components dropdown state
-  showComponentsDropdown = false;
-  componentsDropdownPosition = { top: '0px', left: '0px' };
-  private componentsHideTimeout: any;
 
   //End of the section
 
