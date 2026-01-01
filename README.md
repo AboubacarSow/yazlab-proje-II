@@ -905,14 +905,6 @@ Workspace, uygulamanın ana çalışma alanıdır ve üç temel bölümden oluş
 - Görünüm modları (Graph View / Data View)
 - Düğüm ve kenar ekleme araçları
 
-Ekran Görüntüsü (yer tutucu):
-![Workspace Genel Görünüm](screenshots/workspace-overview.png)
-
-Ek yer tutucular:
-- Graph View: ![Graph View](screenshots/Workspace-Layout)
-- Data View (düğüm/kenar listeleri): ![Data View](screenshots/Data-Layout)
-- Algoritma sonuçları animasyonu: ![Algoritma Çalışma Sonucu](screenshots/algorithm-run.png)
-
 ---
 
 ### 5.2 Temel İşlevler ve Kullanım Senaryoları
