@@ -2,9 +2,9 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgIf } from '@angular/common';
-import { NodesService } from '../../../../core/services/nodes.service';
-import { ToastService } from '../../../../core/utils/toast-service.service';
-import { Node } from '../../../../models/node.model';
+import { NodesService } from '../../../core/services/nodes.service';
+import { ToastService } from '../../../core/utils/toast-service.service';
+import { Node } from '../../../models/node.model';
 
 @Component({
   selector: 'app-add-node',

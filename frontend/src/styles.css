@@ -148,6 +148,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .dialog-lg { width: 680px; }
 
 
+line.link {
+  cursor: pointer;
+}
+
+line.link:hover {
+  stroke-opacity: 0.9;
+}
+
 @keyframes fadeInScale {
   from {
     opacity: 0;

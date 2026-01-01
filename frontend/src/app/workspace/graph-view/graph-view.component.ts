@@ -1,5 +1,6 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { AlgorithmResultAdapterService } from './../../core/services/algorithm-result-adapter.service';
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { GraphrenderService } from '../../core/services/graphrender.service';
@@ -9,6 +10,8 @@ import { AlgorithmDefinition } from '../../core/utils/algorithm-definition';
 import { AlgorithmsService } from '../../services/algorithms.service';
 import { ToastService } from '../../core/utils/toast-service.service';
 import { CommunityLegendItem } from '../../core/utils/algorithm-result';
+import { EdgesService } from '../../core/services/edges.service';
+import { AddNodeComponent } from '../modals/add-node/add-node.component';
 
 @Component({
   selector: 'app-graph-view',
@@ -19,22 +22,32 @@ import { CommunityLegendItem } from '../../core/utils/algorithm-result';
 export class GraphViewComponent implements AfterViewInit, OnDestroy{
 
 
+
   @ViewChild('container', { static: true })
   containerRef!: ElementRef<HTMLDivElement>;
 
   currentAlgorithm? : AlgorithmDefinition
   communityLegends?: CommunityLegendItem[]
 
+  //Edge operations
+  edgeCreationActive:boolean = false;
+  private edgeSourceNodeId: string | null = null;
+
   private destroy$ = new Subject<void>();
+  //dialog panel
+  private dialog = inject(Dialog);
 
   constructor(private graphStateService: GraphStateService,
               private renderer : GraphrenderService,
               private algorithmState: AlgorithmsStateService,
               private algorithmService: AlgorithmsService,
               private adapter : AlgorithmResultAdapterService,
-              private toast : ToastService){}
+              private toast : ToastService,
+            private edgeService: EdgesService){}
 
-
+  rerendergraph() {
+    window.location.reload()
+  }
   ngOnInit() {
     this.algorithmState.selectedAlgorithm$
       .pipe(takeUntil(this.destroy$))
@@ -118,6 +131,15 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
   ngAfterViewInit(): void {
     this.renderer.init(this.containerRef.nativeElement);
 
+    // Delete Edge
+    this.renderer.edgeDeleted=(soureId, targetId)=>{
+      this.deleteEdge(soureId,targetId)
+    }
+
+    //Create Edge
+    this.renderer.edgeCreated = (soureId, targetId)=>{
+      this.createEdge(soureId,targetId)
+    }
     combineLatest([
       this.graphStateService.graphNodes$,
       this.graphStateService.graphLinks$
@@ -232,5 +254,58 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
     }
   }
 
+  //Edge operations
+
+  toggleEdgeMode() {
+    this.edgeCreationActive
+      ? this.disableEdgeCreation()
+      : this.enableEdgeCreation();
+  }
+
+  enableEdgeCreation() {
+    this.edgeCreationActive = true;
+    this.edgeSourceNodeId = null;
+    this.renderer.enterEdgeMode();
+  }
+
+  disableEdgeCreation() {
+    this.edgeCreationActive = false;
+    this.edgeSourceNodeId = null;
+    console.log(`${this.edgeSourceNodeId}`)
+    this.renderer.exitEdgeMode();
+  }
+
+  private createEdge(sourceId:number, target:number) : void{
+    this.edgeService.addEdge(sourceId,target).subscribe({
+      next:res=>{
+          console.log(`Edge added between :${res.nodeAId} and ${res.nodeBId} `)
+          this.edgeCreationActive=false;
+          this.toast.info(`Edge added between :${res.nodeAId} and ${res.nodeBId}`)
+      },
+      error: err=>{
+          console.error(`Failed to add edge :${err}`)
+        }
+      })
+  }
+  private deleteEdge(sourceId: number, target:number):void{
+    this.edgeService.deleteEdge(sourceId,target).subscribe({
+      next:res=>{
+          console.log(`Edge delete successfully `)
+          this.toast.info(`Edge delete successfully`)
+      },
+      error: err=>{
+          console.error(`Failed to delete edge :${err}`)
+        }
+      })
+  }
+
+  //Node Operation
+  openAddNode(){
+      this.dialog.open(AddNodeComponent,
+                { disableClose: true,
+                  data:{mode:'add'},
+                  panelClass:'add-node-panel'
+                } )
+  }
 
 }

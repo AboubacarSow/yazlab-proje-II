@@ -1,5 +1,5 @@
 import { GraphStateService } from './../../core/services/graph.service';
-import { Component, Input, OnInit, Output, inject, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, inject, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { map, Observable, take, filter, switchMap } from 'rxjs';
@@ -9,12 +9,11 @@ import { GraphsService } from '../../services/graphs.service';
 import { ToastService } from '../../core/utils/toast-service.service';
 import { EditGraphComponent } from '../modals/graphs/edit-graph/edit-graph.component';
 import { GraphSummaryComponent } from '../modals/graphs/graph-summary/graph-summary.component';
-import { AlgorithmCategory, AlgorithmDefinition, AlgorithmResultSummary, ALGORITHMS } from '../../core/utils/algorithm-definition';
+import { AlgorithmCategory, AlgorithmDefinition, ALGORITHMS } from '../../core/utils/algorithm-definition';
 import { AlgorithmsStateService } from '../../core/services/algorithms-state.service';
 import { GraphrenderService } from '../../core/services/graphrender.service';
 import { AlgorithmsService } from '../../services/algorithms.service';
 import { buildComponentColorMap } from '../../core/utils/mapperHelper';
-import { AddNodeComponent } from '../modals/nodes/add-node/add-node.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -26,9 +25,6 @@ import { AddNodeComponent } from '../modals/nodes/add-node/add-node.component';
 export class SidebarComponent implements OnInit{
 
 
-  // Expandable sections state
-  isNodeExpanded = false;
-  isEdgeExpanded = false;
 
   // Graph dropdown state
   showGraphDropdown = false;
@@ -70,18 +66,6 @@ export class SidebarComponent implements OnInit{
   }
 
 
-
-  toggleSection(section: string) {
-    switch(section) {
-      case 'node':
-        this.isNodeExpanded = !this.isNodeExpanded;
-        break;
-      case 'edge':
-        this.isEdgeExpanded = !this.isEdgeExpanded;
-        break;
-
-    }
-  }
 
 
 
@@ -296,18 +280,4 @@ export class SidebarComponent implements OnInit{
           });
   }
   //End of the section
-
-
-  // Node's Action
-  onAction(action: string) {
-    switch (action) {
-      case 'node-add':{
-        this.dialog.open(AddNodeComponent,
-            { disableClose: true,
-              data:{mode:'add'},
-              panelClass:'add-node-panel'
-            } )
-      }
-    }
-  }
 }
