@@ -2,11 +2,20 @@
   <!-- Graph Tag Section with Side Dropdown -->
   <div class="sidebar-section">
     <button
-      class="section-header graph-tag-btn"
+      class="graph-tag-btn"
       (mouseenter)="showDropdown($event)"
       (mouseleave)="hideDropdown()">
-      <span>Graph Tag</span>
-      <span class="arrow"> <i class="fa-solid fa-chevron-right"></i></span>
+      <span class="left">
+        <i class="fa-solid fa-diagram-project"></i>
+      </span>
+
+      <span class="center">
+        {{ graphTitle$ | async }}
+      </span>
+
+      <span class="right">
+        <i class="fa-solid fa-chevron-right"></i>
+      </span>
     </button>
 
     <!-- Side Dropdown Menu -->
@@ -18,19 +27,15 @@
       (mouseenter)="keepDropdownOpen()"
       (mouseleave)="hideDropdown()">
       <!-- Graf İşlemleri -->
-      <button class="dropdown-item" (click)="onAction('graph-edit')">
+      <button class="dropdown-item" (click)="openEditGraph()">
         <span class="graph-icon">✏️</span>
         <span>Edit</span>
       </button>
-      <button class="dropdown-item" (click)="onAction('graph-import')">
-        <span class="graph-icon">📥</span>
-        <span>Import</span>
-      </button>
-      <button class="dropdown-item" (click)="onAction('graph-export')">
+      <button class="dropdown-item" (click)="export()">
         <span class="graph-icon">📤</span>
         <span>Export</span>
       </button>
-      <button class="dropdown-item" (click)="onAction('graph-info')">
+      <button class="dropdown-item" (click)="openSummary()">
         <span class="graph-icon">ℹ️</span>
         <span>Summary </span>
       </button>
@@ -44,66 +49,74 @@
 
   <hr/>
   <!-- Algorithms Section -->
-  <div class="sidebar-section">
-    <div class="section-title">Algorithms</div>
+  <div class="sidebar-section algorithms">
 
-    <!-- Traversals -->
-    <div class="section-subtitle">Traversals</div>
-    <button
-      class="section-header sub-header graph-tag-btn"
-      (mouseenter)="showTraversalsDropdownMenu($event)"
-      (mouseleave)="hideTraversalsDropdown()">
-      <span>Algorithms</span>
-      <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
-    </button>
+    <div class="algorithm-section">
+      <h4 class="section-title">
+        <i class="bi bi-diagram-3"></i>
+        Traversal
+      </h4>
 
-    <!-- Traversals Side Dropdown Menu -->
-    <div
-      class="graph-dropdown"
-      *ngIf="showTraversalsDropdown"
-      [style.top]="traversalsDropdownPosition.top"
-      [style.left]="traversalsDropdownPosition.left"
-      (mouseenter)="keepTraversalsDropdownOpen()"
-      (mouseleave)="hideTraversalsDropdown()">
-      <div class="dropdown-header">Algoritma Seçiniz</div>
       <button
-        *ngFor="let algo of algorithms"
-        class="dropdown-item"
-        (click)="selectAlgorithm(algo)">
-        <span class="graph-icon">{{ algo.icon }}</span>
-        <span>{{ algo.name }}</span>
+        class="action-btnf"
+        *ngFor="let algo of getAlgorithmsByCategory(categories.Traversal)"
+        (click)="selectAlgorithm(algo)"
+        [class.active]="selectedAlgorithm?.key === algo.key">
+        <i class="bi bi-arrow-repeat"></i>
+        {{ algo.label }}
+      </button>
+    </div>
+    <hr class="algo-separator" />
+
+    <div class="algorithm-section">
+      <h4 class="section-title">
+        <i class="bi bi-signpost-2"></i>
+        Pathfinding
+      </h4>
+
+      <button
+        class="action-btnf"
+        *ngFor="let algo of getAlgorithmsByCategory(categories.Pathfinding)"
+        (click)="selectAlgorithm(algo)"
+        [class.active]="selectedAlgorithm?.key === algo.key">
+        <i class="bi bi-geo-alt"></i>
+        {{ algo.label }}
+      </button>
+    </div>
+    <hr class="algo-separator" />
+
+    <div class="algorithm-section">
+      <h4 class="section-title">
+        <i class="bi bi-bar-chart"></i>
+        Node Importance
+      </h4>
+
+      <button
+        class="action-btnf"
+        *ngFor="let algo of getAlgorithmsByCategory(categories.Centrality)"
+        (click)="selectAlgorithm(algo)"
+        [class.active]="selectedAlgorithm?.key === algo.key">
+        <i class="bi bi-graph-up"></i>
+        {{ algo.label }}
+      </button>
+    </div>
+    <hr class="algo-separator" />
+
+    <div class="algorithm-section">
+      <h4 class="section-title">
+        <i class="bi bi-collection"></i>
+        Clustering
+      </h4>
+
+      <button
+        class="action-btnf"
+        *ngFor="let algo of getAlgorithmsByCategory(categories.Clustering)"
+        (click)="selectAlgorithm(algo)"
+        [class.active]="selectedAlgorithm?.key === algo.key">
+        <i class="bi bi-palette"></i>
+        {{ algo.label }}
       </button>
     </div>
 
-    <!-- Metrics -->
-    <div class="section-subtitle">Metrics</div>
-
-
-
-    <button
-      class="section-header sub-header graph-tag-btn"
-      (mouseenter)="showComponentsDropdownMenu($event)"
-      (mouseleave)="hideComponentsDropdown()">
-      <span>Components</span>
-      <span class="arrow"> <i class="fa-solid fa-chevron-right"></i></span>
-    </button>
-    <!-- Components Side Dropdown Menu -->
-    <div
-      class="graph-dropdown"
-      *ngIf="showComponentsDropdown"
-      [style.top]="componentsDropdownPosition.top"
-      [style.left]="componentsDropdownPosition.left"
-      (mouseenter)="keepComponentsDropdownOpen()"
-      (mouseleave)="hideComponentsDropdown()">
-      <div class="dropdown-header">Components</div>
-      <button class="dropdown-item" (click)="onAction('components-detection')">
-        <span class="graph-icon">🧩</span>
-        <span>Detection of Components</span>
-      </button>
-      <button class="dropdown-item" (click)="onAction('components-welsh-powell')">
-        <span class="graph-icon">🎨</span>
-        <span>Welsh Powell</span>
-      </button>
-    </div>
   </div>
 </aside>
