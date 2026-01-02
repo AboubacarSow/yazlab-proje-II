@@ -424,23 +424,26 @@ export class GraphrenderService {
   }
 
   //WelshPowell
-  renderColoring(nodeWithColors: Record<number, number>): void {
+  renderColoring(nodeWithColors: Record<number, number>): Record<string,string> {
     // Coloring cancels traversal visuals
     this.traversalActive = false;
     if (this.traversalTimer) {
       clearTimeout(this.traversalTimer);
       this.traversalTimer = null;
     }
-
+    const colorsUsedPerNode: Record<string,string>={}
     this.nodes
       .interrupt() // stop ongoing transitions
       .transition()
       .duration(400)
       .attr('fill', d => {
         const colorIndex = nodeWithColors[Number(d.id)];
-        return colorIndex !== undefined
-          ? this.colorScale(colorIndex)
-          : this.defaultNodeColor;
+        if(colorIndex!==undefined){
+          const color = this.colorScale(colorIndex);
+          colorsUsedPerNode[d.id]=color;
+          return color;
+        }
+        return this.defaultNodeColor
       })
       .attr('r', 20);
 
@@ -450,6 +453,8 @@ export class GraphrenderService {
       .duration(300)
       .attr('stroke', '#ccc')
       .attr('stroke-width', 1);
+
+      return colorsUsedPerNode
   }
   //Degree Centrality
 
@@ -711,6 +716,10 @@ export class GraphrenderService {
     this.edgeDeleted?.(sourceId, targetId);
   }
 
+
+  disableEdgeCreation(): void{
+    this.edgeSourceNodeId=null;
+  }
 
 }
 

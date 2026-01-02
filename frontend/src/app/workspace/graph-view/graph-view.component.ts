@@ -12,6 +12,9 @@ import { AddNodeComponent } from '../modals/add-node/add-node.component';
 import { GraphrenderService } from '../../core/services/graphrender.service';
 import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { AlgorithmResultAdapterService } from '../../core/services/algorithm-result-adapter.service';
+import { AlgorithmResultStorageService } from '../../core/storage/algorithm-result-storage.service';
+import { AlgorithmResult } from '../../models/algorith.model';
+import { Graph, Guid } from '../../models/graph.model';
 
 @Component({
   selector: 'app-graph-view',
@@ -44,7 +47,8 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
               private algorithmService: AlgorithmsService,
               private adapter : AlgorithmResultAdapterService,
               private toast : ToastService,
-            private edgeService: EdgesService){}
+              private edgeService: EdgesService,
+              private algorithmResultStorage: AlgorithmResultStorageService){}
 
   rerendergraph() {
     window.location.reload()
@@ -175,6 +179,11 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
               const traversal = this.adapter.buildTraversalResult(res.result);
               this.renderer.renderTraversal(traversal);
               this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              this.saveAlgorithmResult(graph,
+                `breadth-first search`,
+                {'startNodeId':startNodeId},
+                res.result
+              )
             });
         });
 
@@ -198,7 +207,11 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
               this.renderer.renderTraversal(traversal);
               this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
               console.log("rendering is done")
-
+              this.saveAlgorithmResult(graph,
+                `death-first search`,
+                {'startNodeId':startNodeId},
+                res.result
+              )
             });
         });
         break;
@@ -220,6 +233,15 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
               const pathTraversal= this.adapter.buildTraversalResult(res.result);
               this.renderer.renderShortestPathResult(pathTraversal.edgesTraversed,pathTraversal.visitOrder)
               this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              this.saveAlgorithmResult(graph,
+                `A* shortest-path-finding`,
+                {
+                  'startNodeId':startNodeId,
+                  'targetNodeId':targetNodeId,
+                  'strategy':'Heuristic'
+                },
+                res.result
+              )
               console.log("rendering is done")
 
             });
@@ -243,6 +265,15 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
               const pathTraversal= this.adapter.buildTraversalResult(res.result);
               this.renderer.renderShortestPathResult(pathTraversal.edgesTraversed,pathTraversal.visitOrder)
               this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              this.saveAlgorithmResult(graph,
+                `Dijkstra shortest-path-finding`,
+                {
+                  'startNodeId':startNodeId,
+                  'targetNodeId':targetNodeId,
+                  'strategy':''
+                },
+                res.result
+              )
               console.log("rendering is done")
 
             });
@@ -272,6 +303,7 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
   disableEdgeCreation() {
     this.edgeCreationActive = false;
     this.edgeSourceNodeId = null;
+    this.renderer.disableEdgeCreation();
     console.log(`${this.edgeSourceNodeId}`)
     this.renderer.exitEdgeMode();
   }
@@ -281,6 +313,8 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
       next:res=>{
           console.log(`Edge added between :${res.nodeAId} and ${res.nodeBId} `)
           this.edgeCreationActive=false;
+          this.edgeSourceNodeId=null;
+          this.renderer.disableEdgeCreation();
           this.toast.info(`Edge added between :${res.nodeAId} and ${res.nodeBId}`)
       },
       error: err=>{
@@ -307,6 +341,21 @@ export class GraphViewComponent implements AfterViewInit, OnDestroy{
                   data:{mode:'add'},
                   panelClass:'add-node-panel'
                 } )
+  }
+
+  private saveAlgorithmResult(graph:Graph,algorithm:string,parameters:any,result:any) : void{
+    const algorithResult : AlgorithmResult ={
+                id:crypto.randomUUID(),
+                graphId:graph.id,
+                algorithm:algorithm,
+                createdAt:Date.now(),
+                parameters:{
+                  ... parameters,
+                  'range-nodes':graph.nodes.length,
+                },
+                result:result
+              }
+    this.algorithmResultStorage.save(algorithResult)
   }
 
 }

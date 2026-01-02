@@ -15,23 +15,26 @@
       <i class="fa-solid fa-database me-2"></i> Data
     </button>
   </div>
+  <div class="section d-flex gap-2">
+    <button *ngIf="isAlgoResultExist"[class.active]="activeTab === 'algorithmResult'"
+    class="btn algo-result" (click)="switchTab('algorithmResult')"> <i class="fa-regular fa-eye me-2"></i>View Algorithm Results</button>
+    <div class="user-profile">
+      <span class="profile-icon" (click)="toggleDropdown()"><i class="fa-solid fa-user"></i></span>
 
-  <div class="user-profile">
-    <span class="profile-icon" (click)="toggleDropdown()"><i class="fa-solid fa-user"></i></span>
-
-    <div class="dropdown-menu" *ngIf="isDropdownOpen">
-      <a routerLink="/" class="dropdown-item" (click)="closeDropdown()">
-        <span class="icon">🏠</span>
-        <span>Anasayfaya Dön</span>
-      </a>
-      <a routerLink="/user/dashboard" class="dropdown-item" (click)="closeDropdown()">
-        <span class="icon">📊</span>
-        <span>Kullanıcı Arayüzüne Dön</span>
-      </a>
-      <button type="button" class="dropdown-item" (click)="requestReset()">
-        <span class="icon">🆕</span>
-        <span>Yeni Graph Oluştur</span>
-      </button>
+      <div class="dropdown-menu" *ngIf="isDropdownOpen">
+        <a routerLink="/" class="dropdown-item" (click)="closeDropdown()">
+          <span class="icon">🏠</span>
+          <span>Anasayfaya Dön</span>
+        </a>
+        <a routerLink="/user/dashboard" class="dropdown-item" (click)="closeDropdown()">
+          <span class="icon">📊</span>
+          <span>Kullanıcı Arayüzüne Dön</span>
+        </a>
+        <button type="button" class="dropdown-item" (click)="requestReset()">
+          <span class="icon">🆕</span>
+          <span>Yeni Graph Oluştur</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

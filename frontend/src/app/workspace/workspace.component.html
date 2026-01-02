@@ -12,6 +12,7 @@
     <main class="workspace-main">
       <app-graph-view *ngIf="activeTab === 'graph'" ></app-graph-view>
       <app-data-view *ngIf="activeTab === 'data'"></app-data-view>
+      <app-algorithm-result *ngIf="activeTab==='algorithmResult'"></app-algorithm-result>
     </main>
   </div>
 </div>

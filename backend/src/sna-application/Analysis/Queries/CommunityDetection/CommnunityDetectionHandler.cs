@@ -21,7 +21,7 @@ IRequestHandler<CommunityDetectionQuery, CommunityDetectionResult>
             false) ?? throw new NotFoundException($"Graph {request.Id} not found");
 
         var stopwatch = Stopwatch.StartNew();
-        var nodeLabels = GraphAlgorithms.LabelPropagation_(graph);
+        var nodeLabels = GraphAlgorithms.DetecteCommunity(graph);
         stopwatch.Stop();
 
         var nodeToCommunity = nodeLabels.ToDictionary(

@@ -90,3 +90,12 @@ export interface CommunityDetectionResult{
   executionTime:number
 }
 
+export interface AlgorithmResult{
+  id:Guid,
+  graphId:Guid,
+  algorithm:string,
+  createdAt:number,
+  parameters:Record<string, any>
+  result:any
+}
+
