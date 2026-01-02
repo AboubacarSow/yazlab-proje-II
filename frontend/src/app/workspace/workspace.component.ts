@@ -8,24 +8,21 @@ import { GraphStateService } from '../core/services/graph.service';
 import { Guid } from '../models/graph.model';
 import { Subject } from 'rxjs';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { AlgorithmResultComponent } from "./algorithm-result/algorithm-result.component";
 
 
 
 @Component({
   selector: 'app-workspace',
   imports: [CommonModule, HeaderComponent, GraphViewComponent, SchemaCreationComponent,
-    DataViewComponent, SidebarComponent],
+    DataViewComponent, SidebarComponent, AlgorithmResultComponent],
   templateUrl: './workspace.component.html',
   styleUrl: './workspace.component.css'
 })
 export class WorkspaceComponent implements OnInit, OnDestroy  {
 
-  //Algorithm Section
 
-
-  // End Algorithm Section
-
-  activeTab: 'graph' | 'data' = 'graph';
+  activeTab: 'graph' | 'data'| 'algorithmResult' = 'graph';
 
   graphCreated = false;
   currentGraphId?: Guid;
@@ -69,7 +66,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy  {
 
 
 
-  onTabChange(tab: 'graph' | 'data') {
+  onTabChange(tab: 'graph' | 'data' | 'algorithmResult') {
     this.activeTab = tab;
   }
 }

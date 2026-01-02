@@ -231,38 +231,9 @@ public class GraphAlgorithms
         return 0;
     }
 
-    public static IReadOnlyDictionary<Node, int> LabelPropagation(Graph graph)
-    {
-        var labels = graph.Nodes.ToDictionary(n => n, n => n.Id);
+    
 
-        bool changed;
-        do
-        {
-            changed = false;
-
-            foreach (var node in graph.Nodes)
-            {
-                var neighborLabels = node.GetNeighbors(graph)
-                    .GroupBy(n => labels[n])
-                    .OrderByDescending(g => g.Count())
-                    .ThenBy(g => g.Key)
-                    .FirstOrDefault();
-
-                if (neighborLabels == null) continue;
-                var newLabel = neighborLabels.Key;
-                if (labels[node] != newLabel)
-                {
-                    labels[node] = newLabel;
-                    changed = true;
-                }
-            }
-
-        } while (changed);
-
-        return labels;
-    }
-
-    public static IReadOnlyDictionary<Node, int> LabelPropagation_(Graph graph)
+    public static IReadOnlyDictionary<Node, int> DetecteCommunity(Graph graph)
     {
         // 1. Initialize: Every node gets a unique label (usually its own ID)
         var labels = graph.Nodes.ToDictionary(n => n, n => n.Id);

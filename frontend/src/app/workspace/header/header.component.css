@@ -110,3 +110,18 @@
   font-size: 0.95rem;
   font-weight: 500;
 }
+.algo-result{
+  border-radius: 15px;
+  font-weight: bold;
+  color:#041250;
+  background: #ffff;
+}
+.algo-result:hover{
+  color:#ffff;
+  background: #041250;
+}
+.algo-result.active{
+  color:#ffff;
+  background: #041250;
+  font-weight: 600;
+}

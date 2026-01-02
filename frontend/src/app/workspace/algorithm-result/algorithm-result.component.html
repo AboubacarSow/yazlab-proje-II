@@ -1,0 +1,50 @@
+<div class="algorithm-panel">
+  <h3 class="text-center">Algorithm Results</h3>
+
+  <div *ngIf="!algorithmResults?.length" class="empty">
+    No algorithm results yet.
+  </div>
+
+  <div
+    class="result-card"
+    *ngFor="let res of algorithmResults">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <span class="name">{{ res.algorithm }}</span>
+        <span class="execution-time">
+          {{ res.result.executionTime }} ms
+        </span>
+      </div>
+
+      <span class="date">
+        {{ res.createdAt | date:'short' }}
+      </span>
+    </div>
+
+    <!-- Parameters -->
+    <div class="section">
+      <div class="section-title">Parameters</div>
+      <table>
+        <tr *ngFor="let key of res.parameters | keyvalue">
+          <td>{{ key.key }}</td>
+          <td class="text-info">{{ key.value }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Colors -->
+    <div class="section" *ngIf="res.result.colors">
+      <div class="section-title">Colors</div>
+      <div class="color-list">
+        <div class="badge rounded-pill" *ngFor="let color of res.result.colors | keyvalue"
+        [style.background]="color.value"
+        >
+          {{color.key}}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,3 +1,4 @@
+import { AlgorithmResultStorageService } from './../../core/storage/algorithm-result-storage.service';
 import { GraphStateService } from './../../core/services/graph.service';
 import { Component, OnInit, Output, inject, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -14,6 +15,7 @@ import { AlgorithmsStateService } from '../../core/services/algorithms-state.ser
 import { GraphrenderService } from '../../core/services/graphrender.service';
 import { AlgorithmsService } from '../../services/algorithms.service';
 import { buildComponentColorMap } from '../../core/utils/mapperHelper';
+import { AlgorithmResult } from '../../models/algorith.model';
 
 @Component({
   selector: 'app-sidebar',
@@ -51,7 +53,8 @@ export class SidebarComponent implements OnInit{
     private toast : ToastService,
     private renderer : GraphrenderService,
     private algorithmState: AlgorithmsStateService,
-    private algorithmService : AlgorithmsService){
+    private algorithmService : AlgorithmsService,
+    private algorithmResultStorage: AlgorithmResultStorageService){
     }
 
 
@@ -215,8 +218,11 @@ export class SidebarComponent implements OnInit{
             .subscribe(res => {
               console.log("algorithm service api is called")
               console.log("Result of WelshPowell:",res);
-              this.renderer.renderColoring(res.result.nodeWithColors);
+              const colorUsedPerNode =this.renderer.renderColoring(res.result.nodeWithColors);
               this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+                this.saveAlgorithmResult(graph,'coloring',
+                {'strategy':'Greedy-Coloring'},
+                {...res.result, colors:colorUsedPerNode})
               console.log("rendering is done")
 
             });
@@ -236,6 +242,9 @@ export class SidebarComponent implements OnInit{
               console.log("Result of Degree Centrality:",res);
               this.renderer.renderDegreeCentrality(res.result.nodeDegrees,res.result.maxDegree);
               this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              this.saveAlgorithmResult(graph,'degree-centrality',
+                {'strategy':'Degree Heuristic'},
+                res.result)
               console.log("rendering is done")
 
             });
@@ -255,6 +264,9 @@ export class SidebarComponent implements OnInit{
               console.log("Result of Detection:",res);
               this.renderer.renderConnectedComponents(buildComponentColorMap(res.result.components));
               this.toast.runtime(`Algorithm execution took ${res.result.executionTime} ms `)
+              this.saveAlgorithmResult(graph,'connected-component-detection',
+                {'strategy':'BFS strategy'},
+                res.result)
               console.log("rendering is done")
 
             });
@@ -274,10 +286,29 @@ export class SidebarComponent implements OnInit{
               console.log('community count:',res.communityCount)
               this.renderer.renderCommunities(res.nodeToCommunity);
               this.toast.runtime(`Detected ${res.communityCount} communities in ${res.executionTime} ms`)
+              this.saveAlgorithmResult(graph,'community-detection',
+                {'strategy':'Peer-Pressure'},
+                res)
               console.log("rendering is done")
 
             });
           });
   }
   //End of the section
+
+  //Algorithm Result Storage
+   private saveAlgorithmResult(graph:Graph,algorithm:string,parameter:any,result:any) : void{
+      const algorithResult : AlgorithmResult ={
+                  id:crypto.randomUUID(),
+                  graphId:graph.id,
+                  algorithm:algorithm,
+                  createdAt:Date.now(),
+                  parameters:{
+                    ...parameter,
+                    'range-nodes':graph.nodes.length,
+                  },
+                  result:result
+                }
+      this.algorithmResultStorage.save(algorithResult)
+    }
 }
