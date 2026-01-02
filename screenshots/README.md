@@ -80,6 +80,12 @@ Komşu düğümlerin farklı renklerle renklendirilen gösterimi:
 
 ![Graph Coloring](Graph-Layout/Coloring.png)
 
+### Algoritma Sonuçlarını Görüntüleme
+
+Tüm Çalıştırılan Algoritmaların Sonuçlarını tek tıkla görüntülemek için
+
+![Algorithm Results](Workspace/Layout/Algoresults.png) 
+
 ---
 
 ## 📈 Data View - Veri Yönetimi
