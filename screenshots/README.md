@@ -84,7 +84,7 @@ Komşu düğümlerin farklı renklerle renklendirilen gösterimi:
 
 Tüm Çalıştırılan Algoritmaların Sonuçlarını tek tıkla görüntülemek için
 
-![Algorithm Results](Workspace/Layout/Algoresults.png) 
+![Algorithm Results](Workspace-Layout/Algoresults.png) 
 
 ---
 
