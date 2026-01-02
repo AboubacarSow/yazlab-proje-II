@@ -373,6 +373,7 @@ classDiagram
     }
     
     class Graph {
+        +Guid id
         +string Title
         +string Description
         +ICollection~Node~ Nodes
@@ -398,26 +399,10 @@ classDiagram
         +Node NodeA
         +Node NodeB
     }
-    
-    class Message {
-        +string SenderName
-        +string ReceiverName
-        +string Content
-        +DateTime SentAt
-    }
-    
-    class ContactInfo {
-        +string Name
-        +string Email
-        +string Subject
-        +string Message
-        +DateTime CreatedAt
-    }
+                
     
     BaseEntity <|-- Graph
     BaseEntity <|-- Node
-    BaseEntity <|-- Message
-    BaseEntity <|-- ContactInfo
     Graph "1" *-- "many" Node : contains
     Graph "1" *-- "many" Edge : contains
     Node "1" -- "many" Edge : source
