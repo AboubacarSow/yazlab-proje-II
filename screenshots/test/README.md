@@ -525,8 +525,8 @@ Hub Sayısı: 5
 - **OS:** Windows 11 Pro (Build 22621)
 - **CPU:** Intel Core i7-12700K @ 3.6GHz (12 Core, 20 Thread)
 - **RAM:** 32GB DDR4 @ 3200MHz
-- **GPU:** NVIDIA RTX 3070 8GB
-- **Storage:** Samsung 980 PRO NVMe SSD
+- **GPU:** NVIDIA RTX 4070 
+- **Storage:** Yerel Disk C:
 - **Browser:** Chrome 120.0.6099.130
 
 ### 6.2 Test Prosedürü
