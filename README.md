@@ -1194,7 +1194,11 @@ Beklenen Sonuç:
 
 ### 5.6 Veri Saklama ve İçe/Dışa Aktarma
 
-#### JSON Format Örneği
+#### JSON Format
+
+Uygulama, graf verilerini **JSON formatında** içe ve dışa aktarabilmektedir.
+
+**JSON Format Örneği:**
 
 ```json
 {
@@ -1223,16 +1227,6 @@ Beklenen Sonuç:
     }
   ]
 }
-```
-
-#### CSV Import Format
-
-```csv
-Tag,Activity,Interaction
-Alice,0.85,15
-Bob,0.72,12
-Charlie,0.68,10
-David,0.91,18
 ```
 
 ---
