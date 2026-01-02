@@ -373,7 +373,7 @@ classDiagram
     }
     
     class Graph {
-        +Guid id
+        +Guid Id
         +string Title
         +string Description
         +ICollection~Node~ Nodes
@@ -399,7 +399,6 @@ classDiagram
         +Node NodeA
         +Node NodeB
     }
-                
     
     BaseEntity <|-- Graph
     BaseEntity <|-- Node
@@ -411,11 +410,9 @@ classDiagram
 
 **Açıklama:**
 - **BaseEntity**: Tüm entity'lerin ortak özelliğini içerir (int Id)
-- **Graph**: Ana graf yapısı, düğümleri ve kenarları barındırır
-- **Node**: Graf içindeki düğümleri temsil eder (kullanıcılar)
+- **Graph**: Ana graf yapısı, düğümleri ve kenarları barındırır (BaseEntity'den int Id miras alır)
+- **Node**: Graf içindeki düğümleri temsil eder (kullanıcılar, BaseEntity'den int Id miras alır)
 - **Edge**: Düğümler arası bağlantıları temsil eder
-- **Message**: Kullanıcılar arası mesajlaşma bilgisi
-- **ContactInfo**: İletişim formu bilgileri
 
 ---
 
