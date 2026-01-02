@@ -1116,7 +1116,9 @@ Beklenen Sonuç:
 
 ### 5.4 Performans Test Sonuçları
 
-#### 5.4.1 Algoritma Karşılaştırma Tablosu
+> 📊 **[Detaylı Test Sonuçlarını ve Performans Analizini İncelemek İçin Tıklayın →](screenshots/test/README.md)**
+
+#### 5.4.1 Algoritma Karşılaştırma Tablosu (Özet)
 
 | Algoritma | 10 Düğüm | 50 Düğüm | 100 Düğüm | 500 Düğüm |
 |-----------|----------|----------|-----------|-----------|
