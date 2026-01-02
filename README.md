@@ -369,13 +369,19 @@ Backend katmanı, **Domain-Driven Design (DDD)** prensipleri ile tasarlanmışt�
 classDiagram
     class BaseEntity {
         <<abstract>>
-        +Guid Id
-        +DateTime CreatedAt
-        +DateTime? UpdatedAt
+        +int Id
+    }
+    
+    class Graph {
+        +string Title
+        +string Description
+        +ICollection~Node~ Nodes
+        +ICollection~Edge~ Edges
+        +int NodeCount()
+        +int EdgeCount()
     }
     
     class Node {
-        +int Id
         +Guid GraphId
         +string Tag
         +double Activity
@@ -393,25 +399,25 @@ classDiagram
         +Node NodeB
     }
     
-    class Graph {
-        +Guid Id
-        +string Title
-        +string Description
-        +ICollection~Node~ Nodes
-        +ICollection~Edge~ Edges
-        +int NodeCount()
-        +int EdgeCount()
-    }
-    
     class Message {
-        +Guid Id
         +string SenderName
         +string ReceiverName
         +string Content
         +DateTime SentAt
     }
     
+    class ContactInfo {
+        +string Name
+        +string Email
+        +string Subject
+        +string Message
+        +DateTime CreatedAt
+    }
+    
     BaseEntity <|-- Graph
+    BaseEntity <|-- Node
+    BaseEntity <|-- Message
+    BaseEntity <|-- ContactInfo
     Graph "1" *-- "many" Node : contains
     Graph "1" *-- "many" Edge : contains
     Node "1" -- "many" Edge : source
@@ -419,11 +425,12 @@ classDiagram
 ```
 
 **Açıklama:**
-- **BaseEntity**: Tüm entity'lerin ortak özelliklerini içerir (Id, CreatedAt, UpdatedAt)
+- **BaseEntity**: Tüm entity'lerin ortak özelliğini içerir (int Id)
 - **Graph**: Ana graf yapısı, düğümleri ve kenarları barındırır
 - **Node**: Graf içindeki düğümleri temsil eder (kullanıcılar)
 - **Edge**: Düğümler arası bağlantıları temsil eder
 - **Message**: Kullanıcılar arası mesajlaşma bilgisi
+- **ContactInfo**: İletişim formu bilgileri
 
 ---
 
