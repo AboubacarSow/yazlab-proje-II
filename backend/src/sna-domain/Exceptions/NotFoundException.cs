@@ -21,3 +21,6 @@ public class NotFoundException : Exception
 public class FailedToImportGraphSnapshotException(string message) : Exception(message)
 {
 }
+public class InvalidCredentialsException(string message) : Exception(message)
+{
+}

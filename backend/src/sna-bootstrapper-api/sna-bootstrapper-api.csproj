@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\sna-application\sna-application.csproj" />
     <ProjectReference Include="..\sna-infrastructure\sna-infrastructure.csproj" />
   </ItemGroup>
 

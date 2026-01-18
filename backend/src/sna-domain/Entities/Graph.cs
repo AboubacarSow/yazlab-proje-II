@@ -4,8 +4,8 @@ namespace sna_domain.Entities;
 
 public class Graph 
 {
-    //public Guid OwnerId {get; private set;}
-    //public ApplicationUser Owner {get; private set;}= default!;
+    public Guid? OwnerId {get; private set;}
+    public ApplicationUser? Owner {get; private set;}= default!;
     public Guid Id {get;set;}
     private  List<Node> _nodes = [];
     private  List<Edge> _edges = [];

@@ -12,7 +12,7 @@ namespace sna_infrastructure.Services;
 internal class JWTService(IConfiguration configuration, UserManager<ApplicationUser> userManager) 
 : IJWTService
 {
-    public async Task<TokenContainer> CreateTokenAsync(bool populateExpireTime,ApplicationUser user)
+    public async Task<TokenContainer> CreateTokenAsync(ApplicationUser user, bool populateExpireTime)
     {
         //Generate Token Options
         var signInCredentials = GetSignInCredentials();
@@ -59,9 +59,7 @@ internal class JWTService(IConfiguration configuration, UserManager<ApplicationU
            new(ClaimTypes.Email, user.Email!),
            new(ClaimTypes.NameIdentifier, user.Id.ToString()) 
        };
-
        return claims;
-
     }
 
     private SigningCredentials GetSignInCredentials()

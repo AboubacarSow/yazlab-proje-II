@@ -12,6 +12,8 @@ public class ApplicationUser : IdentityUser<Guid>
      public DateTime CreatedOn { get; set; } = default!;
     public string? RefreshToken { get; set; }
     public DateTime RefreshTokenExpiresTime { get; set; }
+
+    public ICollection<Graph>? Graphs {get;set;}= [];
     public override string? Email
     {
         get => base.Email!;
@@ -24,7 +26,10 @@ public class ApplicationUser : IdentityUser<Guid>
     }
 
     public ApplicationUser(){}
-    public ApplicationUser(string firstname,string lastname,string phonenumber,string email, Address address=null!)
+    public ApplicationUser(string firstname,
+    string lastname,
+    string phonenumber,
+    string email, Address address=null!)
     {
         FirstName = firstname;
         LastName = lastname;
