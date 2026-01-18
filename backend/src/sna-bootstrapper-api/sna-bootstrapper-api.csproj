@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\sna-application\sna-application.csproj" />
+    <ProjectReference Include="..\sna-infrastructure\sna-infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
