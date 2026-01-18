@@ -29,12 +29,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy
-                .WithOrigins(
+            policy.WithOrigins(
                     "http://localhost:4200",   // Angular dev
                     "https://localhost:4200"
-                )
-                .AllowAnyHeader()
+                ).AllowAnyHeader()
                 .AllowAnyMethod();
         });
 });
@@ -43,8 +41,6 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
 var app = builder.Build();
-//Logging configuration HTTP one
-// Configure the HTTP request pipeline.
 
 app.UseExceptionHandler();
 
@@ -54,14 +50,11 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-// 2. Logging des requ�tes (pour voir les logs incluant l'erreur g�r�e)
 app.UseSerilogRequestLogging();
 
-// 3. S�curit� et CORS
 app.UseCors("AllowFrontend");
 app.UseAuthorization();
 
-// 4. Mapping des endpoints (Carter, Controllers)
 app.MapCarter();
 app.MapControllers();
 

@@ -14,9 +14,10 @@
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
     <PackageReference Include="MediatR" Version="13.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.7" />
   </ItemGroup>
 
    <ItemGroup>
-     <ProjectReference Include="..\sna-infrastructure\sna-infrastructure.csproj" />
+     <ProjectReference Include="..\sna-domain\sna-domain.csproj" />
    </ItemGroup>
 </Project>

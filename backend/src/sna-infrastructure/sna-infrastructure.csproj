@@ -26,6 +26,7 @@
 
    <ItemGroup>
      <ProjectReference Include="..\sna-domain\sna-domain.csproj" />
+     <ProjectReference Include="..\sna-application\sna-application.csproj" />
    </ItemGroup>
 
   

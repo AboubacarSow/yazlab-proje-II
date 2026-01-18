@@ -16,3 +16,16 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
             .HasPrecision(4,3);
         }
 }
+
+public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
+{
+    public void Configure(EntityTypeBuilder<ApplicationUser> builder)
+    {
+        builder.HasKey(u => u.Id);
+        builder.Property(u => u.UserName).IsRequired();
+        builder.Property(u => u.Email).IsRequired();
+        builder.Property(u => u.CreatedOn).IsRequired();
+        builder.OwnsOne(u=>u.Address);
+       
+    }
+}

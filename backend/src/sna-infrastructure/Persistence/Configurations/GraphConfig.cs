@@ -29,6 +29,10 @@ public class GraphConfiguration : IEntityTypeConfiguration<Graph>
                 .WithOne(e=>e.Graph)
                 .HasForeignKey(e=>e.GraphId)
                 .OnDelete(DeleteBehavior.NoAction);
+        builder.HasOne(g => g.Owner)
+            .WithMany(u => u.Graphs)
+            .HasForeignKey(g => g.OwnerId)
+            .OnDelete(DeleteBehavior.NoAction);
         
     }
 }
