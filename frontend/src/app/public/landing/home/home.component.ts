@@ -21,20 +21,23 @@ export class HomeComponent implements OnInit {
     { icon: '⚡', title: 'Fast Processing', desc: 'Optimized for large datasets' }
   ];
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {
+    this.authService.decodeToken(localStorage.getItem('accessToken') || ''); // Decode token on component init
+  }
 
   ngOnInit() {
     this.authService.isLoggedIn$
     .pipe(take(1))
     .subscribe(status => { this.isLoggedIn = status; });
     console.log('User logged in status:', this.isLoggedIn);
+    this.authService.decodeToken(localStorage.getItem('accessToken') || ''); // Test decodeToken method
   }
 
   get ctaLink(): string {
-    return this.isLoggedIn ? '/workspace' : '/register';
+    return this.isLoggedIn ? '/workspace' : '/login';
   }
 
   get ctaText(): string {
-    return 'Get Started';
+    return this.isLoggedIn ? '🚀 Go to Workspace' : '🚀 Get Started';
   }
 }

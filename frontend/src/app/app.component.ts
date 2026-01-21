@@ -12,6 +12,5 @@ export class AppComponent {
   title = 'frontend';
 
   constructor(private themeService: ThemeService) {
-    // Tema servisi constructor'da initialize edilir ve localStorage'dan tema yüklenir
   }
 }

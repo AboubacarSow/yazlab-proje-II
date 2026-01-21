@@ -24,9 +24,8 @@ export class MessageService {
     return this.http.get<Message>(this.GET_MESSAGE(messageId));
   }
 
-  sendMessage(message : MessageDto) {
-    this.http.post(this.POST_MESSAGE, message)
-            .subscribe()
+  sendMessage(message : MessageDto): Observable<any>{
+    return this.http.post(this.POST_MESSAGE, message);
   }
 
   deleteMessage(messageId : number){
