@@ -53,4 +53,12 @@ export class AuthService {
     }
     return null;
   }
+
+  logout(): void {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    this.isLoggedInSubject.next(false);
+    this.currentUserSubject.next(null);
+  }
 }

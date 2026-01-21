@@ -32,9 +32,9 @@ public class CreateMessageValidator : AbstractValidator<CreateMessageCommand>
         .WithMessage("Subject is required");
 
         RuleFor(m=> m.Content)
-        .MinimumLength(50)
+        .MinimumLength(15)
         .MaximumLength(1000)
-        .WithMessage("Your message must be at the range of 50 - 1000 characters");
+        .WithMessage("Your message must be at the range of 15 - 1000 characters");
         
     }
 }

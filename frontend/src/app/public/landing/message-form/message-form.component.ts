@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageDto } from '../../../models/message.model';
 import { MessageService } from '../../../services/message.service';
+import { ToastService } from '../../../core/utils/toast-service.service';
 
 @Component({
   selector: 'app-message-form',
@@ -18,7 +19,8 @@ export class MessageFormComponent {
 
   constructor(
     private formbuilder: FormBuilder,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private toast: ToastService
   ) {
     this.messageForm = this.formbuilder.group({
       fullName: ['', Validators.required],
@@ -33,10 +35,9 @@ export class MessageFormComponent {
     this.submitted = true;
 
     if (this.messageForm.invalid) return;
-
     const dto: MessageDto = this.messageForm.value;
     this.messageService.sendMessage(dto);
-
+    this.toast.success('Your message has been sent successfully!');
     this.messageForm.reset();
     this.submitted = false;
     console.log("Message sent successfully")
