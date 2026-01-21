@@ -35,8 +35,8 @@ internal class JWTService(IConfiguration configuration, UserManager<ApplicationU
     {
         var jwtSettings = configuration.GetRequiredSection("JwtSettings");
         return  new JwtSecurityToken(
-            issuer:jwtSettings["validIssuer"],
-            audience:jwtSettings["validAudiance"],
+            issuer:jwtSettings["ValidIssuer"],
+            audience:jwtSettings["ValidAudience"],
             claims:claims,
             expires:DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["Expires"])),
             signingCredentials:signingCredentials

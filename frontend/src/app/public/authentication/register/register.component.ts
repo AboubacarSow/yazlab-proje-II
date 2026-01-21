@@ -1,63 +1,79 @@
+import { ToastService } from './../../../core/utils/toast-service.service';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { first } from 'rxjs';
+import { RegisterModel } from '../../../models/auth.model';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterLink],
+  imports: [FormsModule, CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  name: string = '';
-  email: string = '';
-  password: string = '';
-  confirmPassword: string = '';
+  registerForm: FormGroup;
+
   errorMessage: string = '';
   isLoading: boolean = false;
 
   constructor(
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private toastService: ToastService
+  ) {
+    this.registerForm = this.formBuilder.group({
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      phoneNumber: ['', [Validators.required, Validators.minLength(10)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', [Validators.required]]
+    });
+  }
 
   onSubmit() {
     this.errorMessage = '';
-    
-    if (!this.name || !this.email || !this.password || !this.confirmPassword) {
-      this.errorMessage = 'Tüm alanları doldurunuz';
-      return;
-    }
 
-    if (!this.email.includes('@')) {
-      this.errorMessage = 'Geçerli bir email adresi girin';
-      return;
-    }
-
-    if (this.password.length < 6) {
-      this.errorMessage = 'Şifre en az 6 karakter olmalıdır';
-      return;
-    }
-
-    if (this.password !== this.confirmPassword) {
-      this.errorMessage = 'Şifreler eşleşmiyor';
-      return;
+    if( this.registerForm.invalid ) {
+      this.errorMessage = 'Please fill in all required fields correctly.';
     }
 
     this.isLoading = true;
-    
-    setTimeout(() => {
-      const success = this.authService.register(this.name, this.email, this.password);
-      this.isLoading = false;
-      
-      if (success) {
-        this.router.navigate(['/dashboard']);
-      } else {
-        this.errorMessage = 'Kayıt işlemi başarısız oldu';
+
+    const registerModel : RegisterModel = {
+      firstName: this.registerForm.value.firstName,
+      lastName: this.registerForm.value.lastName,
+      phoneNumber: this.registerForm.value.phoneNumber,
+      email: this.registerForm.value.email,
+      password: this.registerForm.value.password,
+      confirmPassword: this.registerForm.value.confirmPassword
+    };
+    this.authService.register(registerModel).pipe(first()).subscribe({
+      next: (res) => {
+        console.log('Registration successful', res);
+        this.toastService.success('Registration successful! Please sign in.');
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+            this.errorMessage = error.error.detail;
+            if(error.error) {
+              if(error.error.status===500){
+                this.errorMessage = 'Server error occurred. Please try again later.';
+                return;
+              } else{
+                this.errorMessage = error.error.message;
+              }
+            }
+            console.log(error.error);
+            console.error('Registration failed', error);
+            this.isLoading = false;
       }
-    }, 500);
+
+    });
   }
 }

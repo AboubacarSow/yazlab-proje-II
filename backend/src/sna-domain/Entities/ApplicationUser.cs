@@ -7,11 +7,11 @@ public class ApplicationUser : IdentityUser<Guid>
 {
     public string FirstName { get; set; } = default!;
     public string LastName { get; set; } = default!;
-    public string Image { get; set; } = default!;
-    public Address Address { get; set; } = new();
+    public string? Image { get; set; } = default!;
+    public Address? Address { get; set; } = new();
      public DateTime CreatedOn { get; set; } = default!;
     public string? RefreshToken { get; set; }
-    public DateTime RefreshTokenExpiresTime { get; set; }
+    public DateTime? RefreshTokenExpiresTime { get; set; }
 
     public ICollection<Graph>? Graphs {get;set;}= [];
     public override string? Email

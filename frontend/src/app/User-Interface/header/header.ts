@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../../services/auth.service';
-
+import { AuthService } from '../../core/services/auth.service';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -25,9 +24,7 @@ export class Header implements OnInit {
       this.isLoggedIn = status;
     });
 
-    this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
-    });
+
   }
 
   toggleDropdown() {
@@ -35,7 +32,7 @@ export class Header implements OnInit {
   }
 
   logout() {
-    this.authService.logout();
+    //this.authService.logout();
     this.isDropdownOpen = false;
     this.router.navigate(['/login']);
   }

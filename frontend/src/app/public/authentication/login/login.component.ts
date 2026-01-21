@@ -1,51 +1,53 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { LoginModel } from '../../../models/auth.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterLink],
+  imports: [FormsModule, CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  email: string = '';
-  password: string = '';
-  errorMessage: string = '';
-  isLoading: boolean = false;
+
+  loginForm : FormGroup
+  errormessage: string = ''
+  isloading: boolean = false
 
   constructor(
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private formBuilder: FormBuilder,
+    private route: Router
+  ) {
+    this.loginForm = this.formBuilder.group({
+      username: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]]
+    });
+  }
 
   onSubmit() {
-    this.errorMessage = '';
-    
-    if (!this.email || !this.password) {
-      this.errorMessage = 'Email ve şifre gerekli';
-      return;
-    }
-
-    if (!this.email.includes('@')) {
-      this.errorMessage = 'Geçerli bir email adresi girin';
-      return;
-    }
-
-    this.isLoading = true;
-    
-    setTimeout(() => {
-      const success = this.authService.login(this.email, this.password);
-      this.isLoading = false;
-      
-      if (success) {
-        this.router.navigate(['/']);
-      } else {
-        this.errorMessage = 'Email veya şifre hatalı';
+    if (this.loginForm.valid) {
+      const loginModel:LoginModel = {
+        userName: this.loginForm.value.username,
+        password: this.loginForm.value.password
       }
-    }, 500);
+      this.isloading=true;
+      this.authService.login(loginModel).subscribe({
+        next: (res) => {
+          console.log('Login successful', res);
+          this.route.navigate(['/']);
+        },
+        error: (error) => {
+
+          this.errormessage = 'Login failed. Please check your credentials and try again.';
+          console.error('Login failed', error);
+          this.isloading = false;
+        }
+      });
+    }
   }
 }
