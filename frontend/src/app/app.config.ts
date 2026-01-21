@@ -5,11 +5,12 @@ import { provideHttpClient } from '@angular/common/http';
 
 
 import { routes } from './app.routes';
+import { JwtModule } from '@auth0/angular-jwt';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    importProvidersFrom(DialogModule),
+    importProvidersFrom([DialogModule,JwtModule.forRoot({})]),
     provideHttpClient()
   ]
 };

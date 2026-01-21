@@ -6,7 +6,7 @@ public class LoginEndpoint: ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/authentication/login",
+        app.MapPost("/api/auth/login",
         async (LoginRequest request, IMediator mediator) =>
         {
             var token = await mediator.Send(request.Command);

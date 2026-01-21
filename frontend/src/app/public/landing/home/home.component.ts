@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -12,27 +13,28 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class HomeComponent implements OnInit {
   isLoggedIn = false;
-  
+
   features = [
-    { icon: '🔍', title: 'Ağ Analizi', desc: 'Kapsamlı sosyal ağ analizi araçları' },
-    { icon: '📊', title: 'Görselleştirme', desc: 'İnteraktif graf görselleri' },
-    { icon: '💾', title: 'Veri Yönetimi', desc: 'Kolay içe/dışa aktarma' },
-    { icon: '⚡', title: 'Hızlı İşleme', desc: 'Büyük veri setleri için optimize' }
+    { icon: '🔍', title: 'Network Analysis', desc: 'Network Analysis' },
+    { icon: '📊', title: 'Visualization', desc: 'Interactive graph visualizations' },
+    { icon: '💾', title: 'Data Management', desc: 'Easy import/export functionality' },
+    { icon: '⚡', title: 'Fast Processing', desc: 'Optimized for large datasets' }
   ];
 
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    this.authService.isLoggedIn$.subscribe(status => {
-      this.isLoggedIn = status;
-    });
+    this.authService.isLoggedIn$
+    .pipe(take(1))
+    .subscribe(status => { this.isLoggedIn = status; });
+    console.log('User logged in status:', this.isLoggedIn);
   }
 
   get ctaLink(): string {
-    return this.isLoggedIn ? '/User-Interface/dashboard' : '/register';
+    return this.isLoggedIn ? '/workspace' : '/register';
   }
 
   get ctaText(): string {
-    return 'Hemen Başlayın';
+    return 'Get Started';
   }
 }

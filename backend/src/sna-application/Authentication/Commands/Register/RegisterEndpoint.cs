@@ -4,7 +4,7 @@ public class RegisterEndpoint: ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/authentication/register",
+        app.MapPost("/api/auth/register",
         async (RegisterRequest request, IMediator mediator) =>
         {
             var isRegistered = await mediator.Send(request.Command);

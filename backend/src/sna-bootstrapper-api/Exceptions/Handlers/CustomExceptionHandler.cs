@@ -102,12 +102,6 @@ public class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger) : IE
 
         (string Detail, string Title, int StatusCode) details = exception switch
         {
-            InternalServerException =>
-            (
-                exception.Message,
-                exception.GetType().Name,
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError
-            ),
             ValidationException =>
             (
                 exception.Message,

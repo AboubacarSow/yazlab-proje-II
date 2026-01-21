@@ -1,19 +1,19 @@
 <div class="home-page">
   <section class="hero">
     <div class="container">
-      <h1>Sosyal Ağ Analizi Platformu</h1>
-      <p class="subtitle">Ağ yapılarını analiz edin, görselleştirin ve anlamını keşfedin.</p>
-      <p class="subtitle">Kullanıcı Arayüzü sayfamıza tek tıkla geçmek için: <span class="accent">Hemen Başlayın</span></p>
+      <h1>Social Network Analysis Platform</h1>
+      <p class="subtitle">Analyze network structures, visualize them, and discover their meaning.</p>
+      <p class="subtitle">To navigate to our User Interface page with a single click: <a routerLink="user/dashboard" class="accent">Get Started</a></p>
       <div class="cta-buttons">
         <a [routerLink]="ctaLink" class="btn btn-primary">{{ ctaText }}</a>
-        <a routerLink="/features" class="btn btn-outline">Özellikleri İnceleyin</a>
+        <a routerLink="/features" class="btn btn-outline">Features Overview</a>
       </div>
     </div>
   </section>
 
   <section class="features-preview">
     <div class="container">
-      <h2>Neden SNA Platform?</h2>
+      <h2>Why SNA Platform?</h2>
       <div class="features-grid">
         <div class="feature-card" *ngFor="let feature of features">
           <div class="icon">{{ feature.icon }}</div>
