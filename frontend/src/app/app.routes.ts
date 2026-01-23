@@ -12,6 +12,7 @@ import { AboutComponent } from './public/landing/about/about.component';
 import { ContactComponent } from './public/landing/contact/contact.component';
 import { FeaturesComponent } from './public/landing/features/features.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
+import { AuthGuardService } from './core/services/auth-guard.service';
 
 export const routes: Routes = [
   // Public Landing Pages
@@ -38,18 +39,19 @@ export const routes: Routes = [
       {
         path: '',
         component: MainContentComponent,
+        canActivate: [AuthGuardService],
         children: [
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-          { path: 'dashboard', component: DashboardComponent },
-          { path: 'graphlarim', component: GraphlarimComponent },
-          { path: 'settings', component: SettingsComponent },
+          { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuardService] },
+          { path: 'graphlarim', component: GraphlarimComponent, canActivate: [AuthGuardService] },
+          { path: 'settings', component: SettingsComponent, canActivate: [AuthGuardService] },
         ]
       }
     ]
   },
 
   // Workspace (Graf çalışma alanı)
-  { path: 'workspace', component: WorkspaceComponent},
+  { path: 'workspace', component: WorkspaceComponent, canActivate: [AuthGuardService] },
 
   // Fallback
   { path: '**', redirectTo: '' }
