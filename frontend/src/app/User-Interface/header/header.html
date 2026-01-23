@@ -2,14 +2,16 @@
   <div class="header-content">
     <div class="logo-section">
       <div class="logo">
-        <h2>📊 SNA Uygulaması</h2>
+        <h2>
+          <i class="fa-solid fa-circle-nodes me-2"></i>
+          SNA Plateform</h2>
       </div>
     </div>
     <div class="profile-section">
       <div class="profile-dropdown" (click)="toggleDropdown()">
-        <span class="profile-icon">👤</span>
-        <span class="profile-name">{{ isLoggedIn && currentUser ? currentUser.name : 'Menü' }}</span>
-        <span class="dropdown-arrow">▼</span>
+        <i class="fa-solid fa-user-circle"></i>
+        <span class="profile-name">{{ isLoggedIn && currentUser ? currentUser : 'Menü' }}</span>
+        <i class="fa-solid fa-caret-down ms-1"></i>
       </div>
       @if (isDropdownOpen) {
         <div class="dropdown-menu">

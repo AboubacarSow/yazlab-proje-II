@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { AlgorithmsService } from '../../services/algorithms.service';
 import { TopFiveNodeInDegreeResult } from '../../models/algorith.model';
 import { GraphStateService } from '../../core/services/graph.service';
-import { take } from 'rxjs';
+import { filter, switchMap, take } from 'rxjs';
 import { ToastService } from '../../core/utils/toast-service.service';
 import { Graph } from '../../models/graph.model';
 import { PrettyJsonPipe } from "../../pipes/pretty-json.pipe";
 import { PrettyCsvPipe } from "../../pipes/pretty-csv.pipe";
+import { GraphsService } from '../../services/graphs.service';
 
 @Component({
   selector: 'app-data-view',
@@ -28,7 +29,8 @@ export class DataViewComponent {
   edgesCsv:any
   constructor(private algorithmService: AlgorithmsService,
             private graphStateService: GraphStateService,
-            private toastService : ToastService){
+            private toastService : ToastService,
+          private graphApiService:GraphsService) {
             this.getcurrentGraph()
             }
 
@@ -85,5 +87,29 @@ export class DataViewComponent {
       }
     )
   }
+  export() {
+      this.graphStateService.currentGraph$.pipe(
+        take(1),
+        filter((g): g is Graph => !!g),
+        switchMap(graph =>
+          this.graphApiService.exportGraph(graph.id)
+        )
+      ).subscribe({
+        next: response => {
+          const blob = new Blob(
+            [JSON.stringify(response.graph, null, 2)],
+            { type: 'application/json' }
+          );
+
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${response.graph.title}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+        },
+        error: () => this.toastService.error('Unable to export graph')
+      });
+    }
 
 }

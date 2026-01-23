@@ -2,8 +2,8 @@
   width: 250px;
   background: var(--bg-primary, #3d0b69);
   color: var(--text-primary, white);
-  height: calc(100vh - 60px - 32px);
   overflow: auto;
+  height: 100vh;
   box-shadow: var(--shadow, 0 6px 18px rgba(0, 0, 0, 0.15));
   border-right:1px solid var(--border-color, transparent);
 }
@@ -49,8 +49,10 @@
 }
 
 .nav-link.active {
-  background: var(--bg-hover, rgba(255, 255, 255, 0.15));
-  border-left: 4px solid #3498db;
+  background: var(--bg-active, #fff);
+  border: 0.2px solid #e7e8eb;
+  border-left: 4px solid #0a2ab9;
+  color: #0a2ab9;
 }
 
 /* Light theme için beyaz aktif link */

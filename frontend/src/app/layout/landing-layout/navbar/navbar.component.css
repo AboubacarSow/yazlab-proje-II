@@ -31,6 +31,12 @@
   font-size: 28px;
 }
 
+.logo-image {
+  height: 40px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
 .menu-toggle {
   display: none;
   flex-direction: column;
