@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
 import { LoginModel, RegisterModel } from '../../models/auth.model';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, take, tap } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
@@ -31,7 +31,7 @@ export class AuthService {
       tap(response => {
         localStorage.setItem('accessToken', response.accessToken);
         localStorage.setItem('refreshToken', response.refreshToken);
-        this.decodeToken(response.accessToken);
+        this.decodeToken();
         this.isLoggedInSubject.next(true);
         console.log('Login successful', response);
       }),
@@ -42,13 +42,14 @@ export class AuthService {
     return this.authService.register(registerModel);
   }
 
-  decodeToken(token: string): any {
+  decodeToken(): any {
     const access_Token=localStorage.getItem('accessToken');
     if (access_Token) {
       const user= this.jwtHelper.decodeToken(access_Token);
       console.log(user);
       localStorage.setItem('user', JSON.stringify(user));
       this.currentUserSubject.next(user);
+      console.log('Decoded user from token:', user);
       return user;
     }
     return null;
@@ -60,5 +61,7 @@ export class AuthService {
     localStorage.removeItem('user');
     this.isLoggedInSubject.next(false);
     this.currentUserSubject.next(null);
+    console.log('User logged out');
+
   }
 }

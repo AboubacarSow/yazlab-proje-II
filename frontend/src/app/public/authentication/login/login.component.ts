@@ -39,6 +39,10 @@ export class LoginComponent {
       this.authService.login(loginModel).subscribe({
         next: (res) => {
           console.log('Login successful', res);
+          if(this.route.routerState.snapshot.root.queryParams['returnUrl']){
+            this.route.navigateByUrl(this.route.routerState.snapshot.root.queryParams['returnUrl']);
+            return;
+          }
           this.route.navigate(['/']);
         },
         error: (error) => {

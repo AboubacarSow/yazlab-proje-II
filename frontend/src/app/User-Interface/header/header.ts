@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
+import { take } from 'rxjs/internal/operators/take';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -16,14 +17,17 @@ export class Header implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit() {
     this.authService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
     });
-
+    this.authService.currentUser$.pipe(take(1)).subscribe(user => {
+      this.currentUser = user.name;
+      console.log('Current user:', user.name);
+    });
 
   }
 

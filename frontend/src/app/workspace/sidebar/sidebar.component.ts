@@ -182,6 +182,7 @@ export class SidebarComponent implements OnInit{
   getAlgorithmsByCategory(category: AlgorithmCategory) {
       return this.algorithms.filter(a => a.category === category);
   }
+  
   selectAlgorithm(algo: AlgorithmDefinition) {
     this.selectedAlgorithm = algo;
     console.log('selected algo:',this.selectedAlgorithm)

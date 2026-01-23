@@ -43,7 +43,7 @@ export const routes: Routes = [
         children: [
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
           { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuardService] },
-          { path: 'graphlarim', component: GraphlarimComponent, canActivate: [AuthGuardService] },
+          { path: 'graphs', component: GraphlarimComponent, canActivate: [AuthGuardService] },
           { path: 'settings', component: SettingsComponent, canActivate: [AuthGuardService] },
         ]
       }

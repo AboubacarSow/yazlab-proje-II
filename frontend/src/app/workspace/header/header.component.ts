@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AlgorithmResultStorageService } from '../../core/storage/algorithm-result-storage.service';
 import { GraphStateService } from '../../core/services/graph.service';
 import { take } from 'rxjs';
@@ -8,7 +8,7 @@ import { take } from 'rxjs';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -20,12 +20,15 @@ export class HeaderComponent implements OnInit{
 
   @Input() isgraphCreated= false;
   isDropdownOpen = false;
+  isWorkspaceMenuOpen= false;
+  dropdownPosition = { top: '0px', left: '0px' };
 
   //Algorithm Result
   isAlgoResultExist: boolean= false;
+  private hideTimeout: any;
 
   constructor(private algorithmResultStorage: AlgorithmResultStorageService,
-    private graphState: GraphStateService
+    private graphState: GraphStateService, private router : Router
   ){}
 
    ngOnInit(): void {
@@ -44,8 +47,35 @@ export class HeaderComponent implements OnInit{
     this.tabChange.emit(tab);
   }
 
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
+  showDropdown(event: MouseEvent) {
+    if (this.hideTimeout) {
+      clearTimeout(this.hideTimeout);
+    }
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    this.dropdownPosition = {
+      top: `${rect.top +35}px`,
+      left: `${rect.left + 60}px`
+    };
+    this.isWorkspaceMenuOpen = true;
+  }
+
+  hideDropdown() {
+    this.hideTimeout = setTimeout(() => {
+      this.isWorkspaceMenuOpen = false;
+    }, 200);
+  }
+
+  keepDropdownOpen() {
+    if (this.hideTimeout) {
+      clearTimeout(this.hideTimeout);
+    }
+  }
+  manageGraphs(){
+    return this.router.navigate(['user/dashboard']);
+  }
+  saveWorkspace(){
+
   }
 
   closeDropdown() {

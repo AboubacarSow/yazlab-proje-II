@@ -1,6 +1,35 @@
 <div class="workspace-header">
-  <h2 class="title">WORKSPACE</h2>
+   <!-- Workspace Dropdown -->
+  <div class="workspace-menu">
+      <button
+        class="btn workspace-dropdown-btn"
+        (mouseenter)="showDropdown($event)"
+        (mouseleave)="hideDropdown()">
+        <i class="fa-solid fa-gear me-2"></i>
+        Workspace
+        <i class="fa-solid fa-circle-chevron-down ms-2"></i>
+      </button>
 
+      <ul class="workspace-dropdown" *ngIf="isWorkspaceMenuOpen"
+      [style.top]="dropdownPosition.top"
+      [style.left]="dropdownPosition.left"
+      (mouseenter)="keepDropdownOpen()"
+      (mouseleave)="hideDropdown()"
+      >
+        <li>
+          <button class="dropdown-item" (click)="manageGraphs()">
+            <i class="fa-solid fa-diagram-project"></i>
+            Manage Graphs
+          </button>
+        </li>
+        <li>
+          <button class="dropdown-item" (click)="saveWorkspace()">
+            <i class="fa-solid fa-floppy-disk me-2"></i>
+            Save Workspace
+          </button>
+        </li>
+      </ul>
+  </div>
   <div class="tab-buttons" *ngIf="isgraphCreated">
     <button
       [class.active]="activeTab === 'graph'"
@@ -17,7 +46,11 @@
   </div>
   <div class="section d-flex gap-2">
     <button *ngIf="isAlgoResultExist"[class.active]="activeTab === 'algorithmResult'"
-    class="btn algo-result" (click)="switchTab('algorithmResult')"> <i class="fa-regular fa-eye me-2"></i>View Algorithm Results</button>
+    class="btn algo-result" (click)="switchTab('algorithmResult')">
+     <i class="fa-regular fa-eye me-2"></i>View Algorithm Results
+    </button>
+
 
   </div>
+
 </div>
