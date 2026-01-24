@@ -176,6 +176,28 @@
   transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s;
 }
 
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+.empty-state h3 {
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+.empty-state p {
+  margin-bottom: 20px;
+  font-size: 15px;
+}
+.btns-group {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
 .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
 .btn:active { transform: translateY(0); box-shadow: none; }
 

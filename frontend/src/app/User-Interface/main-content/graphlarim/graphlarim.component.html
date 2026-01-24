@@ -1,32 +1,47 @@
 <div class="graphlarim-page">
   <div class="page-header">
     <div>
-      <p class="eyebrow">Kayitli ve ice aktarılan graph koleksiyonu</p>
-      <h2>Graphlarim</h2>
+      <p class="eyebrow">Registered and imported graph collection</p>
+      <h2>My Graphs</h2>
     </div>
     <div class="header-actions">
-      <button class="btn ghost">Filtrele</button>
-      <button class="btn primary">Yeni graph yukle</button>
+      <button class="btn ghost">Filter</button>
+      <button class="btn primary">Upload New Graph</button>
     </div>
   </div>
 
-  <div class="info-banner">
+  <div class="info-banner" *ngIf="graphs.length > 0">
     <div class="info-text">
       <span class="dot created"></span>
-      <span>Olusturdugunuz graphlar</span>
+      <span>Graphs you created</span>
     </div>
     <div class="info-text">
       <span class="dot import"></span>
-      <span>Iceri aktardiginiz graphlar</span>
+      <span>Graphs you imported</span>
     </div>
   </div>
+  <div class="empty-state" *ngIf="graphs.length === 0">
+    <h3>No graphs found</h3>
+    <p>
+      You haven’t created any graphs yet.
+      Only graphs you own are visible here.
+    </p>
+    <div class="btns-group">
+      <button class="btn primary">Create your first graph</button>
+      <button class="btn primary">Import your first graph</button>
 
+    </div>
+  </div>
   <div class="grid">
     <div class="card" *ngFor="let graph of graphs">
       <div class="card-header">
         <div class="title-group">
-          <span class="pill" [class.created]="graph.source === 'created'" [class.import]="graph.source === 'import'">
-            {{ graph.source === 'created' ? 'Olusturuldu' : 'Iceri aktarıldı' }}
+          <span
+            class="pill"
+            [class.created]="graph.source === 'created'"
+            [class.import]="graph.source === 'import'"
+          >
+            {{ graph.source === 'created' ? 'Created' : 'Imported' }}
           </span>
           <h3>{{ graph.title }}</h3>
           <p class="muted">{{ graph.description }}</p>
@@ -36,15 +51,15 @@
 
       <div class="card-body">
         <div class="stat">
-          <span class="label">Dugum</span>
+          <span class="label">Nodes</span>
           <span class="value">{{ graph.nodes }}</span>
         </div>
         <div class="stat">
-          <span class="label">Kenar</span>
+          <span class="label">Edges</span>
           <span class="value">{{ graph.edges }}</span>
         </div>
         <div class="stat">
-          <span class="label">Sahip</span>
+          <span class="label">Owner</span>
           <span class="value">{{ graph.owner }}</span>
         </div>
       </div>
@@ -54,9 +69,9 @@
       </div>
 
       <div class="card-actions">
-        <button class="btn ghost">Goruntule</button>
-        <button class="btn">Analize ac</button>
-        <button class="btn danger ghost">Sil</button>
+        <button class="btn ghost">View</button>
+        <button class="btn">Open Analysis</button>
+        <button class="btn danger ghost">Delete</button>
       </div>
     </div>
   </div>
