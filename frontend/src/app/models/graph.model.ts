@@ -10,6 +10,7 @@ export interface Graph {
   description?: string | null,
   order: number | 0;
   size: number | 0;
+  ownerId?: number | null;
   nodes:Node[];
   edges:Edge[];
 }

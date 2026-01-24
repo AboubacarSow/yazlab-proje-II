@@ -13,6 +13,8 @@ import { ContactComponent } from './public/landing/contact/contact.component';
 import { FeaturesComponent } from './public/landing/features/features.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 import { AuthGuardService } from './core/services/auth-guard.service';
+import { UnauthorizedComponent } from './public/authentication/unauthorized/unauthorized.component';
+import { UserGuardDashboardService } from './core/services/user-guard-dashboard.service';
 
 export const routes: Routes = [
   // Public Landing Pages
@@ -30,6 +32,7 @@ export const routes: Routes = [
   // Auth routes (layout dışında)
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'unauthorized', component: UnauthorizedComponent },
 
   // User-Interface (Authenticated area)
   {

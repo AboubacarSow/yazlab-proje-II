@@ -183,6 +183,7 @@
   border-radius: 12px;
   background: var(--bg-secondary);
   color: var(--text-secondary);
+  margin:auto 0;
 }
 .empty-state h3 {
   color: var(--text-primary);
@@ -192,11 +193,7 @@
   margin-bottom: 20px;
   font-size: 15px;
 }
-.btns-group {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
+
 
 .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
 .btn:active { transform: translateY(0); box-shadow: none; }
