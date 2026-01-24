@@ -24,9 +24,11 @@ export class Header implements OnInit {
     this.authService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
     });
+    this.authService.decodeToken();
     this.authService.currentUser$.pipe(take(1)).subscribe(user => {
+      console.log('Current user ', user);
       this.currentUser = user.name;
-      console.log('Current user:', user.name);
+      console.log('Current user name:', user.name);
     });
 
   }
