@@ -45,9 +45,9 @@ export const routes: Routes = [
         canActivate: [AuthGuardService],
         children: [
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-          { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuardService] },
-          { path: 'graphs', component: GraphlarimComponent, canActivate: [AuthGuardService] },
-          { path: 'settings', component: SettingsComponent, canActivate: [AuthGuardService] },
+          { path: 'dashboard', component: DashboardComponent,canActivate:[UserGuardDashboardService] },
+          { path: 'graphs', component: GraphlarimComponent, canActivate: [UserGuardDashboardService] },
+          { path: 'settings', component: SettingsComponent, canActivate: [UserGuardDashboardService] },
         ]
       }
     ]

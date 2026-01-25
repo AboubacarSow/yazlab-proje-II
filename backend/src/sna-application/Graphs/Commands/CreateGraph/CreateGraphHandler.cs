@@ -4,7 +4,10 @@ using sna_domain.Entities;
 namespace sna_application.Graphs.Commands.CreateGraph;
 
 
-public record CreateGraphCommand(string Title):IRequest<(Guid,string)>;
+public record CreateGraphCommand(string Title) : IRequest<(Guid, string)>
+{
+    public Guid OWnerId{get; set;}
+}
 
 public class CreateGraphCommandValidator : AbstractValidator<CreateGraphCommand>
 {

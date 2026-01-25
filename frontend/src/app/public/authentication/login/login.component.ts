@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { LoginModel } from '../../../models/auth.model';
 import { AuthService } from '../../../core/services/auth.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -27,6 +28,11 @@ export class LoginComponent {
       username: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]]
     });
+    this.authService.isLoggedIn$.pipe(take(1)).subscribe(isloggedIn =>{
+      if(isloggedIn)
+        return this.route.navigate(['/'])
+      return;
+    })
   }
 
   onSubmit() {

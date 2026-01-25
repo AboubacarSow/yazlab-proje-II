@@ -22,7 +22,8 @@ public class EditNodeInGraphEndpoint : ICarterModule
             
         }).WithTags("Graphs.Nodes")
         .WithName("EditNodeInGraph")
-        .Produces<EditNodeInGraphResponse>();
+        .Produces<EditNodeInGraphResponse>()
+        .RequireAuthorization();
         
     }
 

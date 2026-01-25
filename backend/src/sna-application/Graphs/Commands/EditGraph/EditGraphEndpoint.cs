@@ -22,6 +22,7 @@ public class EditGraphEndpoint : ICarterModule
                     : Results.Ok(new EditGraphResponse(request.Graph.Title, request.Graph.Description));
         }).WithTags("Graphs")
         .WithName("EditGraph")
-        .Produces<EditGraphResponse>();
+        .Produces<EditGraphResponse>()
+        .RequireAuthorization();
     }
 }
