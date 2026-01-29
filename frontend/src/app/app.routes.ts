@@ -15,6 +15,8 @@ import { WorkspaceComponent } from './workspace/workspace.component';
 import { AuthGuardService } from './core/services/auth-guard.service';
 import { UnauthorizedComponent } from './public/authentication/unauthorized/unauthorized.component';
 import { UserGuardDashboardService } from './core/services/user-guard-dashboard.service';
+import { SchemaCreationComponent } from './workspace/schema-creation/schema-creation.component';
+import { LayoutComponent } from './workspace/layout/layout.component';
 
 export const routes: Routes = [
   // Public Landing Pages
@@ -29,7 +31,7 @@ export const routes: Routes = [
     ]
   },
 
-  // Auth routes (layout dışında)
+  // Auth routes
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'unauthorized', component: UnauthorizedComponent },
@@ -53,8 +55,15 @@ export const routes: Routes = [
     ]
   },
 
-  // Workspace (Graf çalışma alanı)
-  { path: 'workspace', component: WorkspaceComponent, canActivate: [AuthGuardService] },
+  // Workspace
+  { path: 'workspace',
+    component: LayoutComponent,
+    canActivate: [AuthGuardService],
+    children:[
+      {path:'', component:WorkspaceComponent, canActivate:[AuthGuardService]},
+      {path:'create-schema', component:SchemaCreationComponent,canActivate:[AuthGuardService]},
+    ]},
+
 
   // Fallback
   { path: '**', redirectTo: '' }

@@ -58,6 +58,7 @@ export class GraphStateService {
       })
     );
   }
+
   importGraph(command: ImportGraphCommand) {
   return this.graphsApi.importGraph(command).pipe(
     tap((response: ImportGraphResponse) => {
@@ -65,6 +66,7 @@ export class GraphStateService {
       })
     );
   }
+
   importSnapshot(snapshot: GraphSnapshot){
     return this.graphsApi.importSnapshot(snapshot).pipe(
       tap((graph : Graph)=>{
@@ -79,15 +81,16 @@ export class GraphStateService {
     this.currentGraphSubject.next(cloned);
     localStorage.setItem('currentGraph', JSON.stringify(cloned));
   }
+
   getNodeById$(id: number): Observable<Node | undefined> {
     return this.getCurrentGraphNodes().pipe(
       take(1),
       map(nodes => nodes.find(n => n.id === id))
     );
   }
+
   loadCurrentGraphFromStorage() {
     const raw = localStorage.getItem('currentGraph');
-    console.log('📦 localStorage raw:', raw);
     if (raw) {
       try {
         const parsed = JSON.parse(raw);
@@ -109,6 +112,7 @@ export class GraphStateService {
   getCurrentGraph$(): Observable<Graph | null> {
     return this.currentGraph$;
   }
+
   getCurrentGraphNodes(): Observable<Node[] | []> {
     return this.currentGraph$.pipe(
       map(g => g ? [...g?.nodes]: [])
@@ -138,7 +142,8 @@ export class GraphStateService {
   clear() {
     this.currentGraphSubject.next(null);
   }
-   clearCurrentGraph() {
+
+  clearCurrentGraph() {
     this.currentGraphSubject.next(null);
     localStorage.removeItem('currentGraph');
   }

@@ -6,6 +6,8 @@ export enum AlgorithmCategory {
   Clustering = 'clustering'
 }
 
+
+
 export interface AlgorithmDefinition {
   key: string;
   label: string;

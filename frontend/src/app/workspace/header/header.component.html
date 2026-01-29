@@ -11,10 +11,10 @@
       </button>
 
       <ul class="workspace-dropdown" *ngIf="isWorkspaceMenuOpen"
-      [style.top]="dropdownPosition.top"
-      [style.left]="dropdownPosition.left"
-      (mouseenter)="keepDropdownOpen()"
-      (mouseleave)="hideDropdown()"
+        [style.top]="dropdownPosition.top"
+        [style.left]="dropdownPosition.left"
+        (mouseenter)="keepDropdownOpen()"
+        (mouseleave)="hideDropdown()"
       >
         <li>
           <button class="dropdown-item" (click)="manageGraphs()">
@@ -39,18 +39,16 @@
     </button>
     <button
       [class.active]="activeTab === 'data'"
-      (click)="switchTab('data')"
+      (click)="switchTab()"
       class="tab-btn">
-      <i class="fa-solid fa-database me-2"></i> Data
+      <i class="fa-solid fa-database me-2"></i>
     </button>
   </div>
   <div class="section d-flex gap-2">
-    <button *ngIf="isAlgoResultExist"[class.active]="activeTab === 'algorithmResult'"
+    <button *ngIf="isAlgoResultExist" [class.active]="activeTab === 'algorithmResult'"
     class="btn algo-result" (click)="switchTab('algorithmResult')">
      <i class="fa-regular fa-eye me-2"></i>View Algorithm Results
     </button>
-
-
   </div>
 
 </div>
