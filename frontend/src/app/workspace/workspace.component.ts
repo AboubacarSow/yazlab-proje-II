@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from './header/header.component';
 import { GraphViewComponent } from './graph-view/graph-view.component';
-import { SchemaCreationComponent } from './schema-creation/schema-creation.component';
 import { DataViewComponent } from './data-view/data-view.component';
 import { GraphStateService } from '../core/services/graph.service';
 import { Guid } from '../models/graph.model';
@@ -14,7 +12,7 @@ import { AlgorithmResultComponent } from "./algorithm-result/algorithm-result.co
 
 @Component({
   selector: 'app-workspace',
-  imports: [CommonModule, HeaderComponent, GraphViewComponent, SchemaCreationComponent,
+  imports: [CommonModule, GraphViewComponent,
     DataViewComponent, SidebarComponent, AlgorithmResultComponent],
   templateUrl: './workspace.component.html',
   styleUrl: './workspace.component.css'
@@ -23,11 +21,11 @@ export class WorkspaceComponent implements OnInit, OnDestroy  {
 
 
   activeTab: 'graph' | 'data'| 'algorithmResult' = 'graph';
-
   graphCreated = false;
   currentGraphId?: Guid;
 
   private destroy$ = new Subject<void>()
+  
   constructor(private graphStateService: GraphStateService){
     console.log(`Workspace initiated. GraphCreate value: ${this.graphCreated}`);
   }
@@ -37,8 +35,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy  {
 
     this.graphStateService.currentGraph$.subscribe(graph=>{
       if(!graph){
-        this.graphCreated=false;
-        this.currentGraphId=undefined
+        this.graphCreated = false;
+        this.currentGraphId = undefined
         return;
       }
       this.graphCreated=true;

@@ -1,0 +1,6 @@
+<div class="workspace-container">
+  <app-header [activeTab]="activeTab" (tabChange)="onTabChange($event)"
+    [isgraphCreated]="graphCreated" (reset)="onResetRequested()">
+  </app-header>
+  <router-outlet></router-outlet>
+</div>

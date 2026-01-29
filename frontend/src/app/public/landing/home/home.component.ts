@@ -35,10 +35,10 @@ export class HomeComponent implements OnInit {
   }
 
   get ctaLink(): string {
-    return this.isLoggedIn ? '/workspace' : '/login';
+    return this.isLoggedIn ? '/user/dashboard' : '/login';
   }
 
   get ctaText(): string {
-    return this.isLoggedIn ? '🚀 Go to Workspace' : '🚀 Get Started';
+    return this.isLoggedIn ? '🚀 Manage  ' : '🚀 Get Started';
   }
 }

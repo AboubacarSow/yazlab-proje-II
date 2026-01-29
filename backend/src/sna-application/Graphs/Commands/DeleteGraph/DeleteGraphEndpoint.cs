@@ -14,6 +14,7 @@ public class DeleteGraphEndpoint : ICarterModule
             return Results.NoContent();
         }).WithTags("Graphs")
         .WithName("DeleteGraph")
-        .Produces<NoContent>();
+        .Produces<NoContent>()
+        .RequireAuthorization();
     }
 }

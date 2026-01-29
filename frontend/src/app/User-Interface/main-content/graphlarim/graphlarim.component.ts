@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from "@angular/router";
 
 type GraphItem = {
   title: string;
@@ -15,12 +16,12 @@ type GraphItem = {
 @Component({
   selector: 'app-graphlarim',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './graphlarim.component.html',
   styleUrl: './graphlarim.component.css'
 })
 export class GraphlarimComponent {
   graphs: GraphItem[] = [
-    
+
   ];
 }

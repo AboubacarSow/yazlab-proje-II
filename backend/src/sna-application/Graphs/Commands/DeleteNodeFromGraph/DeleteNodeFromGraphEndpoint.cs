@@ -13,6 +13,7 @@ public class DeleteNodeFromGraphEndpoint : ICarterModule
       
         }).WithTags("Graphs.Nodes")
         .WithName("DeleteNodeFromGraph")
-        .Produces<DeleteNodeFromGraphResponse>();
+        .Produces<DeleteNodeFromGraphResponse>()
+        .RequireAuthorization();
     }
 }

@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { AlgorithmResultStorageService } from '../../core/storage/algorithm-result-storage.service';
 import { GraphStateService } from '../../core/services/graph.service';
 import { take } from 'rxjs';
+import { TabStateService } from '../../core/services/tab-state.service';
+import { Tabs } from '../../core/utils/tabs-enum';
 
 @Component({
   selector: 'app-header',
@@ -15,7 +17,6 @@ import { take } from 'rxjs';
 export class HeaderComponent implements OnInit{
 
   @Input() activeTab: 'graph' | 'data' | 'algorithmResult' = 'graph';
-  @Output() tabChange = new EventEmitter<'graph' | 'data' | 'algorithmResult'>();
   @Output() reset = new EventEmitter<void>();
 
   @Input() isgraphCreated= false;
@@ -28,23 +29,27 @@ export class HeaderComponent implements OnInit{
   private hideTimeout: any;
 
   constructor(private algorithmResultStorage: AlgorithmResultStorageService,
-    private graphState: GraphStateService, private router : Router
+    private graphState: GraphStateService, private router : Router,
+    private tabStateService : TabStateService
   ){}
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     if(!this.isgraphCreated) return;
     this.graphState.currentGraph$.pipe(take(1)).subscribe({
       next:graph=>{
         if(!graph) return;
         this.isAlgoResultExist = this.algorithmResultStorage.isAlgorithmExist(graph.id);
+        console.log('algo result value:',this.isAlgoResultExist)
       },
       error: err=>{
         console.error('An error occured while retrieving graph from localstorage',err)
       }
     })
   }
-  switchTab(tab: 'graph' | 'data' | 'algorithmResult') {
-    this.tabChange.emit(tab);
+
+  switchTab(tab : Tabs) {
+    this.tabStateService.setTab(tab);
+    const current =Tabs.Data
   }
 
   showDropdown(event: MouseEvent) {
