@@ -20,7 +20,7 @@ builder.Host.UseSerilog((context, configuration) =>
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddApplication();
+builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddAuthorization();
 //builder.Services.AddScoped<CustomExceptionMiddleware>();
 
@@ -53,7 +53,9 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 
 app.UseCors("AllowFrontend");
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapCarter();
 app.MapControllers();

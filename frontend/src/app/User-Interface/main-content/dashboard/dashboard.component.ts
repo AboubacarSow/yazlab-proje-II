@@ -1,20 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Graph } from '../../../models/graph.model';
+import { GraphStateService } from '../../../core/services/graph.service';
+import { take } from 'rxjs';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent {
-  stats = [
-    { title: 'Toplam Düğüm', value: 125, icon: '🔵', color: '#3498db' },
-    { title: 'Toplam Kenar', value: 243, icon: '🔗', color: '#2ecc71' },
-    { title: 'Bağlantı Sayısı', value: 18, icon: '🌐', color: '#e74c3c' },
-    { title: 'Ortalama Derece', value: 3.9, icon: '📊', color: '#f39c12' }
-  ];
+export class DashboardComponent  implements OnInit{
+
 
   recentActivities = [
     { action: 'Yeni düğüm eklendi', node: 'Node-45', time: '5 dk önce' },
@@ -22,4 +21,24 @@ export class DashboardComponent {
     { action: 'Algoritma çalıştırıldı', node: 'BFS', time: '25 dk önce' },
     { action: 'Graf kaydedildi', node: 'Graph-1', time: '1 saat önce' }
   ];
+
+  currentopenedGraph: Graph | null = null;
+  recentOpenedGraphs: Graph[] = [];
+  stats:any= {
+    totalGraphs :12,
+    totalNodes: 34,
+    totalEdges:23
+  };
+
+  constructor(private graphStateService: GraphStateService){
+
+  }
+  ngOnInit(): void {
+    this.graphStateService.currentGraph$.pipe(take(1)).subscribe(graph=>{
+      if(graph){
+        this.currentopenedGraph= graph;
+        return;
+      }
+    })
+  }
 }

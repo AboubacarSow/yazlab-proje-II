@@ -1,15 +1,21 @@
+using System.Security.Claims;
+
 namespace sna_application.Graphs.Queries.GetAllGraphs;
 
-public record GetAllGraphsQuery : IRequest<List<GraphDto>>;
+public record GetAllGraphsQuery : IRequest<List<GraphsDto>>;
 
 internal class GetAllGraphsHandler(IGraphRepository _repository) :
-IRequestHandler<GetAllGraphsQuery, List<GraphDto>>
+IRequestHandler<GetAllGraphsQuery, List<GraphsDto>>
 {
-    public async Task<List<GraphDto>> Handle(GetAllGraphsQuery request, CancellationToken cancellationToken)
+    public async Task<List<GraphsDto>> Handle(GetAllGraphsQuery request, CancellationToken cancellationToken)
     {
         var entities = await _repository.GetAllGraphsAsync(false);
         var dtos = entities.Select(entity=>
-        new GraphDto(entity.Id, entity.Title, entity.Description!, entity.Order, entity.Size)
+        new GraphsDto(entity.Id, entity.Title, entity.Description!,
+         entity.Order, entity.Size,
+         entity.OwnerId!.Value,
+         entity.CreatedOn,
+         entity.LastUpdatedAt)
         {
             Nodes= entity.Nodes.ToList().Adapt<List<NodeDto>>(),
             Edges = entity.Edges.ToList().Adapt<List<EdgeDto>>()
@@ -17,3 +23,5 @@ IRequestHandler<GetAllGraphsQuery, List<GraphDto>>
         return dtos;
     }
 }
+
+

@@ -1,8 +1,8 @@
 <div class="workspace-content" *ngIf="graphCreated">
     <app-sidebar></app-sidebar>
     <main class="workspace-main">
-      <app-graph-view *ngIf="activeTab === 'graph'" ></app-graph-view>
-      <app-data-view *ngIf="activeTab === 'data'"></app-data-view>
-      <app-algorithm-result *ngIf="activeTab==='algorithmResult'"></app-algorithm-result>
+      <app-graph-view *ngIf="activeTab === Tabs.Graph" ></app-graph-view>
+      <app-data-view *ngIf="activeTab === Tabs.Data"></app-data-view>
+      <app-algorithm-result *ngIf="activeTab===Tabs.AlgoResult"></app-algorithm-result>
     </main>
 </div>

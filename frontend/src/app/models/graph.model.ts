@@ -10,9 +10,21 @@ export interface Graph {
   description?: string | null,
   order: number | 0;
   size: number | 0;
-  ownerId?: number | null;
+  ownerId?: Guid | null;
   nodes:Node[];
   edges:Edge[];
+}
+export interface GraphItem{
+  id: Guid;
+  title: string,
+  description?: string | null,
+  order: number | 0;
+  size: number | 0;
+  ownerId?: Guid | null;
+  nodes:Node[];
+  edges:Edge[];
+  createdOn:Date,
+  lastUpdatedAt:Date
 }
 export interface ImportGraph {
   title: string;
@@ -115,6 +127,9 @@ export interface GraphLink extends d3.SimulationLinkDatum<GraphNode> {
   domain: Edge
 }
 
+export interface GetGraphByIdResponse{
+  graph: Graph
+}
 
 
 

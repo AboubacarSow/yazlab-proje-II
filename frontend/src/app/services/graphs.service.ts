@@ -1,4 +1,5 @@
-import {EditGraphCommand, EditGraphRequest, EditGraphResponse, ExportGraphResponse, GetGraphSummaryResponse, GraphSnapshot, Guid, ImportGraphCommand, ImportGraphRequest, ImportGraphResponse } from './../models/graph.model';
+import {EditGraphCommand, EditGraphRequest, EditGraphResponse,
+   ExportGraphResponse, GetGraphByIdResponse, GetGraphSummaryResponse, GraphSnapshot, Guid, ImportGraphCommand, ImportGraphRequest, ImportGraphResponse } from './../models/graph.model';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -6,6 +7,7 @@ import { Observable } from 'rxjs';
 import {
   Graph,
   CreateGraphDto,
+  GraphItem
 } from '../models/graph.model';
 
 @Injectable({
@@ -16,6 +18,7 @@ export class GraphsService {
 
   // Graph endpoints
   private readonly GET_ALL_GRAPHS = this.BASE_URL
+  private readonly GET_ALL_GRAPHS_BY_USER = (userId:Guid)=>`${this.BASE_URL}/userId=${userId}`
   private readonly POST_GRAPH = this.BASE_URL
   private readonly GET_GRAPH = (graphId: Guid) => `${this.BASE_URL}/${graphId}`
   private readonly DEL_GRAPH = (graphId: Guid) => `${this.BASE_URL}/${graphId}`
@@ -35,14 +38,19 @@ export class GraphsService {
   getAllGraphs(): Observable<{ graphs: Graph[] }> {
     return this.http.get<{ graphs: Graph[] }>(this.GET_ALL_GRAPHS);
   }
+  // Graph operations
+  getAllGraphsByUser(userId : Guid): Observable<{ graphs: GraphItem[] }> {
+    return this.http.get<{ graphs: GraphItem[] }>(this.GET_ALL_GRAPHS_BY_USER(userId));
+  }
 
   createGraph(graphDto: CreateGraphDto): Observable<{ id: Guid; title: string }> {
     return this.http.post<{ id: Guid; title: string }>(this.POST_GRAPH, { graph: graphDto });
   }
 
-  getGraph(graphId: Guid): Observable<{ graph: Graph }> {
-    return this.http.get<{ graph: Graph }>(this.GET_GRAPH(graphId));
+  getGraph(graphId: Guid): Observable<GetGraphByIdResponse> {
+    return this.http.get<GetGraphByIdResponse>(this.GET_GRAPH(graphId));
   }
+
 
   deleteGraph(graphId: Guid): Observable<void> {
     return this.http.delete<void>(this.DEL_GRAPH(graphId));
@@ -52,7 +60,8 @@ export class GraphsService {
     const payload: ImportGraphRequest = {
       importGraph: command
     };
-    return this.http.post<ImportGraphResponse>(this.IMPORT_GRAPH, payload)
+    return this.http.post<ImportGraphResponse>(this.IMPORT_GRAPH,
+       payload)
   }
 
   importSnapshot(snapshot: GraphSnapshot) : Observable<Graph>{

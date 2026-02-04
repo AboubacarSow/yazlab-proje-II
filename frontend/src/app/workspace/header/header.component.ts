@@ -15,8 +15,8 @@ import { Tabs } from '../../core/utils/tabs-enum';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit{
-
-  @Input() activeTab: 'graph' | 'data' | 'algorithmResult' = 'graph';
+  Tabs= Tabs
+  activeTab: Tabs = Tabs.Graph;
   @Output() reset = new EventEmitter<void>();
 
   @Input() isgraphCreated= false;
@@ -28,10 +28,13 @@ export class HeaderComponent implements OnInit{
   isAlgoResultExist: boolean= false;
   private hideTimeout: any;
 
+
   constructor(private algorithmResultStorage: AlgorithmResultStorageService,
     private graphState: GraphStateService, private router : Router,
     private tabStateService : TabStateService
-  ){}
+  ){
+
+  }
 
   ngOnInit(): void {
     if(!this.isgraphCreated) return;
@@ -45,11 +48,20 @@ export class HeaderComponent implements OnInit{
         console.error('An error occured while retrieving graph from localstorage',err)
       }
     })
+
+    this.tabStateService.currentTab$.subscribe(tab=>{
+      if(!tab){
+        this.activeTab = Tabs.Graph
+      }
+      else{
+        this.activeTab = tab
+        console.log(this.activeTab)
+      }
+    })
   }
 
   switchTab(tab : Tabs) {
     this.tabStateService.setTab(tab);
-    const current =Tabs.Data
   }
 
   showDropdown(event: MouseEvent) {

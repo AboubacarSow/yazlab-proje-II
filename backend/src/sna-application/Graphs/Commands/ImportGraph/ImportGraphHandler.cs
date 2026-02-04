@@ -13,6 +13,7 @@ public class ImportGraphCommand: IRequest<GraphDto>
 {
     public string Title{get;set;}=null!;
     public string? Description {get;set;}
+    public Guid OwnerId {get;set;}
     public List<NodeImportDto> Nodes{get;set;}=[];
     public List<EdgeImportDto> Edges {get;set;} =[];
 }
@@ -121,7 +122,7 @@ internal class ImportGraphHanlder(IGraphRepository graphRepository, IUnitOfWork 
 {
     public async Task<GraphDto> Handle(ImportGraphCommand request, CancellationToken cancellationToken)
     {
-        var graph = Graph.Create(request.Title);
+        var graph = Graph.Create(request.Title,request.OwnerId);
         if(!string.IsNullOrEmpty(request.Description)) 
             graph.Description = request.Description;
         var nodes = new List<Node>();
@@ -160,7 +161,7 @@ internal class ImportGraphHanlder(IGraphRepository graphRepository, IUnitOfWork 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         var entity= await graphRepository.GetGraphByIdAsync(graph.Id,false)?? 
         throw new NotFoundException("Graph",graph.Id);
-        var graphDto = new GraphDto(entity.Id, entity.Title, entity.Description!, entity.Order, entity.Size)
+        var graphDto = new GraphDto(entity.Id, entity.Title, entity.Description!, entity.Order, entity.Size, entity.OwnerId!.Value)
         {
             Nodes= entity.Nodes.ToList().Adapt<List<NodeDto>>(),
             Edges = entity.Edges.ToList().Adapt<List<EdgeDto>>()

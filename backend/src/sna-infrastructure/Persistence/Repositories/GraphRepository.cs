@@ -22,6 +22,17 @@ internal class GraphRepository(GraphVDbContext context)
         return await graphs.ToListAsync();
     }
 
+    public async Task<List<Graph>> GetAllGraphsByUserAsync(Guid userId, bool trackChChanges)
+    {
+         IQueryable<Graph> query = _context.Graphs;
+        if(!trackChChanges) 
+            query= query.AsNoTracking();
+        var graphs= query.Include(g=>g.Nodes)
+                        .Include(g=>g.Edges)
+                        .Where(g=>g.OwnerId==userId);
+        return await graphs.ToListAsync();
+    }
+
     public async Task<Graph?> GetGraphByIdAsync(Guid graphId, bool trackChChanges)
     {
         IQueryable<Graph> query = _context.Graphs;

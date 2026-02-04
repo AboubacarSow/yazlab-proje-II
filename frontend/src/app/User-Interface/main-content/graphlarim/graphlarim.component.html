@@ -3,8 +3,7 @@
     <h3>No Graphs Found</h3>
     <p>You have not created or imported any graphs yet.</p>
     <div class="d-flex gap-2 justify-content-center">
-      <a class="btn primary" routerLink="/workspace/create-graph"> <i class="fa-solid fa-plus"></i> Create New Graph</a>
-      <button class="btn secondary" onclick="importGraph()"> <i class="fa-solid fa-file-import"></i> Import Graph</button>
+      <a class="btn primary" routerLink="/workspace/create-schema"> <i class="fa-solid fa-plus"></i> Create or Import a Graph</a>
     </div>
   </div>
 
@@ -12,65 +11,53 @@
   <div class="page-header" *ngIf="graphs.length>0">
     <div>
       <p class="eyebrow">Registered and imported graph collection</p>
-      <h2>My Graphs</h2>
+      <div class="d-flex gap-2">
+        <h2>My Graphs</h2>
+      </div>
     </div>
     <div class="d-flex gap-2" >
-      <button class="btn primary"> <i class="fa-solid fa-plus"></i> Create New Graph</button>
-      <button class="btn secondary"> <i class="fa-solid fa-file-import"></i> Import Graph</button>
+      <a class="btn primary" routerLink="/workspace/create-schema"> <i class="fa-solid fa-plus"></i> Create or Import a Graph</a>
     </div>
   </div>
 
-  <div class="info-banner" *ngIf="graphs.length > 0">
-    <div class="info-text">
-      <span class="dot created"></span>
-      <span>Graphs you created</span>
-    </div>
-    <div class="info-text">
-      <span class="dot import"></span>
-      <span>Graphs you imported</span>
-    </div>
-  </div>
+
   <div class="grid">
-    <div class="card" *ngFor="let graph of graphs">
-      <div class="card-header">
-        <div class="title-group">
-          <span
-            class="pill"
-            [class.created]="graph.source === 'created'"
-            [class.import]="graph.source === 'import'"
-          >
-            {{ graph.source === 'created' ? 'Created' : 'Imported' }}
-          </span>
-          <h3>{{ graph.title }}</h3>
-          <p class="muted">{{ graph.description }}</p>
-        </div>
-        <div class="meta">{{ graph.updatedAt }}</div>
+  <div class="card" *ngFor="let graph of graphs">
+    <div class="card-header">
+      <div class="title-group">
+        <h3 class="text-center">{{ graph.title }}</h3>
+        <p class="muted text-center">{{ graph.description }}</p>
       </div>
 
-      <div class="card-body">
-        <div class="stat">
-          <span class="label">Nodes</span>
-          <span class="value">{{ graph.nodes }}</span>
-        </div>
-        <div class="stat">
-          <span class="label">Edges</span>
-          <span class="value">{{ graph.edges }}</span>
-        </div>
-        <div class="stat">
-          <span class="label">Owner</span>
-          <span class="value">{{ graph.owner }}</span>
-        </div>
-      </div>
-
-      <div class="tags">
-        <span class="tag" *ngFor="let tag of graph.tags">{{ tag }}</span>
-      </div>
-
-      <div class="card-actions">
-        <button class="btn ghost">View</button>
-        <button class="btn">Open Analysis</button>
-        <button class="btn danger ghost">Delete</button>
+      <div class="meta-group">
+        <span class="meta">
+          Created · <span style="color: blueviolet;">{{ graph.createdOn | date: 'mediumDate' }}</span>
+        </span>
+        <span class="meta">
+          Updated · <span style="color: blueviolet;">{{ graph.lastUpdatedAt | date: 'mediumDate' }}</span>
+        </span>
       </div>
     </div>
+
+    <div class="card-body">
+      <div class="stat">
+        <span class="label">Nodes : </span>
+        <span class="value" style="color: blueviolet;">{{ graph.order }}</span>
+      </div>
+
+      <div class="stat">
+        <span class="label">Edges : </span>
+        <span class="value" style="color: blueviolet;">{{ graph.size }}</span>
+      </div>
+    </div>
+
+    <div class="card-actions">
+      <button class="btn" (click)="loadGraph(graph.id)">Open Analysis</button>
+      <button class="btn danger ghost" (click)="deleteGraph(graph.id)">
+        Delete
+      </button>
+    </div>
   </div>
+</div>
+
 </div>

@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace sna_application.Graphs.Commands.AddNodeToGraph;
 
@@ -10,8 +11,12 @@ public class AddNodeToGraphEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/graphs/{id:guid}/nodes", async ([FromRoute]Guid id, [FromBody]AddNodeToGraphRequest request, ISender sender) =>
+        app.MapPost("api/graphs/{id:guid}/nodes", async ([FromRoute]Guid id,
+         [FromBody]AddNodeToGraphRequest request, 
+         ISender sender, ClaimsPrincipal claims) =>
         {
+            var ownerId= claims.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            
             if(id!=request.Node.GraphId) return Results.BadRequest("Ids mismatch");
             var result = await sender.Send(request.Node);
 

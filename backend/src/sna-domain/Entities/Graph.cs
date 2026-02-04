@@ -36,14 +36,28 @@ public class Graph
         Id=Guid.NewGuid();
         Title= title;
     }
+    private Graph(string title, Guid ownerId) 
+    {
+        Id=Guid.NewGuid();
+        Title= title;
+        this.OwnerId= ownerId;
+    }
     private Graph(string title, string? description)
     {
         Id=Guid.NewGuid();
         Title= title;
         Description = description;
     }
-    public static Graph Create(string title)=> new(title);
+    private Graph(string title, string? description, Guid ownerId)
+    {
+        Id=Guid.NewGuid();
+        Title= title;
+        Description = description;
+        OwnerId = ownerId;
+    }
+    public static Graph Create(string title,Guid ownerId)=> new(title,ownerId);
     public static Graph Create(string title, string? description)=>new(title,description);
+    public static Graph Create(string title, string? description, Guid ownerId)=>new(title,description,ownerId);
     public void Touch() => LastUpdatedAt = DateTime.UtcNow;
 
     #region Nodes operations

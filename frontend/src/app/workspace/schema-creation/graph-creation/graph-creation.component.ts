@@ -4,6 +4,7 @@ import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GraphStateService } from '../../../core/services/graph.service';
+import { Router } from '@angular/router';
 
 
 
@@ -22,7 +23,7 @@ export class GraphCreationComponent {
   loading = false;
   constructor(private formBuilder: FormBuilder,
     private dialogRef : DialogRef<Graph>,
-    private graphService : GraphStateService
+    private graphService : GraphStateService,private router: Router
   ){
     this.graphCreationForm= this.formBuilder.group({
       title: ['', Validators.required]
@@ -50,6 +51,7 @@ export class GraphCreationComponent {
         };
         this.graphCreationForm.reset();
         this.dialogRef.close(graph);
+        this.router.navigate(['/workspace'])
       },
       error: (err) => {
         this.loading = false;

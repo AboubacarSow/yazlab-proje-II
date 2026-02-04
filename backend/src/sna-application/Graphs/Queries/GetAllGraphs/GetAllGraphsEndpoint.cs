@@ -1,6 +1,6 @@
 namespace sna_application.Graphs.Queries.GetAllGraphs;
 
-public record GetAllGraphsResponse(List<GraphDto>? Graphs);
+public record GetAllGraphsResponse(List<GraphsDto>? Graphs);
 
 public class GetAllGraphsEndpoint : ICarterModule
 {
@@ -13,6 +13,7 @@ public class GetAllGraphsEndpoint : ICarterModule
         }).WithName("GetAllGraphsAsync")
         .WithTags("Graphs")
         .WithDescription("Retrieves all graphs")
-        .Produces<GetAllGraphsResponse>();
+        .Produces<GetAllGraphsResponse>()
+        .RequireAuthorization();
     }
 }

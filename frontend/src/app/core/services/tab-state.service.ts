@@ -15,7 +15,7 @@ export class TabStateService {
     this.currentTabSubject.next(tab);
     localStorage.setItem('currentTab',JSON.stringify(tab));
   }
-  
+
   getCurrentTab() : Observable<Tabs | null>{
     return this.currentTab$
   }

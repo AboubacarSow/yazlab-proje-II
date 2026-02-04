@@ -5,6 +5,7 @@ import { Graph, ImportGraph } from '../../../models/graph.model';
 import { NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { validateImportGraph } from '../../../core/validators/graph.import.validator';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-import-graph',
@@ -23,7 +24,7 @@ export class ImportGraphComponent {
   error?: string;
   loading = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,private router : Router) {
     this.graphImport = this.fb.group({});
   }
 
@@ -77,10 +78,12 @@ export class ImportGraphComponent {
       next: response => {
         this.graphState.setCurrentGraph(response.graph);
         this.dialogRef.close(response.graph);
+        this.router.navigate(['/workspace'])
       },
       error: err => {
         this.loading = false;
         this.error = err?.error?.message ?? 'Import failed';
+        console.error(err)
       }
     });
   }

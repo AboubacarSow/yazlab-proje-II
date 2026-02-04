@@ -16,7 +16,7 @@ internal class DeleteNodeFromGraphHandler(IGraphRepository graphRepository, IUni
         await unitOfWork.SaveChangesAsync(cancellationToken);
         var entity = await graphRepository.GetGraphByIdAsync(request.GraphId,false) ??
         throw new NotFoundException($"Graph with Id:{request.GraphId} not found");
-        var graphDto = new GraphDto(entity.Id, entity.Title, entity.Description!, entity.Order, entity.Size)
+        var graphDto = new GraphDto(entity.Id, entity.Title, entity.Description!, entity.Order, entity.Size,entity.OwnerId!.Value)
         {
             Nodes= entity.Nodes.ToList().Adapt<List<NodeDto>>(),
             Edges = entity.Edges.ToList().Adapt<List<EdgeDto>>()

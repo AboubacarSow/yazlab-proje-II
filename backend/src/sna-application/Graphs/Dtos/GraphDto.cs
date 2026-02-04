@@ -3,7 +3,21 @@ public record GraphDto(Guid Id,
                     string Title,
                     string Description,
                     int Order,
-                    int Size
+                    int Size,
+                    Guid OwnerId
+                    )
+{
+    public List<NodeDto> Nodes{get;set;}=[];
+    public List<EdgeDto> Edges{get;set;} = [];
+}
+public record GraphsDto(Guid Id, 
+                    string Title,
+                    string Description,
+                    int Order,
+                    int Size,
+                    Guid OwnerId,
+                    DateTime CreatedOn,
+                    DateTime LastUpdatedAt
                     )
 {
     public List<NodeDto> Nodes{get;set;}=[];

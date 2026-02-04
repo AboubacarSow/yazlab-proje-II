@@ -22,7 +22,7 @@ internal class CreateGraphHandler(IGraphRepository _graphRepo, IUnitOfWork _unit
 {
     public async Task<(Guid, string)> Handle(CreateGraphCommand request, CancellationToken cancellationToken)
     {
-        var graph = Graph.Create(request.Title);
+        var graph = Graph.Create(request.Title,request.OWnerId);
         await _graphRepo.AddGraphAsync(graph);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         var (Id, Title) = (graph.Id,graph.Title);

@@ -10,8 +10,7 @@ import { map, take } from 'rxjs';
 export class UserGuardDashboardService {
 
   constructor(private authService: AuthService,
-    private router: Router,
-    private graphStateService: GraphStateService) {
+    private router: Router) {
 
      }
 
