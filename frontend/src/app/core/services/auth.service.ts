@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
 import { LoginModel, RegisterModel } from '../../models/auth.model';
-import { BehaviorSubject, map, Observable, take, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
@@ -15,8 +15,7 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<any | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-
-  constructor(private authService: AuthenticationService, private jwtHelper: JwtHelperService) {
+  constructor(private authService: AuthenticationService, private jwtHelper : JwtHelperService) {
     const token = localStorage.getItem('accessToken');
     if(token){
       this.isLoggedInSubject.next(true);
@@ -33,7 +32,6 @@ export class AuthService {
         localStorage.setItem('refreshToken', response.refreshToken);
         this.decodeToken();
         this.isLoggedInSubject.next(true);
-        console.log('Login successful', response);
       }),
       map(response => response.accessToken)
     );
@@ -49,7 +47,6 @@ export class AuthService {
       console.log(user);
       localStorage.setItem('user', JSON.stringify(user));
       this.currentUserSubject.next(user);
-      console.log('Decoded user from token:', user);
       return user;
     }
     return null;

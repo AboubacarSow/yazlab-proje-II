@@ -12,7 +12,6 @@ import { RouterOutlet } from "@angular/router";
 export class LayoutComponent implements OnInit {
 
   graphCreated = false;
-  activeTab: 'graph' | 'data'| 'algorithmResult' = 'graph';
 
   constructor(private graphStateService: GraphStateService){
 
@@ -29,13 +28,9 @@ export class LayoutComponent implements OnInit {
     })
   }
 
-  onTabChange(tab: 'graph' | 'data' | 'algorithmResult') {
-    this.activeTab = tab;
-  }
   onResetRequested() {
     this.graphStateService.clearCurrentGraph();
     this.graphCreated = false;
-    this.activeTab = 'graph';
   }
 
 }

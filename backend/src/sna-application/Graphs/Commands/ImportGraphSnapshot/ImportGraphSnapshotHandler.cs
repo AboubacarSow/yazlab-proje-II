@@ -11,7 +11,10 @@ public record ImportGraphSnapshotCommand(
     string Title,
     string? Description,
     List<NodeSnapshotDto> Nodes,
-    List<EdgeSnapshotDto> Edges): IRequest<GraphDto>;
+    List<EdgeSnapshotDto> Edges): IRequest<GraphDto>
+{
+    public Guid OwnerId {get;set;}
+}
 
 public class ImportGraphSnapshotCommandValidator
     : AbstractValidator<ImportGraphSnapshotCommand>
@@ -65,9 +68,9 @@ internal class ImportGraphSnapshotHandler(
     {
         var graph = Graph.Create(
             request.Title,
-            request.Description
+            request.Description,
+            request.OwnerId
         );
-
         var nodeMap = new Dictionary<int, Node>();
 
         foreach (var nodeDto in request!.Nodes)
@@ -91,7 +94,7 @@ internal class ImportGraphSnapshotHandler(
         await unitOfWork.SaveChangesAsync(cancellationToken);
         var entity = await graphRepository.GetGraphByIdAsync(graph.Id, false)??
         throw new FailedToImportGraphSnapshotException("Import Graph Snapshot Failed");
-        return  new GraphDto(entity.Id, entity.Title, entity.Description!, entity.Order, entity.Size)
+        return  new GraphDto(entity.Id, entity.Title, entity.Description!, entity.Order, entity.Size,entity.OwnerId!.Value)
         {
             Nodes= entity.Nodes.ToList().Adapt<List<NodeDto>>(),
             Edges = entity.Edges.ToList().Adapt<List<EdgeDto>>()

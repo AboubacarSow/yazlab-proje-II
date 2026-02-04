@@ -27,8 +27,8 @@ export class Header implements OnInit {
     this.authService.decodeToken();
     this.authService.currentUser$.pipe(take(1)).subscribe(user => {
       console.log('Current user ', user);
-      this.currentUser = user.name;
-      console.log('Current user name:', user.name);
+      this.currentUser = user.fullname;
+      console.log('Current user name:', user.fullname);
     });
 
   }

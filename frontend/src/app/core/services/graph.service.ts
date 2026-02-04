@@ -39,7 +39,9 @@ export class GraphStateService {
   graphLinks$ = this.visualizationGraph$.pipe(map(g => g.links));
 
   // End of Visualization settings
-  constructor(private graphsApi: GraphsService) {}
+  constructor(private graphsApi: GraphsService) {
+    this.loadCurrentGraphFromStorage();
+  }
 
   /** CREATE GRAPH */
   createGraph(title: string) {
@@ -94,7 +96,7 @@ export class GraphStateService {
     if (raw) {
       try {
         const parsed = JSON.parse(raw);
-        console.log('✅ Parsed from localStorage:', parsed);
+       // console.log('✅ Parsed from localStorage:', parsed);
         this.currentGraphSubject.next(parsed);
       } catch (err) {
         console.error('❌ Error parsing localStorage graph:', err);
@@ -110,6 +112,7 @@ export class GraphStateService {
 
   /** GET CURRENT */
   getCurrentGraph$(): Observable<Graph | null> {
+    const graph = localStorage.getItem('currentGraph')
     return this.currentGraph$;
   }
 

@@ -37,7 +37,7 @@ export class AuthGuardService implements CanActivate {
                 return true;
               }
 
-              const isOwner = graph.ownerId === user.id;
+              const isOwner = graph.ownerId === user.sub;
               return isOwner
                 ? true
                 : this.router.createUrlTree(['/unauthorized']);

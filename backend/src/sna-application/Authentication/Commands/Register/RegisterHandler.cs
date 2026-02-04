@@ -53,6 +53,8 @@ public class RegisterHandler(UserManager<ApplicationUser> userManager) : IReques
         );
 
         var result = await userManager.CreateAsync(newUser, request.Password);
+
+        
         return result.Succeeded;
     }
 }

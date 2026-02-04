@@ -5,7 +5,8 @@ namespace sna_application.Graphs.Commands.AddNodeToGraph;
 public record AddNodeToGraphCommand(Guid GraphId,
     string Tag,
     double Activity,
-    int Interaction) : IRequest<NodeDto>;
+    int Interaction,
+    Guid OwnerId) : IRequest<NodeDto>;
 
 
 public class AddNodeToGraphCommandValidator: AbstractValidator<AddNodeToGraphCommand>
@@ -27,12 +28,12 @@ internal class AddNodeToGraphHandler(IGraphRepository _graphRepo, IUnitOfWork _u
 {
     public async Task<NodeDto> Handle(AddNodeToGraphCommand request, CancellationToken cancellationToken)
     {
+        var graph = await _graphRepo.GetGraphByIdAsync(request.GraphId,true) ??
+        throw new NotFoundException($"Graph with Id: {request.GraphId} not found");
         var node  = Graph.CreateNode(request.GraphId,
                                 request.Tag,
                                 request.Activity,
                                 request.Interaction);
-        var graph = await _graphRepo.GetGraphByIdAsync(request.GraphId,true) ??
-        throw new NotFoundException($"Graph with Id: {request.GraphId} not found");
 
         if(graph.Nodes.Any(n=>n.Tag ==request.Tag))
             throw new DomainException("Node tag must be unique");

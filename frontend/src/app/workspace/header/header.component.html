@@ -32,21 +32,21 @@
   </div>
   <div class="tab-buttons" *ngIf="isgraphCreated">
     <button
-      [class.active]="activeTab === 'graph'"
-      (click)="switchTab('graph')"
+      [class.active]="activeTab === Tabs.Graph"
+      (click)="switchTab(Tabs.Graph)"
       class="tab-btn">
       <i class="fa-solid fa-diagram-project me-2"></i>Graph
     </button>
     <button
-      [class.active]="activeTab === 'data'"
-      (click)="switchTab()"
+      [class.active]="activeTab === Tabs.Data"
+      (click)="switchTab(Tabs.Data)"
       class="tab-btn">
       <i class="fa-solid fa-database me-2"></i>
     </button>
   </div>
   <div class="section d-flex gap-2">
-    <button *ngIf="isAlgoResultExist" [class.active]="activeTab === 'algorithmResult'"
-    class="btn algo-result" (click)="switchTab('algorithmResult')">
+    <button *ngIf="isAlgoResultExist" [class.active]="activeTab === Tabs.AlgoResult "
+    class="btn algo-result" (click)="switchTab(Tabs.AlgoResult)">
      <i class="fa-regular fa-eye me-2"></i>View Algorithm Results
     </button>
   </div>

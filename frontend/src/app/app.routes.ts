@@ -61,7 +61,7 @@ export const routes: Routes = [
     canActivate: [AuthGuardService],
     children:[
       {path:'', component:WorkspaceComponent, canActivate:[AuthGuardService]},
-      {path:'create-schema', component:SchemaCreationComponent,canActivate:[AuthGuardService]},
+      {path:'create-schema', component:SchemaCreationComponent,canActivate:[UserGuardDashboardService]},
     ]},
 
 

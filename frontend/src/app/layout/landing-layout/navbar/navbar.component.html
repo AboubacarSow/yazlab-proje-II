@@ -17,7 +17,7 @@
       <li><a routerLink="/about" routerLinkActive="active">About</a></li>
       <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
       @if (isLoggedIn) {
-        <li><a routerLink="/workspace" class="btn-workspace">🚀 Workspace</a></li>
+        <li><a [routerLink]="workspace_root" class="btn-workspace">🚀 Workspace</a></li>
         <li><a (click)="logout()" class="btn-logout "><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a></li>
       } @else {
         <li><a routerLink="/login" class="btn-login"> <i class="fa fa-user"></i> Login</a></li>
