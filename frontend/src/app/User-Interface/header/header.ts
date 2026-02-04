@@ -6,7 +6,7 @@ import { take } from 'rxjs/internal/operators/take';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [CommonModule],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
