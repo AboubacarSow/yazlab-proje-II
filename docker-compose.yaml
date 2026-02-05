@@ -1,18 +1,16 @@
 
-version: "3.9"
-
 services:
   social-networkdb:
     image : mcr.microsoft.com/mssql/server:2025-latest
 
   seq:
    image: datalust/seq:latest
-   
+
   api:
     image: ${DOCKER_REGISTRY-}sna-api
     build:
-      context: backend/src/sna-bootstrapper-api
-      dockerfile: Dockerfile
+      context: backend
+      dockerfile: src/sna-bootstrapper-api/Dockerfile
 
   frontend-angular:
     image: ${DOCKER_REGISTRY-}sna-frontend
