@@ -29,23 +29,23 @@ public class Graph
     }*/
     private Graph()
     {
-        Id= Guid.NewGuid();
+        Id = Guid.NewGuid();
     }
     private Graph(string title) 
     {
-        Id=Guid.NewGuid();
-        Title= title;
+        Id =Guid.NewGuid();
+        Title = title;
     }
     private Graph(string title, Guid ownerId) 
     {
-        Id=Guid.NewGuid();
-        Title= title;
-        this.OwnerId= ownerId;
+        Id = Guid.NewGuid();
+        Title = title;
+        this.OwnerId = ownerId;
     }
     private Graph(string title, string? description)
     {
-        Id=Guid.NewGuid();
-        Title= title;
+        Id = Guid.NewGuid();
+        Title = title;
         Description = description;
     }
     private Graph(string title, string? description, Guid ownerId)
@@ -81,7 +81,6 @@ public class Graph
 
         return node;
     }
-
     public void AddNodes(IEnumerable<Node> nodes)
     {
         foreach(var node in nodes)
@@ -112,8 +111,6 @@ public class Graph
         }
         return false;
     }
-
-
 
     #endregion
     public void ConnectNodes(Node a, Node b)
