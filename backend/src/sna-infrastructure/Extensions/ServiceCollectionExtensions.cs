@@ -34,6 +34,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IContactInfoRepository,ContactInfoRepository>();
         services.AddScoped<IGraphRepository,GraphRepository>();
         services.AddScoped<IJWTService,JWTService>();
+
+        
         return services;
     }
 }

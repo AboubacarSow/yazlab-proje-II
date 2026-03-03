@@ -4,6 +4,7 @@ using Serilog;
 using sna_application.Extensions;
 using sna_bootstrapper_api.Exceptions.Handlers;
 using sna_infrastructure.Extensions;
+using sna_infrastructure.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,7 @@ builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
 var app = builder.Build();
 
+app.AddMigration();
 app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())

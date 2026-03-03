@@ -4,11 +4,11 @@ WORKDIR /app
 
 # Install dependencies
 COPY package*.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm npm ci
 
 # Copy source and build for production
 COPY . .
-RUN npm run build -- --configuration=production --output-path=dist/app
+RUN npm run build -- --configuration=production
 
 # Stage 2: Serve with nginx
 FROM nginx:stable-alpine AS production
@@ -17,7 +17,7 @@ FROM nginx:stable-alpine AS production
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built files from builder. This copies the inner dist folder contents.
-COPY --from=builder /app/dist/app /usr/share/nginx/html/
+COPY --from=builder /app/dist/*/browser /usr/share/nginx/html/
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

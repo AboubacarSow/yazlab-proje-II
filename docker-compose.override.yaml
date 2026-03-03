@@ -1,7 +1,7 @@
 
 services:
   social-networkdb:
-    container_name: social-networkdb
+    container_name: social-network-db
     restart: always
     environment:
       ACCEPT_EULA: "Y"
@@ -19,14 +19,14 @@ services:
     ports:
      - '5341:5341'
      - '9091:80'
+    volumes:
+     - seq-data:/data
 
   api:
     container_name: social-network-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: "8080"
-      ASPNETCORE_HTTPS_PORTS: "8081"
-
       ConnectionStrings__DatabaseConnection: >
         Server=social-networkdb,1433;
         Database=SocialNetworkDb;
@@ -55,8 +55,7 @@ services:
      - social-networkdb
      - seq
     ports:
-     - "6000:8080"
-     - "6060:8081"
+     - "5000:8080"
     volumes:
      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
@@ -64,7 +63,7 @@ services:
      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
   
   frontend-angular:
-    container_name: social-network-angularclient
+    container_name: social-network-client
     depends_on:
      - api
     ports:
@@ -72,5 +71,6 @@ services:
   
 volumes:
   sqlserver-data:
+  seq-data:
 
 
